@@ -1,4 +1,5 @@
-import {StyleSheet, Text, View, Button} from 'react-native';
+/*
+import {StyleSheet, Text, View, Button, Alert} from 'react-native';
 import React from 'react';
 import {
   KakaoOAuthToken,
@@ -6,15 +7,15 @@ import {
   getProfile as getKakaoProfile,
   login,
   logout,
-  unlink,
+  unlink, getAccessToken,
 } from '@react-native-seoul/kakao-login';
+import {KakaoAccessTokenInfo} from "@react-native-seoul/kakao-login/src/types";
 
 export default function App() {
   const signInWithKakao = async (): Promise<void> => {
     const token: KakaoOAuthToken = await login();
 
     setResult(JSON.stringify(token));
-    Alert.alert('Token : ', JSON.stringify(token));
   };
 
   const signOutWithKakao = async (): Promise<void> => {
@@ -35,12 +36,22 @@ export default function App() {
     setResult(message);
   };
 
+  //이건 내가 만듦!!
+  const getUserAccessToken = async (): Promise<void> => {
+    const token: KakaoAccessTokenInfo = await getAccessToken();
+
+    setResult(JSON.stringify(token));
+  };
+
   return (
-    <View>
-      <Button title="로그인" onPress={signInWithKakao} />
-    </View>
+      <View>
+          <Button title="로그인" onPress={signInWithKakao}/>
+      </View>
   );
 }
+*/
+
+
 
 
 /*
