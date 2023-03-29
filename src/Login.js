@@ -10,7 +10,7 @@ import {
 } from '@react-native-seoul/kakao-login';
 import {KakaoAccessTokenInfo} from "@react-native-seoul/kakao-login/src/types";
 
-
+//productId, brandName, productName, imgUrl
 export default function Login() {
     const signInWithKakao = async (): Promise<void> => {
         const token: KakaoOAuthToken = await login();
