@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import Login from './screens/Login';
+import KakaoLogin from './screens/KakaoLogin';
 import Main from './screens/Main';
 import RecruitPage from './screens/RecruitPage';
 
@@ -15,7 +15,7 @@ export default function App() {
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Main">
           <Stack.Screen name="Main" component={Main} />
-          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="KakaoLogin" component={KakaoLogin} />
           <Stack.Screen name="RecruitPage" component={RecruitPage}/>
         </Stack.Navigator>
       </NavigationContainer>
