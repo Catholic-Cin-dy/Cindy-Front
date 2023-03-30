@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View, Button, Alert} from 'react-native';
+import {StyleSheet, Text, View, Button, Alert, TouchableOpacity, Image} from 'react-native';
 import React from 'react';
 import {
     KakaoOAuthToken,
@@ -45,10 +45,27 @@ export default function Login() {
 
     return (
         <View>
-            <Button title="로그인" onPress={signInWithKakao}/>
+            <TouchableOpacity
+              onPress={signInWithKakao}>
+                <Image
+                  style={styles.btnimg}
+                  source={require("../assets/kakao_login_medium_wide.png")} />
+            </TouchableOpacity>
         </View>
     );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    btnimg: {
+        width: 300,
+        height: 45,
+    }
+})
 
 //<Button title="로그인" onPress={signInWithKakao}/>
 
