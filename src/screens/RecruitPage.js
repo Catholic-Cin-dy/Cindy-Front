@@ -6,43 +6,58 @@ import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 const TestStack = createStackNavigator();
+const MyPageStack = createStackNavigator();
 const HomeStack = createStackNavigator();
-const SettingStack = createStackNavigator();
-// const MainTabScreen = ({navigation, route}) => {
-//   return (
-//     <Tab.Navigator
-//       initialRouteName="HomeStack"
-//       screenOptions={({route}) => ({
-//         tabBarIcon: ({focused, color, size}) => {
-//           let iconName;
-//
-//           if (route.name === 'TestStack') {
-//             iconName = focused ? 'document' : 'document-outline';
-//           } else if (route.name === 'HomeStack') {
-//             iconName = focused ? 'home' : 'home-outline';
-//           } else if (route.name === 'SettingStack') {
-//             iconName = focused ? 'person-circle' : 'person-circle-outline';
-//           }
-//
-//           // You can return any component that you like here!
-//           return <Icon name={iconName} size={size} color={color} />;
-//         },
-//       })}
-//       tabBarOptions={{
-//         activeTintColor: 'black',
-//         inactiveTintColor: 'lightgray',
-//         showLabel: false,
-//       }}>
-//       <Tab.Screen name="TestStack" component={TestStackScreen} />
-//       <Tab.Screen name="HomeStack" component={HomeStackScreen} />
-//       <Tab.Screen name="SettingStack" component={SettingStackScreen} />
-//     </Tab.Navigator>
-//   );
-// };
+const RecruitStack = createStackNavigator();
+const BookMarkStack = createStackNavigator();
+
+const TopTap = createMaterialTopTabNavigator(); //상단 탭
+
+function TopTapScreen() {
+  return (
+    <Tab.Navigator initialRouteName="Home">
+      <Tab.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{
+          tabBarIcon: ({color}) => <Icon name="home" color={color} size={24} />,
+        }}
+      />
+      <Tab.Screen
+        name="Search"
+        component={SearchScreen}
+        options={{
+          tabBarIcon: ({color}) => (
+            <Icon name="notifications" color={color} size={24} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Notification"
+        component={NotificationScreen}
+        options={{
+          tabBarIcon: ({color}) => (
+            <Icon name="search" color={color} size={24} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Message"
+        component={MessageScreen}
+        options={{
+          tabBarIcon: ({color}) => (
+            <Icon name="message" color={color} size={24} />
+          ),
+        }}
+      />
+    </Tab.Navigator>
+  );
+}
 
 const HomeScreen = ({ navigation }) => {
   return (
@@ -108,7 +123,7 @@ const HomeStackScreen = () => {
 const BookMarkStackScreen = () => {
   return (
     <Stack.Navigator>
-      <SettingStack.Screen name="BookMark" component={BookMarkScreen} />
+      <BookMarkStack.Screen name="BookMark" component={BookMarkScreen} />
     </Stack.Navigator>
   );
 };
@@ -116,15 +131,15 @@ const BookMarkStackScreen = () => {
 const RecruitProductsStackScreen = () => {
   return (
     <Stack.Navigator>
-      <TestStack.Screen name="RecruitProducts" component={RecruitProductsScreen} />
-      <TestStack.Screen name="TestRead" component={TestReadScreen} />
+
+      <RecruitStack.Screen name="TestRead" component={TestReadScreen} />
     </Stack.Navigator>
   );
 };
 const MyPageStackScreen = () => {
   return (
     <Stack.Navigator>
-      <TestStack.Screen name="MyPage" component={MyPageScreen} />
+      <MyPageStack.Screen name="MyPage" component={MyPageScreen} />
     </Stack.Navigator>
   );
 };
