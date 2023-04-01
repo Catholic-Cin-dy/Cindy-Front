@@ -2,7 +2,7 @@ import React from 'react';
 import { View, StyleSheet, Text, Button, TouchableOpacity, Image } from 'react-native';
 import { ImageBackground } from "react-native"; //버튼 background 이미지 넣어볼라고
 
-import KakaoLogin from './KakaoLogin';
+import KakaoLogin from './LoginScreen/KakaoLogin';
 import MainPage from './MainPage';
 
 //Main페이지가 Login이랑 RecruitPage 전환시킴!! 일종의 root페이지.

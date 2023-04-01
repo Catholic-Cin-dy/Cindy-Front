@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import KakaoLogin from './screens/KakaoLogin';
+import KakaoLogin from './screens/LoginScreen/KakaoLogin';
 import Main from './screens/Main';
 import LogoTitle from './screens/LogoTitle';
 import MainPage from './screens/MainPage';

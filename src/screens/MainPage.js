@@ -9,7 +9,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-import RecruitPage from './RecruitPage';
+import RecruitPage from './RecruitScreen/RecruitPage';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();

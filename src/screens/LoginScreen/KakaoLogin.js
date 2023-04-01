@@ -49,7 +49,7 @@ export default function KakaoLogin() {
               onPress={signInWithKakao}>
                 <Image
                   style={styles.btnimg}
-                  source={require("../assets/kakao_login_medium_wide.png")} />
+                  source={require("../../assets/kakao_login_medium_wide.png")} />
             </TouchableOpacity>
         </View>
     );
