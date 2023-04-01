@@ -7,168 +7,116 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const Tab = createBottomTabNavigator();
-const Stack = createStackNavigator();
-const TestStack = createStackNavigator();
-const MyPageStack = createStackNavigator();
-const HomeStack = createStackNavigator();
-const RecruitStack = createStackNavigator();
-const BookMarkStack = createStackNavigator();
+const Tab = createMaterialTopTabNavigator(); //상단 탭
 
-const TopTap = createMaterialTopTabNavigator(); //상단 탭
-
-function TopTapScreen() {
+function RecruitScreen({ navigation }) {
   return (
-    <Tab.Navigator initialRouteName="Home">
+    <Tab.Navigator
+      initialRouteName="All"
+      screenOptions={{
+        tabBarIndicatorStyle: '#000000',
+        tabBarActiveTintColor: '#000000',
+      }}>
       <Tab.Screen
-        name="Home"
-        component={HomeScreen}
+        name="All"
+        component={RAllScreen}
         options={{
+          tabBarLabel: 'All',
           tabBarIcon: ({color}) => <Icon name="home" color={color} size={24} />,
-        }}
-      />
+        }}/>
       <Tab.Screen
-        name="Search"
-        component={SearchScreen}
+        name="Top"
+        component={RTopScreen}
         options={{
+          tabBarLabel: 'Top',
           tabBarIcon: ({color}) => (
             <Icon name="notifications" color={color} size={24} />
           ),
-        }}
-      />
+        }}/>
       <Tab.Screen
-        name="Notification"
-        component={NotificationScreen}
+        name="Pants"
+        component={RPantsScreen}
         options={{
+          tabBarLabel: 'Pants',
           tabBarIcon: ({color}) => (
-            <Icon name="search" color={color} size={24} />
+            <Icon name="notifications" color={color} size={24} />
           ),
-        }}
-      />
+        }}/>
       <Tab.Screen
-        name="Message"
-        component={MessageScreen}
+        name="Outer"
+        component={ROuterScreen}
         options={{
+          tabBarLabel: 'Outer',
           tabBarIcon: ({color}) => (
-            <Icon name="message" color={color} size={24} />
+            <Icon name="notifications" color={color} size={24} />
           ),
-        }}
-      />
+        }}/>
+      <Tab.Screen
+        name="Cap"
+        component={RCapScreen}
+        options={{
+          tabBarLabel: 'Cap',
+          tabBarIcon: ({color}) => (
+            <Icon name="notifications" color={color} size={24} />
+          ),
+        }}/>
+      <Tab.Screen
+        name="Bag"
+        component={RBagScreen}
+        options={{
+          tabBarLabel: 'Bag',
+          tabBarIcon: ({color}) => (
+            <Icon name="notifications" color={color} size={24} />
+          ),
+        }}/>
+      <Tab.Screen
+        name="Accessories"
+        component={RAccesoriesScreen}
+        options={{
+          tabBarLabel: 'Accessories',
+          tabBarIcon: ({color}) => (
+            <Icon name="notifications" color={color} size={24} />
+          ),
+        }}/>
     </Tab.Navigator>
   );
 }
-
-const HomeScreen = ({ navigation }) => {
+function RAllScreen({navigation}) {
   return (
-    <View style={styles.container}>
-      <Text>This is HomeScreen.</Text>
+    <View>
+      <Text>전체 상품 조회</Text>
+      <Button
+        title="상세보기"
+        onPress={() => navigation.push('Detail', {id: 1})}
+      />
     </View>
   );
-};
-const SearchScreen = ({ navigation }) => {
-  return (
-    <View style={styles.container}>
-      <Text>This is SearchScreen.</Text>
-    </View>
-  );
-};
-const SearchResultScreen = ({ navigation }) => {
-  return (
-    <View style={styles.container}>
-      <Text>This is SearchResultScreen.</Text>
-    </View>
-  );
-};
-const BookMarkScreen = ({ navigation }) => {
-  return (
-    <View style={styles.container}>
-      <Text>This is BookMarkScreen.</Text>
-    </View>
-  );
-};
-const RecruitProductsScreen = ({ navigation }) => {
-  return (
-    <View style={styles.container}>
-      <Text>This is RecruitProductsScreen.</Text>
-    </View>
-  );
-};
-const TestReadScreen = ({ navigation }) => {
-  return (
-    <View style={styles.container}>
-      <Text>This is TestReadScreen.</Text>
-    </View>
-  );
-};
-const MyPageScreen = ({ navigation }) => {
-  return (
-    <View style={styles.container}>
-      <Text>This is MyPageScreen.</Text>
-    </View>
-  );
-};
-
-
-const HomeStackScreen = () => {
-  return (
-    <Stack.Navigator>
-      <HomeStack.Screen name="Home" component={HomeScreen} />
-      <HomeStack.Screen name="Search" component={SearchScreen} />
-      <HomeStack.Screen name="SearchResult" component={SearchResultScreen} />
-    </Stack.Navigator>
-  );
-};
-
-const BookMarkStackScreen = () => {
-  return (
-    <Stack.Navigator>
-      <BookMarkStack.Screen name="BookMark" component={BookMarkScreen} />
-    </Stack.Navigator>
-  );
-};
-
-const RecruitProductsStackScreen = () => {
-  return (
-    <Stack.Navigator>
-
-      <RecruitStack.Screen name="TestRead" component={TestReadScreen} />
-    </Stack.Navigator>
-  );
-};
-const MyPageStackScreen = () => {
-  return (
-    <Stack.Navigator>
-      <MyPageStack.Screen name="MyPage" component={MyPageScreen} />
-    </Stack.Navigator>
-  );
-};
-
-const MainTabScreen = () => {
-  return (
-    <Tab.Navigator initialRouteName="HomeStack">
-      <Tab.Screen name="홈화면" component={HomeStackScreen} />
-      <Tab.Screen name="상품 전체조회" component={RecruitProductsStackScreen} />
-      <Tab.Screen name="북마크" component={BookMarkStackScreen} />
-      <Tab.Screen name="내정보" component={MyPageStackScreen} />
-    </Tab.Navigator>
-  );
-};
+}
+function RTopScreen() {
+  return <Text>top 상품 조회</Text>;
+}
+function RPantsScreen() {
+  return <Text>pants 상품 조회</Text>;
+}
+function ROuterScreen() {
+  return <Text>outer 상품 조회</Text>;
+}
+function RCapScreen() {
+  return <Text>cap 상품 조회</Text>;
+}
+function RBagScreen() {
+  return <Text>bag 상품 조회</Text>;
+}
+function RAccesoriesScreen() {
+  return <Text>accessories 상품 조회</Text>;
+}
 
 export default function RecruitPage() {
   return(
-    <MainTabScreen/>
+    <RecruitScreen/>
   );
 };
 
 const styles = StyleSheet.create({});
-
-// <NavigationContainer>
-//   <Stack.Navigator initialRouteName="MainTabScreen">
-//     <Stack.Screen name="MainTab" component={MainTabScreen} />
-//   </Stack.Navigator>
-// </NavigationContainer>
-
-// <View>
-//   <Text>여기탭 뷰 올거야</Text>
-// </View>

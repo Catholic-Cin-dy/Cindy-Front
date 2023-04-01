@@ -3,7 +3,7 @@ import { View, StyleSheet, Text, Button, TouchableOpacity, Image } from 'react-n
 import { ImageBackground } from "react-native"; //버튼 background 이미지 넣어볼라고
 
 import KakaoLogin from './KakaoLogin';
-import RecruitPage from './RecruitPage'
+import MainPage from './MainPage';
 
 //Main페이지가 Login이랑 RecruitPage 전환시킴!! 일종의 root페이지.
 const Main = ({ navigation }) => {
@@ -18,7 +18,7 @@ const Main = ({ navigation }) => {
 
       <Text />
       <Button title={"상품 전체 리스트 조회 화면으로 이동"} onPress={() => {
-        navigation.navigate("RecruitPage");
+        navigation.navigate("MainPage");
       }} />
     </View>
 
