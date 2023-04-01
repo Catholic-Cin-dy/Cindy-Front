@@ -10,104 +10,76 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const Tab = createMaterialTopTabNavigator(); //상단 탭
-
 import RecruitAll from './RecruitAll';
 
 function RecruitScreen({ navigation }) {
   return (
     <Tab.Navigator
-      initialRouteName="All"
-      screenOptions={{
-        tabBarIndicatorStyle: '#000000',
-        tabBarActiveTintColor: '#000000',
-      }}>
+      tabBarOptions={{
+        scrollEnabled: true, // 스크롤 가능하게 설정
+        tabStyle: { width: 100, alignItems: 'flex-start' }, // 왼쪽 정렬
+        indicatorStyle: { backgroundColor: 'black' }, // 선택된 탭 하단에 라인 표시
+      }}
+    >
       <Tab.Screen
         name="All"
-        component={RAllScreen}
+        component={RecruitAll}
+        initialParams={{ tabIndex: 0 }}
         options={{
-          tabBarLabel: 'All',
-          tabBarIcon: ({color}) => <Icon name="home" color={color} size={24} />,
+          tabBarLabel: 'All'
         }}/>
       <Tab.Screen
         name="Top"
-        component={RTopScreen}
+        component={RecruitAll}
+        initialParams={{ tabIndex: 1 }}
         options={{
-          tabBarLabel: 'Top',
-          tabBarIcon: ({color}) => (
-            <Icon name="notifications" color={color} size={24} />
-          ),
+          tabBarLabel: 'Top'
         }}/>
       <Tab.Screen
-        name="Pants"
-        component={RPantsScreen}
+        name="Bottom"
+        component={RecruitAll}
+        initialParams={{ tabIndex: 2 }}
         options={{
-          tabBarLabel: 'Pants',
-          tabBarIcon: ({color}) => (
-            <Icon name="notifications" color={color} size={24} />
-          ),
+          tabBarLabel: 'Bottom'
         }}/>
       <Tab.Screen
         name="Outer"
-        component={ROuterScreen}
+        component={RecruitAll}
+        initialParams={{ tabIndex: 3 }}
         options={{
-          tabBarLabel: 'Outer',
-          tabBarIcon: ({color}) => (
-            <Icon name="notifications" color={color} size={24} />
-          ),
+          tabBarLabel: 'Outer'
         }}/>
       <Tab.Screen
         name="Cap"
-        component={RCapScreen}
+        component={RecruitAll}
+        initialParams={{ tabIndex: 4 }}
         options={{
-          tabBarLabel: 'Cap',
-          tabBarIcon: ({color}) => (
-            <Icon name="notifications" color={color} size={24} />
-          ),
+          tabBarLabel: 'Cap'
         }}/>
       <Tab.Screen
         name="Bag"
-        component={RBagScreen}
+        component={RecruitAll}
+        initialParams={{ tabIndex: 5 }}
         options={{
-          tabBarLabel: 'Bag',
-          tabBarIcon: ({color}) => (
-            <Icon name="notifications" color={color} size={24} />
-          ),
+          tabBarLabel: 'Bag'
         }}/>
       <Tab.Screen
         name="Accessories"
-        component={RAccesoriesScreen}
+        component={RecruitAll}
+        initialParams={{ tabIndex: 6 }}
         options={{
-          tabBarLabel: 'Accessories',
-          tabBarIcon: ({color}) => (
-            <Icon name="notifications" color={color} size={24} />
-          ),
+          tabBarLabel: 'Accessories'
         }}/>
     </Tab.Navigator>
   );
 }
-function RAllScreen({navigation}) {
+
+function RAllScreen({navigation, route}) {
   return (
     <RecruitAll/>
   );
 }
-function RTopScreen() {
-  return <Text>top 상품 조회</Text>;
-}
-function RPantsScreen() {
-  return <Text>pants 상품 조회</Text>;
-}
-function ROuterScreen() {
-  return <Text>outer 상품 조회</Text>;
-}
-function RCapScreen() {
-  return <Text>cap 상품 조회</Text>;
-}
-function RBagScreen() {
-  return <Text>bag 상품 조회</Text>;
-}
-function RAccesoriesScreen() {
-  return <Text>accessories 상품 조회</Text>;
-}
+
 
 export default function RecruitPage() {
   return(
