@@ -11,6 +11,8 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const Tab = createMaterialTopTabNavigator(); //상단 탭
 
+import RecruitAll from './RecruitAll';
+
 function RecruitScreen({ navigation }) {
   return (
     <Tab.Navigator
@@ -85,13 +87,7 @@ function RecruitScreen({ navigation }) {
 }
 function RAllScreen({navigation}) {
   return (
-    <View>
-      <Text>전체 상품 조회</Text>
-      <Button
-        title="상세보기"
-        onPress={() => navigation.push('Detail', {id: 1})}
-      />
-    </View>
+    <RecruitAll/>
   );
 }
 function RTopScreen() {
