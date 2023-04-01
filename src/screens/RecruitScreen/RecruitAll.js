@@ -45,11 +45,11 @@ export default function RecruitAll({navigation}) {
 
     const params = {
       page: '0',
-      size: '10',
+      size: '100',
       filter: '0'
     };
 
-    axios.get('https://www.awesominki.shop/products', { params, ...config })
+    axios.get(baseUrl + '/products', { params, ...config })
       .then(response => setData(response.data.result.contents))
       .catch(error => console.error(error))
   }, []);
@@ -61,8 +61,8 @@ export default function RecruitAll({navigation}) {
         <View>
           <Image
             key={item.productId}
-            style={{ width: 100, height: 100 }}
-            source={{ uri: item.image_url }}
+            style={{ width: 100, height: 150 }}
+            source={{ uri: item.imgUrl }}
           />
           {/*<Text key={item.productId}>{item.productId}</Text>*/}
           <Text key={item.brandName}>{item.brandName}</Text>
