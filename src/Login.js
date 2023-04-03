@@ -9,9 +9,10 @@ import {
     unlink, getAccessToken,
 } from '@react-native-seoul/kakao-login';
 import {KakaoAccessTokenInfo} from "@react-native-seoul/kakao-login/src/types";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-
-export default function Login() {
+export default function Login({navigation}) {
     const signInWithKakao = async (): Promise<void> => {
         const token: KakaoOAuthToken = await login();
 
@@ -46,6 +47,7 @@ export default function Login() {
     return (
         <View>
             <Button title="로그인" onPress={signInWithKakao}/>
+            <Button title="메인 화면" onPress={() => navigation.navigate('Main1')} />
         </View>
     );
 }
