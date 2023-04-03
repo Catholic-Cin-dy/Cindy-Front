@@ -18,3 +18,10 @@
 > Feat: 상품 리스트 전체조회 구현
 
 > Fix : 상품 리스트 전체조회 api 연결부분 수정
+
+
+## 기술 스택
+
+| JavaScript | TypeScript |  React Native   |  Spring   |
+| :--------: | :--------: | :------: | :-----: |
+|   ![js]    |   ![ts]    | ![react] | ![spring] |
