@@ -25,3 +25,10 @@
 | JavaScript | TypeScript |  React Native   |  Spring   |
 | :--------: | :--------: | :------: | :-----: |
 |   ![js]    |   ![ts]    | ![react] | ![spring] |
+
+<!-- Stack Icon Refernces -->
+
+[js]: /images/stack/javascript.svg
+[ts]: /images/stack/typescript.svg
+[react]: /images/stack/react.svg
+[spring]: /images/stack/node.svg
