@@ -19,7 +19,6 @@ import RecruitCap from './RecruitCap';
 import RecruitBag from './RecruitBag';
 import RecruitAccessories from './RecruitAccessories';
 
-
 function RecruitScreen({ navigation }) {
 
 

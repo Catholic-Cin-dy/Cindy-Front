@@ -9,34 +9,16 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
+import RecruitPage from './RecruitPage';
 const baseUrl = 'https://www.awesominki.shop'; //api 연결을 위한 baseUrl
-export default function RecruitAll({navigation}) {
+export default function RecruitAll({ navigation, route }) {
+  //const { tabIndex } = route.params.tabIndex;
+
   const [data, setData] = useState([]);
   const [users, setUsers] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  // const fetchUsers = () => {
-  //   try {
-  //     // 요청이 시작 할 때에는 error 와 users 를 초기화하고
-  //     setError(null);
-  //     setUsers(null);
-  //     // loading 상태를 true 로 바꿉니다.
-  //     setLoading(true);
-  //
-  //     const response = await axios.get('https://www.awesominki.shop/products', {
-  //       params: {
-  //         page: 0,
-  //         size: 10,
-  //         filter: 0
-  //       }
-  //     }); //url을 baseUrl + '/products' <- 요렇게 바꿔주세용
-  //     setUsers(response.data.result.contents); // 데이터는 response.data 안에 들어있습니다.
-  //
-  //   } catch (e) {
-  //     setError(e);
-  //   }
-  //   setLoading(false);
-  // };
+
 
   useEffect(() => {
     const config = {
@@ -44,9 +26,9 @@ export default function RecruitAll({navigation}) {
     };
 
     const params = {
-      page: '0',
-      size: '100',
-      filter: '0'
+      page: 0,
+      size: 100,
+      filter: 0
     };
 
     axios.get(baseUrl + '/products', { params, ...config })
