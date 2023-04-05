@@ -3,8 +3,7 @@ import {StyleSheet, Text, View, Button, Alert,Image,SafeAreaView,ScrollView} fro
 import { SliderBox } from "react-native-image-slider-box";
 import main from './assets/main.jpg';
 import Maincontent from "./component/Maincontent";
-
-
+import Maincontent1 from "./component/Maincontent1";
 export default function Main1() {
 
   function sliderTouch(index){
@@ -17,7 +16,7 @@ export default function Main1() {
     <View style={styles.header}></View>
     <View style={styles.content}>
       <Image source={main} style={styles.image}/>
-      <Maincontent/>
+      <Maincontent1/>
       <Maincontent/>
     </View>
     <View style={styles.footer}></View>
