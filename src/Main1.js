@@ -4,6 +4,7 @@ import { SliderBox } from "react-native-image-slider-box";
 import main from './assets/main.jpg';
 import Maincontent from "./component/Maincontent";
 import Maincontent1 from "./component/Maincontent1";
+import Mainslider from "./component/Mainslider";
 export default function Main1() {
 
   function sliderTouch(index){
@@ -15,7 +16,7 @@ export default function Main1() {
   <SafeAreaView style={styles.container}>
     <View style={styles.header}></View>
     <View style={styles.content}>
-      <Image source={main} style={styles.image}/>
+      <Mainslider/>
       <Maincontent1/>
       <Maincontent/>
     </View>
