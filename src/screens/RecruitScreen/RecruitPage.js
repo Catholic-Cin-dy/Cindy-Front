@@ -12,8 +12,17 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 const Tab = createMaterialTopTabNavigator(); //상단 탭
 
 import RecruitAll from './RecruitAll';
+import RecruitTop from './RecruitTop';
+import RecruitBottom from './RecruitBottom';
+import RecruitOuter from './RecruitOuter';
+import RecruitCap from './RecruitCap';
+import RecruitBag from './RecruitBag';
+import RecruitAccessories from './RecruitAccessories';
+
 
 function RecruitScreen({ navigation }) {
+
+
   return (
     <Tab.Navigator
       initialRouteName="All"
@@ -38,10 +47,10 @@ function RecruitScreen({ navigation }) {
           ),
         }}/>
       <Tab.Screen
-        name="Pants"
-        component={RPantsScreen}
+        name="Bottom"
+        component={RBottomScreen}
         options={{
-          tabBarLabel: 'Pants',
+          tabBarLabel: 'Bottom',
           tabBarIcon: ({color}) => (
             <Icon name="notifications" color={color} size={24} />
           ),
@@ -91,22 +100,34 @@ function RAllScreen({navigation}) {
   );
 }
 function RTopScreen() {
-  return <Text>top 상품 조회</Text>;
+  return (
+    <RecruitTop/>
+  );
 }
-function RPantsScreen() {
-  return <Text>pants 상품 조회</Text>;
+function RBottomScreen() {
+  return (
+    <RecruitBottom/>
+  );
 }
 function ROuterScreen() {
-  return <Text>outer 상품 조회</Text>;
+  return (
+    <RecruitOuter/>
+  );
 }
 function RCapScreen() {
-  return <Text>cap 상품 조회</Text>;
+  return (
+    <RecruitCap/>
+  );
 }
 function RBagScreen() {
-  return <Text>bag 상품 조회</Text>;
+  return (
+    <RecruitBag/>
+  );
 }
 function RAccesoriesScreen() {
-  return <Text>accessories 상품 조회</Text>;
+  return (
+    <RecruitAccessories/>
+  );
 }
 
 export default function RecruitPage() {
