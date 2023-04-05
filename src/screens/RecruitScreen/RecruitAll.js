@@ -38,24 +38,77 @@ export default function RecruitAll({ navigation, route }) {
 
 
   return (
-    <ScrollView>
-      {data.map(item => (
-        <View>
-          <Image
-            key={item.productId}
-            style={{ width: 100, height: 150 }}
-            source={{ uri: item.imgUrl }}
-          />
-          {/*<Text key={item.productId}>{item.productId}</Text>*/}
-          <Text key={item.brandName}>{item.brandName}</Text>
-          <Text key={item.productName}>{item.productName}</Text>
+
+      <ScrollView>
+        <View style={styles.column}>
+          {data.slice(0, Math.ceil(data.length / 2)).map(item => (
+            <View style={styles.item} key={item.productId}>
+              <Image
+                style={styles.image}
+                source={{ uri: item.imgUrl }}
+              />
+              <Text style={styles.text}>{item.brandName}</Text>
+              <Text style={styles.text}>{item.productName}</Text>
+            </View>
+          ))}
         </View>
-      ))}
-    </ScrollView>
+        <View style={styles.column}>
+          {data.slice(Math.ceil(data.length / 2)).map(item => (
+            <View style={styles.item} key={item.productId}>
+              <Image
+                style={styles.image}
+                source={{ uri: item.imgUrl }}
+              />
+              <Text style={styles.text}>{item.brandName}</Text>
+              <Text style={styles.text}>{item.productName}</Text>
+            </View>
+          ))}
+        </View>
+      </ScrollView>
+
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  column: {
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+  },
+  item: {
+    width: '48%',
+    marginBottom: 16,
+    borderRadius: 8,
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    elevation: 4,
+  },
+  image: {
+    width: '100%',
+    height: 150,
+    borderRadius: 10,
+  },
+  text: {
+    marginHorizontal: 8,
+    marginTop: 8,
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+  },
   scrollContainer : {
 
   },

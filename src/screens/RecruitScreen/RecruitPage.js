@@ -25,77 +25,63 @@ function RecruitScreen({ navigation }) {
   return (
     <Tab.Navigator
       initialRouteName="All"
-      screenOptions={{
-        tabBarIndicatorStyle: '#000000',
-        tabBarActiveTintColor: '#000000',
+      tabBarOptions={{
+        scrollEnabled: true, // 스크롤 가능하게 설정
+        tabStyle: { width: 100, alignItems: 'flex-start' }, // 왼쪽 정렬
+        indicatorStyle: { backgroundColor: 'black' }, // 선택된 탭 하단에 라인 표시
       }}>
       <Tab.Screen
         name="All"
         component={RAllScreen}
         options={{
           tabBarLabel: 'All',
-          tabBarIcon: ({color}) => <Icon name="home" color={color} size={24} />,
         }}/>
       <Tab.Screen
         name="Top"
         component={RTopScreen}
         options={{
           tabBarLabel: 'Top',
-          tabBarIcon: ({color}) => (
-            <Icon name="notifications" color={color} size={24} />
-          ),
         }}/>
       <Tab.Screen
         name="Bottom"
         component={RBottomScreen}
         options={{
           tabBarLabel: 'Bottom',
-          tabBarIcon: ({color}) => (
-            <Icon name="notifications" color={color} size={24} />
-          ),
         }}/>
       <Tab.Screen
         name="Outer"
         component={ROuterScreen}
         options={{
           tabBarLabel: 'Outer',
-          tabBarIcon: ({color}) => (
-            <Icon name="notifications" color={color} size={24} />
-          ),
         }}/>
       <Tab.Screen
         name="Cap"
         component={RCapScreen}
         options={{
           tabBarLabel: 'Cap',
-          tabBarIcon: ({color}) => (
-            <Icon name="notifications" color={color} size={24} />
-          ),
         }}/>
       <Tab.Screen
         name="Bag"
         component={RBagScreen}
         options={{
           tabBarLabel: 'Bag',
-          tabBarIcon: ({color}) => (
-            <Icon name="notifications" color={color} size={24} />
-          ),
         }}/>
       <Tab.Screen
         name="Accessories"
         component={RAccesoriesScreen}
         options={{
           tabBarLabel: 'Accessories',
-          tabBarIcon: ({color}) => (
-            <Icon name="notifications" color={color} size={24} />
-          ),
         }}/>
     </Tab.Navigator>
   );
 }
 function RAllScreen({navigation}) {
   return (
-    <RecruitAll/>
+
+    <View>
+      <RecruitAll/>
+    </View>
+
   );
 }
 function RTopScreen() {
@@ -135,4 +121,10 @@ export default function RecruitPage() {
   );
 };
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  Product : {
+    width: 156,
+    height: 168,
+    borderRadius: 8,
+  }
+});
