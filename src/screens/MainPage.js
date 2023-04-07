@@ -19,8 +19,6 @@ const HomeStack = createStackNavigator();
 const RecruitStack = createStackNavigator();
 const BookMarkStack = createStackNavigator();
 
-const TopTap = createMaterialTopTabNavigator(); //상단 탭
-
 const HomeScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>

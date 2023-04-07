@@ -9,7 +9,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const Tab = createMaterialTopTabNavigator(); //상단 탭
+const TopTap = createMaterialTopTabNavigator(); //상단 탭
 
 import RecruitAll from './RecruitAll';
 import RecruitTop from './RecruitTop';
@@ -23,56 +23,56 @@ function RecruitScreen({ navigation }) {
 
 
   return (
-    <Tab.Navigator
+    <TopTap.Navigator
       initialRouteName="All"
       tabBarOptions={{
         scrollEnabled: true, // 스크롤 가능하게 설정
         tabStyle: { width: 100, alignItems: 'flex-start' }, // 왼쪽 정렬
         indicatorStyle: { backgroundColor: 'black' }, // 선택된 탭 하단에 라인 표시
       }}>
-      <Tab.Screen
+      <TopTap.Screen
         name="All"
         component={RAllScreen}
         options={{
           tabBarLabel: 'All',
         }}/>
-      <Tab.Screen
+      <TopTap.Screen
         name="Top"
         component={RTopScreen}
         options={{
           tabBarLabel: 'Top',
         }}/>
-      <Tab.Screen
+      <TopTap.Screen
         name="Bottom"
         component={RBottomScreen}
         options={{
           tabBarLabel: 'Bottom',
         }}/>
-      <Tab.Screen
+      <TopTap.Screen
         name="Outer"
         component={ROuterScreen}
         options={{
           tabBarLabel: 'Outer',
         }}/>
-      <Tab.Screen
+      <TopTap.Screen
         name="Cap"
         component={RCapScreen}
         options={{
           tabBarLabel: 'Cap',
         }}/>
-      <Tab.Screen
+      <TopTap.Screen
         name="Bag"
         component={RBagScreen}
         options={{
           tabBarLabel: 'Bag',
         }}/>
-      <Tab.Screen
+      <TopTap.Screen
         name="Accessories"
         component={RAccesoriesScreen}
         options={{
           tabBarLabel: 'Accessories',
         }}/>
-    </Tab.Navigator>
+    </TopTap.Navigator>
   );
 }
 function RAllScreen({navigation}) {
