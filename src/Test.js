@@ -18,6 +18,7 @@ export default class Test extends Component {
     inputText: '',
   };
   submitBtn = () => {
+
     this.setState({text: this.state.inputText});
   };
   submitBtn = () => {
