@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View, Button, Alert} from 'react-native';
+import {StyleSheet, Text, View, Button, Alert, TouchableOpacity, Image} from 'react-native';
 import React from 'react';
 import {
     KakaoOAuthToken,
@@ -13,6 +13,8 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 export default function Login({navigation}) {
+//productId, brandName, productName, imgUrl
+export default function KakaoLogin() {
     const signInWithKakao = async (): Promise<void> => {
         const token: KakaoOAuthToken = await login();
 
@@ -48,9 +50,27 @@ export default function Login({navigation}) {
         <View>
             <Button title="로그인" onPress={signInWithKakao}/>
             <Button title="메인 화면" onPress={() => navigation.navigate('Main1')} />
+            <TouchableOpacity
+              onPress={signInWithKakao}>
+                <Image
+                  style={styles.btnimg}
+                  source={require("../../assets/kakao_login_medium_wide.png")} />
+            </TouchableOpacity>
         </View>
     );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    btnimg: {
+        width: 300,
+        height: 45,
+    }
+})
 
 //<Button title="로그인" onPress={signInWithKakao}/>
 
