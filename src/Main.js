@@ -24,11 +24,25 @@ import {KakaoAccessTokenInfo} from '@react-native-seoul/kakao-login/src/types';
 
 export default function Main({navigation}) {
   const signInWithKakao = async (): Promise<void> => {
-    // const token: KakaoOAuthToken = await login();
-
-    // setResult(JSON.stringify(token));
-    navigation.navigate('ProductDetail');
+    try {
+      const token: KakaoOAuthToken = await login();
+      const accessToken = token.accessToken;
+      const response = await axios.post(
+        'https://www.awesominki.shop/auth/kakao',
+        {accessToken},
+      );
+      console.log(response);
+      //실험용 화면 전환
+      navigation.navigate('Test');
+    } catch (err) {
+      console.log(err);
+    }
   };
+
+  // const signInWithKakao = async (): Promise<void> => {
+  //   const token: KakaoOAuthToken = await login();
+  //   setResult(JSON.stringify(token));
+  // };
 
   // @ts-ignore
   // const signInWithKakao = async (): Promise<void> => {
@@ -38,7 +52,8 @@ export default function Main({navigation}) {
   //   const accessToken = token.accessToken;
   //   const url = 'https://www.awesominki.shop/auth/kakao';
   //   const data = {
-  //     accessToken: accessToken,
+  //     access
+  //     Token: accessToken,
   //   };
   //   axios
   //     .post(url, data)
@@ -53,23 +68,23 @@ export default function Main({navigation}) {
   //   // setResult(JSON.stringify(token));
   // };
 
-  // const signOutWithKakao = async (): Promise<void> => {
-  //   const message = await logout();
-  //
-  //   setResult(message);
-  // };
-  //
-  // const getKakaoProfile = async (): Promise<void> => {
-  //   const profile: KakaoProfile = await getProfile();
-  //
-  //   setResult(JSON.stringify(profile));
-  // };
-  //
-  // const unlinkKakao = async (): Promise<void> => {
-  //   const message = await unlink();
-  //
-  //   setResult(message);
-  // };
+  const signOutWithKakao = async (): Promise<void> => {
+    const message = await logout();
+
+    setResult(message);
+  };
+
+  const getKakaoProfile = async (): Promise<void> => {
+    const profile: KakaoProfile = await getProfile();
+
+    setResult(JSON.stringify(profile));
+  };
+
+  const unlinkKakao = async (): Promise<void> => {
+    const message = await unlink();
+
+    setResult(message);
+  };
 
   return (
     <View style={styles.container}>
