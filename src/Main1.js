@@ -5,6 +5,7 @@ import main from './assets/main.jpg';
 import Maincontent from "./component/Maincontent";
 import Maincontent1 from "./component/Maincontent1";
 import Mainslider from "./component/Mainslider";
+import MainPage from './screens/MainPage';
 export default function Main1() {
 
   function sliderTouch(index){
@@ -43,5 +44,5 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
-  
+
 });
