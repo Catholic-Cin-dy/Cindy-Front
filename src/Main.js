@@ -1,48 +1,81 @@
-import {StyleSheet, Text, View, Image, TouchableOpacity, Button, Alert} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  Button,
+  Alert,
+} from 'react-native';
 import React from 'react';
+import Test from './Test';
+import ProductDetail from './ProductDetail';
+import axios from 'axios';
 import {
   KakaoOAuthToken,
   KakaoProfile,
   getProfile as getKakaoProfile,
   login,
   logout,
-  unlink, getAccessToken,
+  unlink,
+  getAccessToken,
 } from '@react-native-seoul/kakao-login';
-import {KakaoAccessTokenInfo} from "@react-native-seoul/kakao-login/src/types";
+import {KakaoAccessTokenInfo} from '@react-native-seoul/kakao-login/src/types';
 
-export default function Main(navigation) {
+export default function Main({navigation}) {
   const signInWithKakao = async (): Promise<void> => {
-    const token: KakaoOAuthToken = await login();
+    // const token: KakaoOAuthToken = await login();
 
-    setResult(JSON.stringify(token));
+    // setResult(JSON.stringify(token));
+    navigation.navigate('ProductDetail');
   };
 
-  const signOutWithKakao = async (): Promise<void> => {
-    const message = await logout();
+  // @ts-ignore
+  // const signInWithKakao = async (): Promise<void> => {
+  //   // @ts-ignore
+  //   const token: KakaoOAuthToken = await login();
+  //
+  //   const accessToken = token.accessToken;
+  //   const url = 'https://www.awesominki.shop/auth/kakao';
+  //   const data = {
+  //     accessToken: accessToken,
+  //   };
+  //   axios
+  //     .post(url, data)
+  //     .then(response => {
+  //       console.log('응답 결과:', response.data);
+  //     })
+  //     .catch(error => {
+  //       // 요청이 실패하면, 오류 메시지를 처리합니다.
+  //       console.error('오류 발생:', error);
+  //     });
+  //
+  //   // setResult(JSON.stringify(token));
+  // };
 
-    setResult(message);
-  };
+  // const signOutWithKakao = async (): Promise<void> => {
+  //   const message = await logout();
+  //
+  //   setResult(message);
+  // };
+  //
+  // const getKakaoProfile = async (): Promise<void> => {
+  //   const profile: KakaoProfile = await getProfile();
+  //
+  //   setResult(JSON.stringify(profile));
+  // };
+  //
+  // const unlinkKakao = async (): Promise<void> => {
+  //   const message = await unlink();
+  //
+  //   setResult(message);
+  // };
 
-  const getKakaoProfile = async (): Promise<void> => {
-    const profile: KakaoProfile = await getProfile();
-
-    setResult(JSON.stringify(profile));
-  };
-
-  const unlinkKakao = async (): Promise<void> => {
-    const message = await unlink();
-
-    setResult(message);
-  };
   return (
     <View style={styles.container}>
-      <Image style={styles.login_image} source={require('./assets/logo.png')}/>
+      <Image style={styles.login_image} source={require('./assets/logo.png')} />
       <Text style={styles.login_text}>신상을 : 디자인하다</Text>
-      <TouchableOpacity
-        onPress={() => {
-          signInWithKakao
-          // navigation.navigate('Test');
-        }}>
+      <TouchableOpacity onPress={signInWithKakao}>
         <Image
           style={styles.button_kakao}
           source={require('./assets/kakao_login_medium_wide.png')}
