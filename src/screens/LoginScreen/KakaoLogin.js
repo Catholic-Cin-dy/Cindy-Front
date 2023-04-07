@@ -17,7 +17,8 @@ import axios from "axios";
 //productId, brandName, productName, imgUrl
 export default function KakaoLogin() {
     const navigation = useNavigation();
-    const signInWithKakao = async (): Promise<void> =>
+    const signInWithKakao = async (): // @ts-ignore
+    Promise<void> =>
     {
     try {
             const token: KakaoOAuthToken = await login();
