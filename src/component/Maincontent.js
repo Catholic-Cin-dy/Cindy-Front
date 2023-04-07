@@ -2,7 +2,11 @@ import React, { useState, useEffect }  from 'react';
 import {StyleSheet, Text, View, Button, Alert,Image,SafeAreaView,ScrollView} from 'react-native';
 import {red} from "react-native-reanimated/src";
 import axios from 'axios';
+import Detail1 from "../screens/MainDetail/Detail1";
+import {createStackNavigator} from "@react-navigation/stack";
 const baseUrl = 'https://www.awesominki.shop';
+const Stack = createStackNavigator();
+
 export default function Maincontent() {
 
   const [data, setData] = useState([]);
@@ -58,8 +62,7 @@ export default function Maincontent() {
   const styles = StyleSheet.create({
     maincontent:{
       width: '100%',
-      borderWidth:1,
-      borderColor:'black',
+
     },
     maintext:{
       justifyContent: 'space-between',
@@ -79,16 +82,14 @@ export default function Maincontent() {
     content: {
       width: '100%',
       height:250,
-      borderWidth:1,
-      borderColor:'red',
+
       flexDirection: 'row',
 
     },
     contentbox:{
       width: 167,
       height:240,
-      borderWidth:1,
-      borderColor:'red',
+
     },
     intext:{
 

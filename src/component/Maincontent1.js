@@ -1,9 +1,17 @@
 import React, { useState, useEffect }  from 'react';
-import {StyleSheet, Text, View, Button, Alert,Image,SafeAreaView,ScrollView} from 'react-native';
+import {StyleSheet, Text, View, Button, Alert,Image,SafeAreaView,ScrollView,TouchableOpacity} from 'react-native';
 import {red} from "react-native-reanimated/src";
 import axios from 'axios';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 const baseUrl = 'https://www.awesominki.shop';
-export default function Maincontent() {
+
+const Stack = createStackNavigator();
+
+import Detail1 from '../screens/MainDetail/Detail1';
+
+
+export default function Maincontent({navigation}) {
 
     const [data, setData] = useState([]);
     const [users, setUsers] = useState('');
@@ -22,14 +30,20 @@ export default function Maincontent() {
             .catch(error => console.error(error))
     }, []);
 
-
+    const handleViewAllPress = () => {
+        navigation.navigate('Detail1');
+    }
 
     return (
         <View>
             <View style={styles.maincontent}>
                 <View style={styles.maintext}>
                     <Text style={styles.text1}>신디들을 위한 추천상품</Text>
-                    <Text style={styles.text2}>전체보기</Text>
+
+                    <Stack.Navigator>
+                        <Stack.Screen name="ShowAll" component={ShowAll}/>
+                    </Stack.Navigator>
+
                 </View>
                 <ScrollView
                     horizontal={true}
@@ -54,12 +68,21 @@ export default function Maincontent() {
             </View>
         </View>
     )}
+const ShowAll = ({navigation}) => {
+    return (
+        <Text
+            style={styles.text2}
+            onPress={handleViewAllPress}
+        >
+            전체보기
+        </Text>
+    );
+};
 
 const styles = StyleSheet.create({
     maincontent:{
         width: '100%',
-        borderWidth:1,
-        borderColor:'black',
+
     },
     maintext:{
         justifyContent: 'space-between',
@@ -79,16 +102,14 @@ const styles = StyleSheet.create({
     content: {
         width: '100%',
         height:250,
-        borderWidth:1,
-        borderColor:'red',
+
         flexDirection: 'row',
 
     },
     contentbox:{
         width: 167,
         height:240,
-        borderWidth:1,
-        borderColor:'red',
+
     },
     intext:{
 
