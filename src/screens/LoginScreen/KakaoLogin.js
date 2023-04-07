@@ -9,6 +9,8 @@ import {
     unlink, getAccessToken,
 } from '@react-native-seoul/kakao-login';
 import {KakaoAccessTokenInfo} from "@react-native-seoul/kakao-login/src/types";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 //productId, brandName, productName, imgUrl
 export default function KakaoLogin() {

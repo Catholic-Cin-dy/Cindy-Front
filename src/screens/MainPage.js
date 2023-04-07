@@ -10,6 +10,7 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import RecruitPage from './RecruitScreen/RecruitPage';
+import Main1 from '../Main1';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -21,9 +22,7 @@ const BookMarkStack = createStackNavigator();
 
 const HomeScreen = ({ navigation }) => {
   return (
-    <View style={styles.container}>
-      <Text>This is HomeScreen.</Text>
-    </View>
+    <Main1/>
   );
 };
 const SearchScreen = ({ navigation }) => {
