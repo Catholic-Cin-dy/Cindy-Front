@@ -8,8 +8,8 @@ import {
   Alert,
 } from 'react-native';
 import React, { useState } from "react";
+import App from './NewApp';
 import Test from './Test';
-import ProductDetail from './ProductDetail';
 import axios from 'axios';
 import {
   KakaoOAuthToken,
@@ -29,8 +29,12 @@ export default function Main({ navigation }) {
       const accessToken = token.accessToken;
       const userInfoResponse = await axios.get(
         'https://www.awesominki.shop/auth/kakao',
-        { headers: { Authorization: `Bearer ${accessToken}` } },
-      );
+        // { headers: { Authorization: `Bearer ${accessToken}` } },
+        { headers: { 'X-AUTH-TOKEN': accessToken } },
+        );
+
+
+
 
       // 카카오 사용자 정보 파싱
       const userInfo = userInfoResponse.data;
@@ -38,12 +42,14 @@ export default function Main({ navigation }) {
       const nickname = userInfo.properties.nickname;
 
       // 서버에서 회원 정보 요청
-      const userResponse = await axios.get(`https://www.awesominki.shop/user/${userId}`);
+      const userResponse = await axios.get(`https://www.awesominki.shop/auth/kakao`, {
+          headers: {'X-AUTH-TOKEN': accessToken},
+      });
 
       // 서버에 회원 정보가 등록되어 있지 않은 경우
       if (userResponse.status === 404) {
         // 회원가입 페이지로 이동
-        navigation.navigate('Test', {
+        navigation.navigate('How', {
           categoryList: [],
           gender: '',
           name: '',
@@ -64,15 +70,12 @@ export default function Main({ navigation }) {
           profileImgUrl: '',
           socialId: userId,
         };
-        const signInResponse = await axios.post('https://www.awesominki.shop/auth/signup/kakao', signInData, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
+        const signInResponse = await axios.post('https://www.awesominki.shop/auth/signup/kakao', signInData, { headers: { 'X-AUTH-TOKEN': accessToken } });
 
         // 토큰을 저장하고, 다음 페이지로 이동
         const token = signInResponse.data.token;
         // 다음 페이지로 이동하는 코드...
+        navigation.navigate('How', { token });
       }
     } catch (error) {
       // 에러 처리 코드
@@ -83,30 +86,6 @@ export default function Main({ navigation }) {
   // const signInWithKakao = async (): Promise<void> => {
   //   const token: KakaoOAuthToken = await login();
   //   setResult(JSON.stringify(token));
-  // };
-
-  // @ts-ignore
-  // const signInWithKakao = async (): Promise<void> => {
-  //   // @ts-ignore
-  //   const token: KakaoOAuthToken = await login();
-  //
-  //   const accessToken = token.accessToken;
-  //   const url = 'https://www.awesominki.shop/auth/kakao';
-  //   const data = {
-  //     access
-  //     Token: accessToken,
-  //   };
-  //   axios
-  //     .post(url, data)
-  //     .then(response => {
-  //       console.log('응답 결과:', response.data);
-  //     })
-  //     .catch(error => {
-  //       // 요청이 실패하면, 오류 메시지를 처리합니다.
-  //       console.error('오류 발생:', error);
-  //     });
-  //
-  //   // setResult(JSON.stringify(token));
   // };
 
   // const signOutWithKakao = async (): Promise<void> => {
