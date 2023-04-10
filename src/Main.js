@@ -18,75 +18,77 @@ import {
   login,
   logout,
   unlink,
-  getAccessToken,
-} from '@react-native-seoul/kakao-login';
+  getAccessToken, getProfile,
+} from "@react-native-seoul/kakao-login";
 import {KakaoAccessTokenInfo} from '@react-native-seoul/kakao-login/src/types';
-
 export default function Main({ navigation }) {
+
   const signInWithKakao = async (): Promise<void> => {
-    try {
-      const token: KakaoOAuthToken = await login();
-      const accessToken = token.accessToken;
-      const userInfoResponse = await axios.get(
-        'https://www.awesominki.shop/auth/kakao',
-        // { headers: { Authorization: `Bearer ${accessToken}` } },
-        { headers: { 'X-AUTH-TOKEN': accessToken } },
-        );
-
-
-
-
-      // 카카오 사용자 정보 파싱
-      const userInfo = userInfoResponse.data;
-      const userId = userInfo.id.toString();
-      const nickname = userInfo.properties.nickname;
-
-      // 서버에서 회원 정보 요청
-      const userResponse = await axios.get(`https://www.awesominki.shop/auth/kakao`, {
-          headers: {'X-AUTH-TOKEN': accessToken},
-      });
-
-      // 서버에 회원 정보가 등록되어 있지 않은 경우
-      if (userResponse.status === 404) {
-        // 회원가입 페이지로 이동
-        navigation.navigate('How', {
-          categoryList: [],
-          gender: '',
-          name: '',
-          nickname: nickname,
-          password: '',
-          profileImgUrl: '',
-          socialId: userId,
-          isRequired: true
-        });
-      } else {
-        // 회원 정보가 등록되어 있는 경우, 토큰 발급 요청
-        const signInData = {
-          categoryList: [],
-          gender: '',
-          name: '',
-          nickname: nickname,
-          password: '',
-          profileImgUrl: '',
-          socialId: userId,
-        };
-        const signInResponse = await axios.post('https://www.awesominki.shop/auth/signup/kakao', signInData, { headers: { 'X-AUTH-TOKEN': accessToken } });
-
-        // 토큰을 저장하고, 다음 페이지로 이동
-        const token = signInResponse.data.token;
-        // 다음 페이지로 이동하는 코드...
-        navigation.navigate('How', { token });
-      }
-    } catch (error) {
-      // 에러 처리 코드
-    }
+    const token: KakaoOAuthToken = await login();
+    console.log(JSON.stringify(token));
   };
 
+  const getKakaoProfile = async (): Promise<void> => {
+    const profile: KakaoProfile = await getProfile();
+
+    console.log(JSON.stringify(profile));
+  };
 
   // const signInWithKakao = async (): Promise<void> => {
-  //   const token: KakaoOAuthToken = await login();
-  //   setResult(JSON.stringify(token));
+  //   try {
+  //     const token: KakaoOAuthToken = await login();
+  //     const accessToken = token.accessToken;
+  //
+  //     const headers = { headers: { 'X-AUTH-TOKEN': 'eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWQiOjIsImlhdCI6MTY3OTkyMjIwNSwiZXhwIjoxNzExNDU4MjA1fQ.A45bXqITjpGnywheSkEzfv5St2jD08DefUW2VQEbDpo' } };
+  //
+  //     // 카카오 사용자 정보 파싱
+  //     const userInfoResponse = await axios.get(
+  //       'https://www.awesominki.shop/auth/kakao',
+  //       headers,
+  //     );
+  //     const userInfo = userInfoResponse.data;
+  //     const { id: socialId, properties: { nickname } } = userInfo;
+  //
+  //     // 서버에서 회원 정보 요청
+  //     const userResponse = await axios.get(
+  //       `https://www.awesominki.shop/auth/kakao`,
+  //       headers,
+  //     );
+  //
+  //     // 서버에 회원 정보가 등록되어 있지 않은 경우
+  //     console.log(userResponse.status);
+  //     if (userResponse.status === 404) {
+  //       // 회원가입 페이지로 이동
+  //       navigation.navigate('How', {
+  //         categoryList: [],
+  //         gender: '',
+  //         name: '',
+  //         nickname,
+  //         password: '',
+  //         profileImgUrl: '',
+  //         socialId,
+  //         isRequired: false,
+  //       });
+  //     } else {
+  //       // 회원 정보가 등록되어 있는 경우, 토큰 발급 요청
+  //       const signUpData = { nickname, socialId };
+  //       const signInResponse = await axios.post(
+  //         'https://www.awesominki.shop/auth/signup/kakao',
+  //         signUpData,
+  //         headers,
+  //       );
+  //
+  //       // 토큰을 저장하고, 다음 페이지로 이동
+  //       const token = signInResponse.data.token;
+  //       navigation.navigate('How', { token });
+  //     }
+  //   } catch (error) {
+  //     // 에러 처리 코드
+  //   }
   // };
+
+
+
 
   // const signOutWithKakao = async (): Promise<void> => {
   //   const message = await logout();
