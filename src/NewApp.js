@@ -6,10 +6,11 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import KakaoLogin from './screens/LoginScreen/KakaoLogin';
 import Main from './screens/Main';
+import LogoTitle from './screens/LogoTitle';
 import MainPage from './screens/MainPage';
-import LogoTitle from "./component/LogoTitle";
 import Maincontent from './component/Maincontent1';
 import Detail1 from './screens/MainDetail/Detail1';
+
 const Stack = createStackNavigator();
 
 import Main1 from './Main1';
@@ -27,3 +28,5 @@ export default function App() {
 
     );
 }
+
+const styles = StyleSheet.create({});
