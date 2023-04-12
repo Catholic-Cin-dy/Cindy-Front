@@ -2,16 +2,16 @@ import React, { useState, useEffect }  from 'react';
 import {StyleSheet, Text, View, Button, Alert,Image,SafeAreaView,ScrollView,TouchableOpacity} from 'react-native';
 import {red} from "react-native-reanimated/src";
 import axios from 'axios';
-import { NavigationContainer } from '@react-navigation/native';
+import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 const baseUrl = 'https://www.awesominki.shop';
 
 const Stack = createStackNavigator();
-
+const Main1Stack = createStackNavigator();
 import Detail1 from '../screens/MainDetail/Detail1';
 
 
-export default function Maincontent({navigation}) {
+export default function Maincontent() {
 
     const [data, setData] = useState([]);
     const [users, setUsers] = useState('');
@@ -25,25 +25,26 @@ export default function Maincontent({navigation}) {
 
 
 
-        axios.get(baseUrl + '/products', {...config })
+        axios.get(baseUrl + '/home/recommend', {...config })
             .then(response => setData(response.data.result.contents))
             .catch(error => console.error(error))
     }, []);
 
-    const handleViewAllPress = () => {
+    // const handleViewAllPress = () => {
+    //     navigation.navigate('Detail1');
+    // }
+    const navigation = useNavigation();
+    function handleMaincontent1Press() {
         navigation.navigate('Detail1');
     }
-
     return (
         <View>
             <View style={styles.maincontent}>
                 <View style={styles.maintext}>
                     <Text style={styles.text1}>신디들을 위한 추천상품</Text>
-
-                    <Stack.Navigator>
-                        <Stack.Screen name="ShowAll" component={ShowAll}/>
-                    </Stack.Navigator>
-
+                    <TouchableOpacity onPress={handleMaincontent1Press}>
+                        <Text style={styles.text2}>전체 보기</Text>
+                    </TouchableOpacity>
                 </View>
                 <ScrollView
                     horizontal={true}
@@ -68,16 +69,12 @@ export default function Maincontent({navigation}) {
             </View>
         </View>
     )}
-const ShowAll = ({navigation}) => {
-    return (
-        <Text
-            style={styles.text2}
-            onPress={handleViewAllPress}
-        >
-            전체보기
-        </Text>
-    );
-};
+
+// const ShowAll = ({navigation}) => {
+//     return (
+//
+//     );
+// };
 
 const styles = StyleSheet.create({
     maincontent:{

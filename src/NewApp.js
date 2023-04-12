@@ -11,18 +11,17 @@ import LogoTitle from "./component/LogoTitle";
 import Maincontent from './component/Maincontent1';
 import Detail1 from './screens/MainDetail/Detail1';
 const Stack = createStackNavigator();
+
+import Main1 from './Main1';
 export default function App() {
 
-    const Stack = createStackNavigator();
+
     return (
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Main">
           <Stack.Screen name="Main" component={Main} options={{headerTitle: props => <LogoTitle {...props} />}} />
           <Stack.Screen name="KakaoLogin" component={KakaoLogin} />
           <Stack.Screen name="MainPage" component={MainPage}/>
-          <Stack.Screen name="Detail1" component={Detail1}/>
-        {/*  <Stack.Screen name="Mi" component={Maincontent}/>
-          <Stack.Screen name="hhf" component={Detail1}/>*/}
         </Stack.Navigator>
       </NavigationContainer>
 

@@ -7,7 +7,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 const baseUrl = 'https://www.awesominki.shop';
 
 
-export default function Detail1({navigation}) {
+export default function Detail2({navigation}) {
 
     const [data, setData] = useState([]);
     const [users, setUsers] = useState('');
@@ -21,8 +21,8 @@ export default function Detail1({navigation}) {
 
 
 
-        axios.get(baseUrl + '/home/recommend', {...config })
-            .then(response => setData(response.data.result.contents))
+        axios.get(baseUrl + '/home/new', {...config })
+            .then(response => setData(response.data.result))
             .catch(error => console.error(error))
     }, []);
 
@@ -30,34 +30,35 @@ export default function Detail1({navigation}) {
 
     return (
         <ScrollView>
-        <View style={styles.content}>
-            {data && data.map(item => (
+            <View style={styles.content}>
+                {data && data.map(item => (
 
-                <View style={styles.contentbox}>
-                    <View><Image key={item.productId} style={styles.box} source={{ uri: item.imgUrl }}/></View>
-                    <View style={styles.intext}>
-                        <Text key={item.productId} style={styles.Info1}>{item.brandName}</Text>
-                        <Text key={item.productId} style={styles.Info2}>{item.productName}</Text>
+                    <View style={styles.contentbox}>
+                        <View><Image key={item.productId} style={styles.box} source={{ uri: item.productImgUrl }}/></View>
+                        <View style={styles.intext}>
+                            <Text key={item.productId} style={styles.Info1}>{item.brand}</Text>
+                            <Text key={item.productId} style={styles.Info2}>{item.productName}</Text>
+                        </View>
                     </View>
-                </View>
-            ))}
-        </View>
+                ))}
+            </View>
         </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
     content: {
-        width: '100%',
-        height: '100%',
+        width:'100%',
+        flexDirection: 'row',
+        flexWrap: 'wrap',
 
-       // flexDirection: 'row',
+        flex: 1,
 
     },
     contentbox: {
         width: 167,
         height: 240,
-
+        marginLeft:25,
     },
     intext: {
 

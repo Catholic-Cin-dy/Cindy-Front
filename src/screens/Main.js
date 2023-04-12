@@ -17,7 +17,7 @@ const Main = ({ navigation }) => {
       }} />
 
       <Text />
-      <Button title={"상품 전체 리스트 조회 화면으로 이동"} onPress={() => {
+      <Button title={"홈 화면으로 이동"} onPress={() => {
         navigation.navigate("MainPage");
       }} />
     </View>

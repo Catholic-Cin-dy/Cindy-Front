@@ -11,7 +11,8 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import RecruitPage from './RecruitScreen/RecruitPage';
 import Main1 from '../Main1';
-
+import Detail1 from "./MainDetail/Detail1";
+import Detail2 from "./MainDetail/Detail2";
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 const TestStack = createStackNavigator();
@@ -19,10 +20,14 @@ const MyPageStack = createStackNavigator();
 const HomeStack = createStackNavigator();
 const RecruitStack = createStackNavigator();
 const BookMarkStack = createStackNavigator();
-
-const HomeScreen = ({ navigation }) => {
+const MainStack =createStackNavigator();
+const HomeScreen = () => {
   return (
-    <Main1/>
+      <Stack.Navigator>
+          <MainStack.Screen name="Main1" component={Main1} />
+          <MainStack.Screen name="Detail1" component={Detail1} />
+          <MainStack.Screen name="Detail2" component={Detail2} />
+      </Stack.Navigator>
   );
 };
 const SearchScreen = ({ navigation }) => {
@@ -113,6 +118,7 @@ const MainTabScreen = () => {
 
 export default function MainPage() {
   return(
+
     <MainTabScreen/>
   );
 };
