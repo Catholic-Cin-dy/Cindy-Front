@@ -6672,6 +6672,11 @@
   dependencies:
     "use-latest-callback" "^0.1.5"
 
+"react-native-toast@^1.0.1":
+  "integrity" "sha512-ehpE72WexAbLA4RWc/jtosCrpu/soCdS/oHBpzaLnaeNWl7tIxH8Vt7cp2PONP9Lgw/fZBoq87+OKSB4ecCezg=="
+  "resolved" "https://registry.npmjs.org/react-native-toast/-/react-native-toast-1.0.1.tgz"
+  "version" "1.0.1"
+
 "react-native-vector-icons@^9.2.0", "react-native-vector-icons@>7.0.0":
   "integrity" "sha512-wKYLaFuQST/chH3AJRjmOLoLy3JEs1JR6zMNgTaemFpNoXs0ztRnTxcxFD9xhX7cJe1/zoN5BpQYe7kL0m5yyA=="
   "resolved" "https://registry.npmjs.org/react-native-vector-icons/-/react-native-vector-icons-9.2.0.tgz"
