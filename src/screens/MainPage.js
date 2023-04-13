@@ -10,6 +10,7 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import RecruitPage from './RecruitScreen/RecruitPage';
+import ProductDetail from './RecruitScreen/ProductDetail';
 import Main1 from '../Main1';
 
 const Tab = createBottomTabNavigator();
@@ -89,6 +90,7 @@ const RecruitProductsStackScreen = () => {
   return (
     <Stack.Navigator>
       <RecruitStack.Screen name="TestRead" component={TestReadScreen} />
+      <RecruitStack.Screen name = "ProductDetail" component = {ProductDetail} />
     </Stack.Navigator>
   );
 };

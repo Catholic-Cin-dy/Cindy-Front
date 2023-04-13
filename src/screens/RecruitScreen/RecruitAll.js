@@ -4,14 +4,16 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import RecruitPage from './RecruitPage';
+import ProductDetail from './ProductDetail';
 const baseUrl = 'https://www.awesominki.shop'; //api 연결을 위한 baseUrl
-export default function RecruitAll({ navigation, route }) {
+export default function RecruitAll({ route }) {
   //const { tabIndex } = route.params.tabIndex;
 
   const [data, setData] = useState([]);
@@ -36,40 +38,98 @@ export default function RecruitAll({ navigation, route }) {
       .catch(error => console.error(error))
   }, []);
 
+  // 상품 항목 클릭 시 ProductDetail 화면으로 이동하는 함수
+  const navigation = useNavigation();
+  const handleItemPress = (productId) => {
+    // 해당 상품 정보를 route.params로 넘겨주고 ProductDetail 화면으로 이동
+    console.log('product ID : ' + productId);
+    navigation.navigate('ProductDetail', { productId });
+  };
 
   return (
-
-      <ScrollView>
-        <View style={styles.column}>
-          {data.slice(0, Math.ceil(data.length / 2)).map(item => (
-            <View style={styles.item} key={item.productId}>
-              <Image
-                style={styles.image}
-                source={{ uri: item.imgUrl }}
-              />
-              <Text style={styles.text}>{item.brandName}</Text>
-              <Text style={styles.text}>{item.productName}</Text>
-            </View>
-          ))}
-        </View>
-        <View style={styles.column}>
-          {data.slice(Math.ceil(data.length / 2)).map(item => (
-            <View style={styles.item} key={item.productId}>
-              <Image
-                style={styles.image}
-                source={{ uri: item.imgUrl }}
-              />
-              <Text style={styles.text}>{item.brandName}</Text>
-              <Text style={styles.text}>{item.productName}</Text>
-            </View>
-          ))}
-        </View>
-      </ScrollView>
+    <ScrollView>
+      <View style={styles.column}>
+        {data.slice(0, Math.ceil(data.length / 2)).map(item => (
+          <TouchableOpacity
+            style={styles.item}
+            key={item.productId}
+            onPress={() => handleItemPress(item.productId)}
+          >
+            <Image style={styles.box} source={{ uri: item.imgUrl }} />
+            <Text style={styles.info1}>{item.brandName}</Text>
+            <Text style={styles.info2}>{item.productName}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+      <View style={styles.column}>
+        {data.slice(Math.ceil(data.length / 2)).map(item => (
+          <TouchableOpacity
+            style={styles.item}
+            key={item.productId}
+            onPress={() => handleItemPress(item.productId)}
+          >
+            <Image style={styles.box} source={{ uri: item.imgUrl }} />
+            <Text style={styles.info1}>{item.brandName}</Text>
+            <Text style={styles.info2}>{item.productName}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+    </ScrollView>
 
   );
 };
 
 const styles = StyleSheet.create({
+  contentbox:{
+    width: 167,
+    height:240,
+    borderWidth:1,
+    borderColor:'white',
+  },
+  box:{
+    width: 156,
+    height:168,
+    backgroundColor:'gray',
+    borderRadius: 8,
+  },
+  intext:{
+    padding:10,
+    height:43,
+    width: 150,
+    marginLeft:5,
+  },
+  info:{
+    padding:10,
+    height:43,
+    width: 150,
+    marginLeft:5,
+  },
+  info1:{
+    color:'black',
+    fontColor : 'black',
+    fontWeight:'bold',
+    fontSize: 13,
+    marginLeft: 4,
+    marginTop: 8,
+  },
+  info2:{
+    fontSize: 12,
+    marginTop: 8,
+    fontWeight:'bold',
+    fontColor: 'gray',
+    marginLeft: 4,
+  },
+  image: {
+    width: '100%',
+    height: 519,
+  },
+  content: {
+    width: '100%',
+    height:250,
+    borderWidth:1,
+    borderColor:'red',
+    flexDirection: 'row',
+  },
   container: {
     flex: 1,
     paddingHorizontal: 16,
@@ -84,7 +144,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   item: {
-    width: '48%',
+    width: 156,
     marginBottom: 16,
     borderRadius: 8,
     backgroundColor: '#fff',
