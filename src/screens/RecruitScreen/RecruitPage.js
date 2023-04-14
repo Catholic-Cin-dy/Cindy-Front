@@ -19,71 +19,6 @@ import RecruitCap from './RecruitCap';
 import RecruitBag from './RecruitBag';
 import RecruitAccessories from './RecruitAccessories';
 
-function RecruitScreen({ navigation }) {
-
-
-  return (
-    <TopTap.Navigator
-      initialRouteName="All"
-      tabBarOptions={{
-        scrollEnabled: true, // 스크롤 가능하게 설정
-        tabStyle: { width: 100, alignItems: 'flex-start' }, // 왼쪽 정렬
-        indicatorStyle: { backgroundColor: 'black' }, // 선택된 탭 하단에 라인 표시
-      }}>
-      <TopTap.Screen
-        name="All"
-        component={(props) => <RecruitAll {...props} tabIndex={0} />}
-        options={{
-          tabBarLabel: 'All',
-        }}/>
-      <TopTap.Screen
-        name="Top"
-        component={(props) => <RecruitAll {...props} tabIndex={1} />}
-        options={{
-          tabBarLabel: 'Top',
-        }}/>
-      <TopTap.Screen
-        name="Bottom"
-        component={RBottomScreen}
-        options={{
-          tabBarLabel: 'Bottom',
-        }}/>
-      <TopTap.Screen
-        name="Outer"
-        component={ROuterScreen}
-        options={{
-          tabBarLabel: 'Outer',
-        }}/>
-      <TopTap.Screen
-        name="Cap"
-        component={RCapScreen}
-        options={{
-          tabBarLabel: 'Cap',
-        }}/>
-      <TopTap.Screen
-        name="Bag"
-        component={RBagScreen}
-        options={{
-          tabBarLabel: 'Bag',
-        }}/>
-      <TopTap.Screen
-        name="Accessories"
-        component={RAccesoriesScreen}
-        options={{
-          tabBarLabel: 'Accessories',
-        }}/>
-    </TopTap.Navigator>
-  );
-}
-function RAllScreen({navigation}) {
-  return (
-
-    <View>
-      <RecruitAll/>
-    </View>
-
-  );
-}
 function RTopScreen() {
   return (
     <RecruitTop/>
@@ -116,8 +51,63 @@ function RAccesoriesScreen() {
 }
 
 export default function RecruitPage() {
-  return(
-    <RecruitScreen/>
+  return (
+    <TopTap.Navigator
+      initialRouteName="All"
+      tabBarOptions={{
+        scrollEnabled: true, // 스크롤 가능하게 설정
+        tabStyle: { width: 90, alignItems: 'flex-start' }, // 왼쪽 정렬
+        /*tabStyle: ({ route }) => ({
+          width: route.name.length * 10, // 각 탭의 이름 길이에 따라 동적으로 너비 설정
+          alignItems: "flex-start",
+        }),*/
+        /*indicatorStyle: { backgroundColor: "black" }, // 선택된 탭 하단에 라인 표시*/
+        indicatorStyle: { backgroundColor: "black" },
+        labelStyle: { fontSize: 16, fontWeight: 'bold' },
+      }}>
+      <TopTap.Screen
+        name="All"
+        component={(props) => <RecruitAll {...props} tabIndex={0} />}
+        options={{
+          tabBarLabel: "All",
+        }} />
+      <TopTap.Screen
+        name="Top"
+        component={(props) => <RecruitAll {...props} tabIndex={1} />}
+        options={{
+          tabBarLabel: "Top",
+        }} />
+      <TopTap.Screen
+        name="Bottom"
+        component={RBottomScreen}
+        options={{
+          tabBarLabel: "Bottom",
+        }} />
+      <TopTap.Screen
+        name="Outer"
+        component={ROuterScreen}
+        options={{
+          tabBarLabel: "Outer",
+        }} />
+      <TopTap.Screen
+        name="Cap"
+        component={RCapScreen}
+        options={{
+          tabBarLabel: "Cap",
+        }} />
+      <TopTap.Screen
+        name="Bag"
+        component={RBagScreen}
+        options={{
+          tabBarLabel: "Bag",
+        }} />
+      <TopTap.Screen
+        name="Accessories"
+        component={RAccesoriesScreen}
+        options={{
+          tabBarLabel: "Accessories",
+        }} />
+    </TopTap.Navigator>
   );
 };
 

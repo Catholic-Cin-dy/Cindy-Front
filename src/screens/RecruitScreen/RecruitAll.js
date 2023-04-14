@@ -37,7 +37,9 @@ export default function RecruitAll({ route }) {
     };
 
     axios.get(baseUrl + '/products', { params, ...config })
-      .then(response => setData(response.data.result.contents))
+      .then(response =>
+        setData(response.data.result.contents)
+      )
       .catch(error => console.error(error))
   }, []);
 
@@ -49,6 +51,31 @@ export default function RecruitAll({ route }) {
     navigation.navigate('ProductDetail', { productId });
   };
 
+  const [liked, setLiked] = useState();
+  const handleLike = (productId) => {
+    const config = {
+      headers: { 'X-AUTH-TOKEN': `eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWQiOjIsImlhdCI6MTY3OTkyMjIwNSwiZXhwIjoxNzExNDU4MjA1fQ.A45bXqITjpGnywheSkEzfv5St2jD08DefUW2VQEbDpo` }
+    };
+
+    const params = {
+      page: 0,
+      size: 100,
+      filter: 0
+    };
+
+    setLiked(!liked);
+    axios.patch(baseUrl + '/products/like/' + productId, {}, config)
+      .then(response => setLiked(response.data.result))
+      .catch(error => console.error(error));
+
+    axios.get(baseUrl + '/products', { params, ...config })
+      .then(response =>
+        setData(response.data.result.contents)
+      )
+      .catch(error => console.error(error))
+
+  };
+
   return (
     <ScrollView>
       <View style={styles.column}>
@@ -58,7 +85,14 @@ export default function RecruitAll({ route }) {
             key={item.productId}
             onPress={() => handleItemPress(item.productId)}
           >
-            <Image style={styles.box} source={{ uri: item.imgUrl }} />
+            <Image style={styles.box} source={{ uri: item.imgUrl }}/>
+            <View style={styles.heartIconBackground} key={item.productId}>
+              <TouchableOpacity onPress={() => handleLike(item.productId)}>
+                {/*<Image source={liked ? require('../../assets/like.png') : require('../../assets/unlike.png')} />*/}
+                <Image style={styles.heartIcon} source={item.bookmark ? require("../../assets/like.png") : require("../../assets/unlike.png")} />
+              </TouchableOpacity>
+            </View>
+
             <Text style={styles.info1}>{item.brandName}</Text>
             <Text style={styles.info2}>{item.productName}</Text>
           </TouchableOpacity>
@@ -100,6 +134,16 @@ const styles = StyleSheet.create({
     height:43,
     width: 150,
     marginLeft:5,
+  },
+  heartIconBackground: {
+    flex: 1,
+    justifyContent: 'flex-end', // 수평 방향의 정렬을 오른쪽으로 설정
+    alignItems: 'flex-end', // 수직 방향의 정렬을 아래로 설정
+    backgroundColor: '#fff',
+  },
+  heartIcon: {
+    marginTop: -26,
+    marginRight: 6,
   },
   info:{
     padding:10,
