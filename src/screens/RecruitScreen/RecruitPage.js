@@ -12,43 +12,6 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 const TopTap = createMaterialTopTabNavigator(); //상단 탭
 
 import RecruitAll from './RecruitAll';
-import RecruitTop from './RecruitTop';
-import RecruitBottom from './RecruitBottom';
-import RecruitOuter from './RecruitOuter';
-import RecruitCap from './RecruitCap';
-import RecruitBag from './RecruitBag';
-import RecruitAccessories from './RecruitAccessories';
-
-function RTopScreen() {
-  return (
-    <RecruitTop/>
-  );
-}
-function RBottomScreen() {
-  return (
-    <RecruitBottom/>
-  );
-}
-function ROuterScreen() {
-  return (
-    <RecruitOuter/>
-  );
-}
-function RCapScreen() {
-  return (
-    <RecruitCap/>
-  );
-}
-function RBagScreen() {
-  return (
-    <RecruitBag/>
-  );
-}
-function RAccesoriesScreen() {
-  return (
-    <RecruitAccessories/>
-  );
-}
 
 export default function RecruitPage() {
   return (
@@ -61,7 +24,6 @@ export default function RecruitPage() {
           width: route.name.length * 10, // 각 탭의 이름 길이에 따라 동적으로 너비 설정
           alignItems: "flex-start",
         }),*/
-        /*indicatorStyle: { backgroundColor: "black" }, // 선택된 탭 하단에 라인 표시*/
         indicatorStyle: { backgroundColor: "black" },
         labelStyle: { fontSize: 16, fontWeight: 'bold' },
       }}>
@@ -79,31 +41,31 @@ export default function RecruitPage() {
         }} />
       <TopTap.Screen
         name="Bottom"
-        component={RBottomScreen}
+        component={(props) => <RecruitAll {...props} tabIndex={2} />}
         options={{
           tabBarLabel: "Bottom",
         }} />
       <TopTap.Screen
         name="Outer"
-        component={ROuterScreen}
+        component={(props) => <RecruitAll {...props} tabIndex={3} />}
         options={{
           tabBarLabel: "Outer",
         }} />
       <TopTap.Screen
         name="Cap"
-        component={RCapScreen}
+        component={(props) => <RecruitAll {...props} tabIndex={4} />}
         options={{
           tabBarLabel: "Cap",
         }} />
       <TopTap.Screen
         name="Bag"
-        component={RBagScreen}
+        component={(props) => <RecruitAll {...props} tabIndex={5} />}
         options={{
           tabBarLabel: "Bag",
         }} />
       <TopTap.Screen
         name="Accessories"
-        component={RAccesoriesScreen}
+        component={(props) => <RecruitAll {...props} tabIndex={6} />}
         options={{
           tabBarLabel: "Accessories",
         }} />
