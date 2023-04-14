@@ -168,8 +168,9 @@ const styles = StyleSheet.create({
     marginLeft:5,
   },
   info1:{
+    color: 'black',
     fontColor : 'black',
-    fontWeight:'bold',
+    fontWeight: 'bold',
     fontSize: 13,
     marginLeft: 4,
     marginRight: 4,

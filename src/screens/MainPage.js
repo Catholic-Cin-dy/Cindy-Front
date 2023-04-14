@@ -13,6 +13,10 @@ import RecruitPage from './RecruitScreen/RecruitPage';
 import ProductDetail from './RecruitScreen/ProductDetail';
 import Main1 from '../Main1';
 import SearchBar from "../component/SearchBar";
+import BtabiconHome from "../component/BtabiconHome";
+import BtabiconRecruit from "../component/BtabiconRecruit";
+import BtabiconBookmark from "../component/BtabiconBookmark";
+import BtabiconUser from "../component/BtabiconUser";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -100,11 +104,16 @@ const MyPageStackScreen = () => {
 
 export default function MainPage() {
   return(
-    <Tab.Navigator initialRouteName="HomeStack">
-      <Tab.Screen name="홈화면" component={HomeStackScreen} />
-      <Tab.Screen name="상품 전체조회" component={RecruitProductsStackScreen} options={{headerRight: props => <SearchBar {...props} />}}/>
-      <Tab.Screen name="북마크" component={BookMarkStackScreen} />
-      <Tab.Screen name="내정보" component={MyPageStackScreen} />
+    <Tab.Navigator
+      initialRouteName="HomeStack"
+      tabBarOptions={{
+        activeTintColor: '#EB4B4B', // 선택된 탭의 글씨색
+      }}
+    >
+      <Tab.Screen name="홈화면" component={HomeStackScreen} options={{ tabBarIcon: ({ focused, color, size }) => (<BtabiconHome/>), }} />
+      <Tab.Screen name="상품 전체조회" component={RecruitProductsStackScreen} options={{ headerRight: props => <SearchBar {...props} />, tabBarIcon: ({ focused, color, size }) => (<BtabiconRecruit/>), }}/>
+      <Tab.Screen name="북마크" component={BookMarkStackScreen} options={{ tabBarIcon: ({ focused, color, size }) => (<BtabiconBookmark/>), }} />
+      <Tab.Screen name="내정보" component={MyPageStackScreen} options={{ tabBarIcon: ({ focused, color, size }) => (<BtabiconUser/>), }} />
     </Tab.Navigator>
   );
 };

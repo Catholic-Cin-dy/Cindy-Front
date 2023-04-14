@@ -19,13 +19,10 @@ export default function RecruitPage() {
       initialRouteName="All"
       tabBarOptions={{
         scrollEnabled: true, // 스크롤 가능하게 설정
-        tabStyle: { width: 90, alignItems: 'flex-start' }, // 왼쪽 정렬
-        /*tabStyle: ({ route }) => ({
-          width: route.name.length * 10, // 각 탭의 이름 길이에 따라 동적으로 너비 설정
-          alignItems: "flex-start",
-        }),*/
-        indicatorStyle: { backgroundColor: "black" },
-        labelStyle: { fontSize: 16, fontWeight: 'bold' },
+        tabStyle: { width: 'auto', }, // alignItems: "flex-start",  왼쪽 정렬
+        tabBarLabelStyle: { flex: 1, textAlign: 'center', textTransform: "none" },
+        indicatorStyle: { backgroundColor: "black", marginRight: 10, }, //marginRight는 안먹혀 왤까........?
+        labelStyle: { fontSize: 14, fontWeight: "bold" },
       }}>
       <TopTap.Screen
         name="All"
