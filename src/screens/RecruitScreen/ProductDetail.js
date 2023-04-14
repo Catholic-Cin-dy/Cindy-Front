@@ -90,10 +90,11 @@ export default function ProductDetail({ route }) {
   return (
     <ScrollView>
       <View style={styles.heartIconBackground} key={data.productId}>
-        <Text>{data.bookmark ? data.bookmark.toString() : '유효값x pid: '+data.productId}</Text>
+        <Text>{data.bookmark ? data.bookmark.toString() : "유효값x pid: " + data.productId}</Text>
         <TouchableOpacity onPress={handleLike}>
           {/*<Image source={liked ? require('../../assets/like.png') : require('../../assets/unlike.png')} />*/}
-          <Image style={styles.heartIcon} source={data.bookmark ? require("../../assets/like.png") : require("../../assets/unlike.png")} />
+          <Image style={styles.heartIcon}
+                 source={data.bookmark ? require("../../assets/like.png") : require("../../assets/unlike.png")} />
         </TouchableOpacity>
       </View>
       <View
@@ -101,24 +102,140 @@ export default function ProductDetail({ route }) {
         key={data.productId}
       >
         <View style={styles.imgcontainView}>
-        <Image style={styles.image} source={{ uri: data.imgUrl }} />
+          <Image style={styles.image} source={{ uri: data.imgUrl }} />
         </View>
         <Text style={styles.info1}>{data.brandName}</Text>
         <Text style={styles.info2}>{data.productName}</Text>
-        <Text/>
-        <Text/>
+        <Text />
+        <Text />
         <Text style={styles.info3}>{data.productUrl}</Text>
-        <Text/>
-        <Text/>
+        <Text />
+        <Text />
+
+
+        <Text>다른 사람들이 입은 스타일</Text>
+        <Text />
+        <Text />
+
+
+        <Text>같은 브랜드 상품 조회</Text>
+        <ProductDetailSamebrand productId={data.productId}/>
+        <Text />
+        <Text />
+
+
+        <Text>다른 사람이 본 상품 리스트</Text>
+        <ProductDetailOther productId={data.productId}/>
+        <Text />
+        <Text />
       </View>
     </ScrollView>
   );
 
 };
 
+const ProductDetailSamebrand = ({productId}) => {
+  const [data, setData] = useState([]);
+
+  const config = {
+    headers: { 'X-AUTH-TOKEN': `eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWQiOjIsImlhdCI6MTY3OTkyMjIwNSwiZXhwIjoxNzExNDU4MjA1fQ.A45bXqITjpGnywheSkEzfv5St2jD08DefUW2VQEbDpo` }
+  };
+
+  axios.get(baseUrl + '/products/brand/'+productId, { ...config })
+    .then(response =>
+      setData(response.data.result)
+    )
+    .catch(error => console.error(error))
+
+  return(
+    <ScrollView
+      horizontal={true} // 가로 스크롤 가능하도록 설정
+      contentContainerStyle={{ flexDirection: 'row' }} // 가로 방향으로 컨텐츠 배치
+    >
+      {/*<Text>{productId}</Text>*/}
+      <View style={styles.content}>
+        {data.map(item => (
+          <TouchableOpacity
+            style={styles.contentbox}
+            key={item.productId}
+            onPress={() => handleItemPress(item.productId)}
+          >
+            <Image style={styles.sImg} source={{ uri: item.imgUrl }}/>
+            <View style={styles.heartIconBackground2} key={item.productId}>
+              <TouchableOpacity onPress={() => handleLike(item.productId)}>
+                <Image style={styles.heartIcon2} source={item.bookmark ? require("../../assets/like.png") : require("../../assets/unlike.png")} />
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.info1_s}>{item.brandName}</Text>
+            <Text style={styles.info2_s}>{item.productName}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+    </ScrollView>
+  )
+}
+const ProductDetailOther = ({productId}) => {
+  const [data, setData] = useState([]);
+
+  const config = {
+    headers: { 'X-AUTH-TOKEN': `eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWQiOjIsImlhdCI6MTY3OTkyMjIwNSwiZXhwIjoxNzExNDU4MjA1fQ.A45bXqITjpGnywheSkEzfv5St2jD08DefUW2VQEbDpo` }
+  };
+
+  axios.get(baseUrl + '/products/other/'+productId, { ...config })
+    .then(response =>
+      setData(response.data.result)
+    )
+    .catch(error => console.error(error))
+
+  return(
+    <ScrollView
+      horizontal={true} // 가로 스크롤 가능하도록 설정
+      contentContainerStyle={{ flexDirection: 'row' }} // 가로 방향으로 컨텐츠 배치
+    >
+      {/*<Text>{productId}</Text>*/}
+      <View style={styles.content}>
+        {data.map(item => (
+          <TouchableOpacity
+            style={styles.contentbox}
+            key={item.productId}
+            onPress={() => handleItemPress(item.productId)}
+          >
+            <Image style={styles.sImg} source={{ uri: item.imgUrl }}/>
+            <View style={styles.heartIconBackground2} key={item.productId}>
+              <TouchableOpacity onPress={() => handleLike(item.productId)}>
+                <Image style={styles.heartIcon2} source={item.bookmark ? require("../../assets/like.png") : require("../../assets/unlike.png")} />
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.info1_s}>{item.brandName}</Text>
+            <Text style={styles.info2_s}>{item.productName}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+    </ScrollView>
+  )
+}
 
 
 const styles = {
+  sImg:{
+    width: 156,
+    height:168,
+    backgroundColor:'gray',
+    borderRadius: 8,
+  },
+  content: {
+    width: '100%',
+    height:250,
+    borderWidth:1,
+    borderColor:'red',
+    flexDirection: 'row',
+  },
+  contentbox:{
+    width: 156,
+    flex: 0,
+    borderWidth:1,
+    borderColor:'red',
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -130,10 +247,20 @@ const styles = {
     alignItems: 'flex-end', // 수직 방향의 정렬을 아래로 설정
     backgroundColor: '#fff',
   },
+  heartIconBackground2: {
+    flex: 1,
+    justifyContent: 'flex-end', // 수평 방향의 정렬을 오른쪽으로 설정
+    alignItems: 'flex-end', // 수직 방향의 정렬을 아래로 설정
+    backgroundColor: 'red',
+  },
   heartIcon: {
     marginRight: 15,
     marginBottom: 5,
     marginTop: 5,
+  },
+  heartIcon2: {
+    marginTop: -20,
+    marginRight: 6,
   },
   content: {
     backgroundColor: '#fff',
@@ -171,6 +298,21 @@ const styles = {
     fontWeight:'bold',
     fontColor: 'gray',
     marginLeft: 12,
+  },
+  info1_s:{
+    color:'gray',
+    fontColor : 'gray',
+    fontWeight:'bold',
+    fontSize: 12,
+    marginLeft: 12,
+    marginTop: 2,
+  },
+  info2_s:{
+    fontSize: 10,
+    color:'black',
+    fontColor: 'black',
+    marginLeft: 12,
+    marginRight: 12,
   },
   info3:{
     fontSize: 10,

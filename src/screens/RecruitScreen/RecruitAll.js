@@ -60,7 +60,7 @@ const RecruitAll = (props) => {
     const params = {
       page: 0,
       size: 100,
-      filter: 0
+      filter: tabIndex
     };
 
     setLiked(!liked);
