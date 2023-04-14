@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Text, Button } from 'react-native';
+import { View, StyleSheet, Text, Button, Image } from 'react-native';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import 'react-native-gesture-handler';
@@ -7,16 +7,20 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import RecruitPage from './RecruitScreen/RecruitPage';
 import ProductDetail from './RecruitScreen/ProductDetail';
 import Main1 from '../Main1';
 import SearchBar from "../component/SearchBar";
-import BtabiconHome from "../component/BtabiconHome";
-import BtabiconRecruit from "../component/BtabiconRecruit";
-import BtabiconBookmark from "../component/BtabiconBookmark";
-import BtabiconUser from "../component/BtabiconUser";
+
+const homeSelected = require('../assets/btab-home-selected.png');
+const homeUnSelected = require('../assets/btab-home-unselected.png');
+const recruitSelected = require('../assets/btab-recruit-selected.png');
+const recruitUnSelected = require('../assets/btab-recruit-unselected.png');
+const bookmarkSelected = require('../assets/btab-bookmark-selected.png');
+const bookmarkUnSelected = require('../assets/btab-bookmark-unselected.png');
+const userSelected = require('../assets/btab-user-selected.png');
+const userUnSelected = require('../assets/btab-user-unselected.png');
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -103,17 +107,46 @@ const MyPageStackScreen = () => {
 };
 
 export default function MainPage() {
-  return(
+  return (
     <Tab.Navigator
       initialRouteName="HomeStack"
       tabBarOptions={{
-        activeTintColor: '#EB4B4B', // 선택된 탭의 글씨색
+        activeTintColor: "#EB4B4B", // 선택된 탭의 글씨색
       }}
     >
-      <Tab.Screen name="홈화면" component={HomeStackScreen} options={{ tabBarIcon: ({ focused, color, size }) => (<BtabiconHome/>), }} />
-      <Tab.Screen name="상품 전체조회" component={RecruitProductsStackScreen} options={{ headerRight: props => <SearchBar {...props} />, tabBarIcon: ({ focused, color, size }) => (<BtabiconRecruit/>), }}/>
-      <Tab.Screen name="북마크" component={BookMarkStackScreen} options={{ tabBarIcon: ({ focused, color, size }) => (<BtabiconBookmark/>), }} />
-      <Tab.Screen name="내정보" component={MyPageStackScreen} options={{ tabBarIcon: ({ focused, color, size }) => (<BtabiconUser/>), }} />
+      <Tab.Screen name="홈화면" component={HomeStackScreen}
+                  options={{
+                    tabBarIcon: ({ focused, color, size }) => (
+                      <Image
+                        source={focused ? homeSelected : homeUnSelected} />
+                    ),
+                  }}
+      />
+      <Tab.Screen name="상품 전체조회" component={RecruitProductsStackScreen}
+                  options={{
+                    headerRight: props => <SearchBar {...props} />,
+                    tabBarIcon: ({ focused, color, size }) => (
+                      <Image
+                        source={focused ? recruitSelected : recruitUnSelected } />
+                    ),
+                  }}
+      />
+      <Tab.Screen name="북마크" component={BookMarkStackScreen}
+                  options={{
+                    tabBarIcon: ({ focused, color, size }) => (
+                      <Image
+                        source={focused ? bookmarkSelected : bookmarkUnSelected} />
+                    ),
+                  }}
+      />
+      <Tab.Screen name="내정보" component={MyPageStackScreen}
+                  options={{
+                    tabBarIcon: ({ focused, color, size }) => (
+                      <Image
+                        source={focused ? userSelected : userUnSelected} />
+                    ),
+                  }}
+      />
     </Tab.Navigator>
   );
 };
