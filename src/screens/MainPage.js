@@ -16,7 +16,6 @@ import SearchBar from "../component/SearchBar";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
-const TestStack = createStackNavigator();
 const MyPageStack = createStackNavigator();
 const HomeStack = createStackNavigator();
 const RecruitStack = createStackNavigator();
@@ -55,11 +54,7 @@ const RecruitProductsScreen = ({ navigation }) => {
     </View>
   );
 };
-const TestReadScreen = ({ navigation }) => {
-  return (
-    <RecruitPage/>
-  );
-};
+
 const MyPageScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
@@ -90,7 +85,7 @@ const BookMarkStackScreen = () => {
 const RecruitProductsStackScreen = () => {
   return (
     <Stack.Navigator>
-      <RecruitStack.Screen name="TestRead" component={TestReadScreen} options={{ headerShown: false }} />
+      <RecruitStack.Screen name="ProductRecruitAll" component={RecruitPage} options={{ headerShown: false }} />
       <RecruitStack.Screen name = "ProductDetail" component = {ProductDetail} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
@@ -103,20 +98,14 @@ const MyPageStackScreen = () => {
   );
 };
 
-const MainTabScreen = () => {
-  return (
+export default function MainPage() {
+  return(
     <Tab.Navigator initialRouteName="HomeStack">
       <Tab.Screen name="홈화면" component={HomeStackScreen} />
       <Tab.Screen name="상품 전체조회" component={RecruitProductsStackScreen} options={{headerRight: props => <SearchBar {...props} />}}/>
       <Tab.Screen name="북마크" component={BookMarkStackScreen} />
       <Tab.Screen name="내정보" component={MyPageStackScreen} />
     </Tab.Navigator>
-  );
-};
-
-export default function MainPage() {
-  return(
-    <MainTabScreen/>
   );
 };
 

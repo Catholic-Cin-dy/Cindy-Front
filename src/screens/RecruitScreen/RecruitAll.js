@@ -15,6 +15,9 @@ import ProductDetail from './ProductDetail';
 const baseUrl = 'https://www.awesominki.shop'; //api 연결을 위한 baseUrl
 export default function RecruitAll({ route }) {
   //const { tabIndex } = route.params.tabIndex;
+  //const tabIndex = route.params ? route.params.tabIndex : 0;
+
+  //const { tabIndex } = route.params;
 
   const [data, setData] = useState([]);
   const [users, setUsers] = useState('');

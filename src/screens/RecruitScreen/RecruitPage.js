@@ -32,13 +32,13 @@ function RecruitScreen({ navigation }) {
       }}>
       <TopTap.Screen
         name="All"
-        component={RAllScreen}
+        component={(props) => <RecruitAll {...props} tabIndex={0} />}
         options={{
           tabBarLabel: 'All',
         }}/>
       <TopTap.Screen
         name="Top"
-        component={RTopScreen}
+        component={(props) => <RecruitAll {...props} tabIndex={1} />}
         options={{
           tabBarLabel: 'Top',
         }}/>
