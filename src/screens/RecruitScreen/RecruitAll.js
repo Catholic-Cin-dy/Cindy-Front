@@ -24,15 +24,15 @@ const RecruitAll = (props) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const config = {
+    headers: { 'X-AUTH-TOKEN': `eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWQiOjIsImlhdCI6MTY3OTkyMjIwNSwiZXhwIjoxNzExNDU4MjA1fQ.A45bXqITjpGnywheSkEzfv5St2jD08DefUW2VQEbDpo` }
+  };
 
   useEffect(() => {
-    const config = {
-      headers: { 'X-AUTH-TOKEN': `eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWQiOjIsImlhdCI6MTY3OTkyMjIwNSwiZXhwIjoxNzExNDU4MjA1fQ.A45bXqITjpGnywheSkEzfv5St2jD08DefUW2VQEbDpo` }
-    };
+
 
     const params = {
       page: 0,
-      size: 100,
       filter: tabIndex
     };
 
@@ -53,13 +53,9 @@ const RecruitAll = (props) => {
 
   const [liked, setLiked] = useState();
   const handleLike = (productId) => {
-    const config = {
-      headers: { 'X-AUTH-TOKEN': `eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWQiOjIsImlhdCI6MTY3OTkyMjIwNSwiZXhwIjoxNzExNDU4MjA1fQ.A45bXqITjpGnywheSkEzfv5St2jD08DefUW2VQEbDpo` }
-    };
 
     const params = {
       page: 0,
-      size: 100,
       filter: tabIndex
     };
 

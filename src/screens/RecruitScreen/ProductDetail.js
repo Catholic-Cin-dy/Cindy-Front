@@ -10,9 +10,11 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-
 import RecruitPage from './RecruitPage';
 const baseUrl = 'https://www.awesominki.shop'; //api 연결을 위한 baseUrl
+const config = {
+  headers: { 'X-AUTH-TOKEN': `eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWQiOjIsImlhdCI6MTY3OTkyMjIwNSwiZXhwIjoxNzExNDU4MjA1fQ.A45bXqITjpGnywheSkEzfv5St2jD08DefUW2VQEbDpo` }
+};
 
 export default function ProductDetail({ route }) {
   // route.params에서 전달받은 item 파라미터 추출
@@ -26,13 +28,6 @@ export default function ProductDetail({ route }) {
   const [liked, setLiked] = useState();
 
   useEffect(() => {
-    const config = {
-      headers: { 'X-AUTH-TOKEN': `eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWQiOjIsImlhdCI6MTY3OTkyMjIwNSwiZXhwIjoxNzExNDU4MjA1fQ.A45bXqITjpGnywheSkEzfv5St2jD08DefUW2VQEbDpo` }
-    };
-
-    // const params = {
-    //   productId: route.params
-    // };
 
     axios.get(baseUrl + '/products/'+productId, { ...config })
       .then(response => {
@@ -51,13 +46,8 @@ export default function ProductDetail({ route }) {
   // const [liked, setLiked] = useState(data.bookmark);
   // false: 좋아요를 누르지 않은 상태, true: 좋아요를 누른 상태
   function handleLike() {
-    const config = {
-      headers: { 'X-AUTH-TOKEN': `eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWQiOjIsImlhdCI6MTY3OTkyMjIwNSwiZXhwIjoxNzExNDU4MjA1fQ.A45bXqITjpGnywheSkEzfv5St2jD08DefUW2VQEbDpo` }
-    };
 
     setLiked(!liked);
-
-
 
     /*axios.get(baseUrl + '/products/'+productId, { ...config })
       .then((response)=>{
@@ -137,20 +127,25 @@ export default function ProductDetail({ route }) {
 const ProductDetailSamebrand = ({productId}) => {
   const [data, setData] = useState([]);
 
-  const config = {
-    headers: { 'X-AUTH-TOKEN': `eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWQiOjIsImlhdCI6MTY3OTkyMjIwNSwiZXhwIjoxNzExNDU4MjA1fQ.A45bXqITjpGnywheSkEzfv5St2jD08DefUW2VQEbDpo` }
-  };
-
   axios.get(baseUrl + '/products/brand/'+productId, { ...config })
     .then(response =>
       setData(response.data.result)
     )
     .catch(error => console.error(error))
 
+  // 상품 항목 클릭 시 ProductDetail 화면으로 이동하는 함수
+  const navigation = useNavigation();
+  const handleItemPress = (productId) => {
+    // 해당 상품 정보를 route.params로 넘겨주고 ProductDetail 화면으로 이동
+    console.log('product ID : ' + productId);
+    navigation.navigate('ProductDetail', { productId });
+  };
+
   return(
     <ScrollView
-      horizontal={true} // 가로 스크롤 가능하도록 설정
+      horizontal // 가로 스크롤 가능하도록 설정
       contentContainerStyle={{ flexDirection: 'row' }} // 가로 방향으로 컨텐츠 배치
+      style={styles.hscroll}
     >
       {/*<Text>{productId}</Text>*/}
       <View style={styles.content}>
@@ -177,20 +172,25 @@ const ProductDetailSamebrand = ({productId}) => {
 const ProductDetailOther = ({productId}) => {
   const [data, setData] = useState([]);
 
-  const config = {
-    headers: { 'X-AUTH-TOKEN': `eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWQiOjIsImlhdCI6MTY3OTkyMjIwNSwiZXhwIjoxNzExNDU4MjA1fQ.A45bXqITjpGnywheSkEzfv5St2jD08DefUW2VQEbDpo` }
-  };
-
   axios.get(baseUrl + '/products/other/'+productId, { ...config })
     .then(response =>
       setData(response.data.result)
     )
     .catch(error => console.error(error))
 
+  // 상품 항목 클릭 시 ProductDetail 화면으로 이동하는 함수
+  const navigation = useNavigation();
+  const handleItemPress = (productId) => {
+    // 해당 상품 정보를 route.params로 넘겨주고 ProductDetail 화면으로 이동
+    console.log('product ID : ' + productId);
+    navigation.navigate('ProductDetail', { productId });
+  };
+
   return(
     <ScrollView
       horizontal={true} // 가로 스크롤 가능하도록 설정
       contentContainerStyle={{ flexDirection: 'row' }} // 가로 방향으로 컨텐츠 배치
+      style={styles.hscroll}
     >
       {/*<Text>{productId}</Text>*/}
       <View style={styles.content}>
@@ -217,7 +217,11 @@ const ProductDetailOther = ({productId}) => {
 
 
 const styles = {
-  sImg:{
+  hscroll: {
+    backgroundColor: 'pink',
+    flex: 1,
+  },
+  sImg: {
     width: 156,
     height:168,
     backgroundColor:'gray',
