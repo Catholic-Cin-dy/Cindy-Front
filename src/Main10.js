@@ -8,116 +8,98 @@ import {
   Alert,
 } from 'react-native';
 import React, {useState} from 'react';
-import {KakaoOAuthToken, login} from '@react-native-seoul/kakao-login';
+import App from './NewApp';
+import Test from './Test';
 import axios from 'axios';
+import {
+  KakaoOAuthToken,
+  getAccessToken,
+  getProfile,
+  login,
+  KakaoProfile,
+} from '@react-native-seoul/kakao-login';
 
+import {KakaoAccessTokenInfo} from '@react-native-seoul/kakao-login/src/types';
+
+// const [result, setResult] = useState<string>('');
+
+// const signInWithKakao = async (): Promise<void> => {
+//   try {
+//     const token = await login();
+//     setResult(JSON.stringify(token));
+//     console.log(setResult);
+//   } catch (err) {
+//     console.error('login err', err);
+//   }
+// };
+// const getProfile = async (): Promise<void> => {
+//   try {
+//     const profile = await getKakaoProfile();
+//
+//     setResult(JSON.stringify(profile));
+//     console.log(setResult);
+//   } catch (err) {
+//     console.error('signOut error', err);
+//   }
+// };
+// async function signInWithKakao(code: string): Promise<void> {
+//   try {
+//     const response = await axios.post('https://www.awesominki.shop/auth/kakao', {
+//       code: code,
+//     });
+//
+//     const { accessToken } = response.data.result;
+//     console.log('Access Token:', accessToken);
+//     // Access Token을 이용하여 서버에서 데이터를 가져오거나, 다른 작업을 수행할 수 있습니다.
+//   } catch (err) {
+//     console.error('Error:', err);
+//   }
+// }
+// const myFunction = async () => {
+//   console.log(await getProfile());
+// };
+// myFunction();
 export default function Main({navigation}) {
-  // @ts-ignore
   const signInWithKakao = async (): Promise<void> => {
-    const token: KakaoOAuthToken = await login();
-    const code = token.accessToken;
-    console.log(code);
-    const response = await axios
-      .post(
+    try {
+      const token: KakaoOAuthToken = await login();
+      const code = token.accessToken;
+      console.log(code);
+      const response = await axios.post(
         'https://www.awesominki.shop/auth/kakao',
         {accessToken: code},
         {
           headers: {Authorization: `Bearer ${code}`},
         },
-      )
-      .catch(err => {
-        console.log(response);
-        console.log(JSON.stringify(err.response));
-        navigation.navigate('Test');
-      });
+      );
+      console.log(response);
+      const requestBody = {
+        categoryList: [1, 2, 3, 4],
+        gender: 'male',
+        name: '김안녕',
+        nickname: '김안녕',
+        profileImgUrl:
+          'https://k.kakaocdn.net/dn/dpk9l1/btqmGhA2lKL/Oz0wDuJn1YV2DIn92f6DVK/img_640x640.jpg',
+        socialId: '23232322',
+      };
+
+      try {
+        const response2 = await axios.post(
+          'https://www.awesominki.shop/auth/signup/kakao',
+          JSON.stringify(requestBody),
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Auth-Token':
+                'eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWQiOjIsImlhdCI6MTY3OTkyMjIwNSwiZXhwIjoxNzExNDU4MjA1fQ.A45bXqITjpGnywheSkEzfv5St2jD08DefUW2VQEbDpo',
+            },
+          },
+        );
+        console.log(response2);
+      } catch (err) {
+        console.log(err);
+      }
   };
-
-  // const [result, setResult] = useState<string>('');
-
-  // const signInWithKakao = async (): Promise<void> => {
-  //   try {
-  //     const token = await login();
-  //     setResult(JSON.stringify(token));
-  //     console.log(setResult);
-  //   } catch (err) {
-  //     console.error('login err', err);
-  //   }
-  // };
-  // const getProfile = async (): Promise<void> => {
-  //   try {
-  //     const profile = await getKakaoProfile();
-  //
-  //     setResult(JSON.stringify(profile));
-  //     console.log(setResult);
-  //   } catch (err) {
-  //     console.error('signOut error', err);
-  //   }
-  // };
-  // async function signInWithKakao(code: string): Promise<void> {
-  //   try {
-  //     const response = await axios.post('https://www.awesominki.shop/auth/kakao', {
-  //       code: code,
-  //     });
-  //
-  //     const { accessToken } = response.data.result;
-  //     console.log('Access Token:', accessToken);
-  //     // Access Token을 이용하여 서버에서 데이터를 가져오거나, 다른 작업을 수행할 수 있습니다.
-  //   } catch (err) {
-  //     console.error('Error:', err);
-  //   }
-  // }
-  // const myFunction = async () => {
-  //   console.log(await getProfile());
-  // };
-  // myFunction();
-  // export default function Main({navigation}) {
-  //   const signInWithKakao = async (): Promise<void> => {
-  //     try {
-  //       const token: KakaoOAuthToken = await login();
-  //       const code = token.accessToken;
-  //       console.log(code);
-  //       const response = await axios.post(
-  //         'https://www.awesominki.shop/auth/kakao',
-  //         {accessToken: code},
-  //         {
-  //           headers: {Authorization: `Bearer ${code}`},
-  //         },
-  //       );
-  //       console.log(response);
-  //     } catch (err) {
-  //       navigation.navigate('How');
-  //       if (err.response?.status === 400) {
-  //         const requestBody = {
-  //           categoryList: [1, 2, 3, 4],
-  //           gender: 'male',
-  //           name: '김안안',
-  //           nickname: '김안안',
-  //           profileImgUrl:
-  //             'https://k.kakaocdn.net/dn/dpk9l1/btqmGhA2lKL/Oz0wDuJn1YV2DIn92f6DVK/img_640x640.jpg',
-  //           socialId: '3333333',
-  //         };
-  //         try {
-  //           const response2 = await axios.post(
-  //             'https://www.awesominki.shop/auth/signup/kakao',
-  //             JSON.stringify(requestBody),
-  //             {
-  //               headers: {
-  //                 'Content-Type': 'application/json',
-  //                 'X-Auth-Token':
-  //                   'eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWQiOjIsImlhdCI6MTY3OTkyMjIwNSwiZXhwIjoxNzExNDU4MjA1fQ.A45bXqITjpGnywheSkEzfv5St2jD08DefUW2VQEbDpo',
-  //               },
-  //             },
-  //           );
-  //           console.log(response2);
-  //         } catch (err) {
-  //           console.log(err);
-  //         }
-  //       }
-  //       else {
-  //         console.log(err);
-  //       }
-  //     }
-  //   };
 
   // const signInWithKakao = async (): Promise<void> => {
   //   try {

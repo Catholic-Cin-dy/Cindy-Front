@@ -11,16 +11,76 @@ import {
 
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {NavigationContainer} from '@react-navigation/native';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {getProfile, KakaoProfile} from '@react-native-seoul/kakao-login';
 
 export default class Test2 extends Component {
   state = {
     isButtonPressed: false,
+    nickname: this.props.route.params.nickname,
+    gender: this.props.route.params.gender,
+    categoryList: [],
   };
-  handlePress = () => {
-    this.setState({isButtonPressed: !this.state.isButtonPressed});
+  handlePress = category => {
+    let newCategoryList = this.state.categoryList;
+    if (category === '미니멀') {
+      newCategoryList.push(1);
+    } else if (category === '캐주얼') {
+      newCategoryList.push(2);
+    }
+    // @ts-ignore
+    this.setState({
+      isButtonPressed: !this.state.isButtonPressed,
+      categoryList: newCategoryList,
+    });
+  };
+  submitBtn = async () => {
+    try {
+      const profile = await getProfile();
+      // console.log(JSON.stringify(profile));
+      const {id, nickname, profileImageUrl} = profile;
+      this.setState({
+        socialId: id.toString(),
+        name: nickname,
+        profileImgUrl: profileImageUrl,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+    const {nickname, gender, categoryList, socialId, name, profileImgUrl} =
+      this.state;
+
+    const requestBody = {
+      nickname: nickname,
+      gender: gender,
+      categoryList: categoryList,
+      socialId: socialId,
+      name: name,
+      profileImgUrl: profileImgUrl,
+    };
+    const {navigation} = this.props;
+    console.log(requestBody);
+    const response = await axios.post(
+      'https://www.awesominki.shop/auth/signup/kakao',
+      JSON.stringify(requestBody),
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Token':
+            'eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWQiOjIsImlhdCI6MTY3OTkyMjIwNSwiZXhwIjoxNzExNDU4MjA1fQ.A45bXqITjpGnywheSkEzfv5St2jD08DefUW2VQEbDpo',
+        },
+      },
+    );
+    console.log(response);
+    // await AsyncStorage.setItem('myKey', response.data);
+    //asyncStorage에 response 형태를 바꿔서 저장해야할듯
+    navigation.navigate('How');
   };
 
   render() {
+    const {navigation} = this.props;
+    const {nickname, gender} = this.props.route.params;
     const {isButtonPressed} = this.state;
     return (
       <View style={styles.default}>
@@ -32,12 +92,12 @@ export default class Test2 extends Component {
           <View style={styles.buttonContent3}>
             <TouchableOpacity
               style={[styles.button2, isButtonPressed ? styles.pressed : null]}
-              onPress={this.handlePress}>
+              onPress={() => this.handlePress('미니멀')}>
               <Text style={styles.buttonText}>미니멀</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.button2, isButtonPressed ? styles.pressed : null]}
-              onPress={this.handlePress}>
+              onPress={() => this.handlePress('캐주얼')}>
               <Text style={styles.buttonText}>캐주얼</Text>
             </TouchableOpacity>
           </View>
@@ -45,7 +105,6 @@ export default class Test2 extends Component {
         <TouchableOpacity style={styles.button} onPress={this.submitBtn}>
           <Text style={styles.buttonText}>다음</Text>
         </TouchableOpacity>
-        {/*<Text style={styles.showText}>{this.state.text}</Text>*/}
       </View>
     );
   }

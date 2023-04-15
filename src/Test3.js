@@ -15,32 +15,39 @@ import {NavigationContainer} from '@react-navigation/native';
 export default class Test3 extends Component {
   state = {
     isButtonPressed: false,
+    nickname: this.props.route.params.nickname,
+    gender: '',
   };
-  handlePress = () => {
-    this.setState({isButtonPressed: !this.state.isButtonPressed});
+  handlePress = gender => {
+    this.setState({isButtonPressed: !this.state.isButtonPressed, gender});
   };
 
   render() {
-    const {isButtonPressed} = this.state;
+    const {navigation} = this.props;
+    const {nickname} = this.props.route.params;
+    const {isButtonPressed, gender} = this.state;
     return (
       <View style={styles.default}>
         <Text style={styles.header3}>성별을 선택해주세요</Text>
         <View style={styles.buttonContent}>
           <TouchableOpacity
             style={[styles.button2, isButtonPressed ? styles.pressed : null]}
-            onPress={this.handlePress}>
+            onPress={() => this.handlePress('male')}>
             <Text style={styles.buttonText}>남성</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.button2, isButtonPressed ? styles.pressed : null]}
-            onPress={this.handlePress}>
+            onPress={() => this.handlePress('female')}>
             <Text style={styles.buttonText}>여성</Text>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity style={styles.button} onPress={this.submitBtn}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() =>
+            navigation.navigate('Test2', {nickname: nickname, gender: gender})
+          }>
           <Text style={styles.buttonText}>다음</Text>
         </TouchableOpacity>
-        {/*<Text style={styles.showText}>{this.state.text}</Text>*/}
       </View>
     );
   }

@@ -1,4 +1,5 @@
-import React, {Component} from 'react';
+import React, {Component, useState} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   Button,
   Alert,
@@ -8,41 +9,46 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
+import axios from 'axios';
+import {getProfile} from '@react-native-seoul/kakao-login';
 
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {NavigationContainer} from '@react-navigation/native';
 
-export default class Test extends Component {
-  state = {
-    text: '',
-    inputText: '',
-  };
-  submitBtn = () => {
+// state = {
+//   text: '',
+//   inputText: '',
+// };
 
-    this.setState({text: this.state.inputText});
-  };
+export default class Test extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      nickname: '',
+    };
+  }
+
   render() {
+    const {navigation} = this.props;
     return (
       <View style={styles.default}>
         <Text style={styles.header3}>프로필을 설정해주세요</Text>
         <TextInput
           style={styles.textInput}
-          onChangeText={text => {
-            this.setState({inputText: text});
-          }}
+          onChangeText={nickname => this.setState({nickname})}
           placeholder="닉네임 입력"
         />
-        <TouchableOpacity style={styles.button} onPress={this.submitBtn}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() =>
+            navigation.navigate('Test3', {nickname: this.state.nickname})
+          }>
           <Text style={styles.buttonText}>다음</Text>
         </TouchableOpacity>
-        <Text style={styles.showText}>{this.state.text}</Text>
       </View>
     );
   }
 }
-
-
-
 
 // function Test() {
 //
@@ -58,6 +64,33 @@ export default class Test extends Component {
 //         </View>
 //     );
 // }
+
+// requestBody = {
+//   categoryList: [1, 2, 3, 4],
+//   gender: 'male',
+//   name: '임현우',
+//   nickname: '임현',
+//   profileImgUrl: 'imageimage',
+//   socialId: '232332232444444',
+// };
+
+// submitBtn = async () => {
+//   const {navigation} = this.props;
+//   const response = await axios.post(
+//     'https://www.awesominki.shop/auth/signup/kakao',
+//     JSON.stringify(this.requestBody),
+//     {
+//       headers: {
+//         'Content-Type': 'application/json',
+//         'X-Auth-Token':
+//           'eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWQiOjIsImlhdCI6MTY3OTkyMjIwNSwiZXhwIjoxNzExNDU4MjA1fQ.A45bXqITjpGnywheSkEzfv5St2jD08DefUW2VQEbDpo',
+//       },
+//     },
+//   );
+//   console.log(response);
+//   await AsyncStorage.setItem('myKey', response);
+//   navigation.navigate('Test2');
+// };
 
 const styles = StyleSheet.create({
   default: {

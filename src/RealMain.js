@@ -7,31 +7,13 @@ import {
   Button,
   Alert,
 } from 'react-native';
-import React, {useState} from 'react';
-import {KakaoOAuthToken, login} from '@react-native-seoul/kakao-login';
+import React, { useState } from "react";
+import App from './NewApp';
+import Test from './Test';
 import axios from 'axios';
-
-export default function Main({navigation}) {
-  // @ts-ignore
-  const signInWithKakao = async (): Promise<void> => {
-    const token: KakaoOAuthToken = await login();
-    const code = token.accessToken;
-    console.log(code);
-    const response = await axios
-      .post(
-        'https://www.awesominki.shop/auth/kakao',
-        {accessToken: code},
-        {
-          headers: {Authorization: `Bearer ${code}`},
-        },
-      )
-      .catch(err => {
-        console.log(response);
-        console.log(JSON.stringify(err.response));
-        navigation.navigate('Test');
-      });
-  };
-
+import {KakaoOAuthToken,getAccessToken,getProfile, login} from "@react-native-seoul/kakao-login";
+import {KakaoAccessTokenInfo} from '@react-native-seoul/kakao-login/src/types';
+export default function Main({ navigation }) {
   // const [result, setResult] = useState<string>('');
 
   // const signInWithKakao = async (): Promise<void> => {
@@ -70,54 +52,60 @@ export default function Main({navigation}) {
   //   console.log(await getProfile());
   // };
   // myFunction();
-  // export default function Main({navigation}) {
-  //   const signInWithKakao = async (): Promise<void> => {
-  //     try {
-  //       const token: KakaoOAuthToken = await login();
-  //       const code = token.accessToken;
-  //       console.log(code);
-  //       const response = await axios.post(
-  //         'https://www.awesominki.shop/auth/kakao',
-  //         {accessToken: code},
-  //         {
-  //           headers: {Authorization: `Bearer ${code}`},
-  //         },
-  //       );
-  //       console.log(response);
-  //     } catch (err) {
-  //       navigation.navigate('How');
-  //       if (err.response?.status === 400) {
-  //         const requestBody = {
-  //           categoryList: [1, 2, 3, 4],
-  //           gender: 'male',
-  //           name: '김안안',
-  //           nickname: '김안안',
-  //           profileImgUrl:
-  //             'https://k.kakaocdn.net/dn/dpk9l1/btqmGhA2lKL/Oz0wDuJn1YV2DIn92f6DVK/img_640x640.jpg',
-  //           socialId: '3333333',
-  //         };
-  //         try {
-  //           const response2 = await axios.post(
-  //             'https://www.awesominki.shop/auth/signup/kakao',
-  //             JSON.stringify(requestBody),
-  //             {
-  //               headers: {
-  //                 'Content-Type': 'application/json',
-  //                 'X-Auth-Token':
-  //                   'eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWQiOjIsImlhdCI6MTY3OTkyMjIwNSwiZXhwIjoxNzExNDU4MjA1fQ.A45bXqITjpGnywheSkEzfv5St2jD08DefUW2VQEbDpo',
-  //               },
-  //             },
-  //           );
-  //           console.log(response2);
-  //         } catch (err) {
-  //           console.log(err);
-  //         }
-  //       }
-  //       else {
-  //         console.log(err);
-  //       }
-  //     }
-  //   };
+
+  const signInWithKakao = async (): Promise<void> => {
+    let code: string;
+    try {
+      const token: KakaoOAuthToken = await login();
+      const code = token.accessToken;
+      console.log(code);
+      const response = await axios.post(
+        'https://www.awesominki.shop/auth/kakao',
+        { accessToken: code },
+        {
+          headers: { Authorization: `Bearer ${code}` },
+        },
+      );
+      console.log(response);
+    } catch (err) {
+      if (err.response?.status === 403) {
+        navigation.navgiate('How');
+        try {
+          const token: KakaoOAuthToken = await login();
+          const code2 = token.accessToken;
+          console.log(code2);
+          const requestBody = new FormData();
+          requestBody.append('categoryList', '1');
+          requestBody.append('gender', '남성');
+          requestBody.append('name', '임');
+          requestBody.append('nickname', '안녕');
+          requestBody.append('password', '12');
+          requestBody.append('profileImgUrl', '3');
+          requestBody.append('socialId', 'dfdddf');
+          const response2 = await axios.post(
+            'https://www.awesominki.shop/auth/signup/kakao',
+            requestBody,
+            {
+              headers: {
+                'X-AUTH-TOKEN':
+                  'eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWQiOjIsImlhdCI6MTY3OTkyMjIwNSwiZXhwIjoxNzExNDU4MjA1fQ.A45bXqITjpGnywheSkEzfv5St2jD08DefUW2VQEbDpo',
+                'Content-Type': 'multipart/form-data',
+                Authorization: `Bearer ${code}`,
+              },
+            },
+          );
+          console.log(response2);
+        } catch (err) {
+          console.log(err);
+        }
+      } else {
+        console.log(err);
+      }
+    }
+  };
+
+
+
 
   // const signInWithKakao = async (): Promise<void> => {
   //   try {
@@ -134,6 +122,9 @@ export default function Main({navigation}) {
   //     console.log(err);
   //   }
   // };
+
+
+
 
   // const getKakaoProfile = async (): Promise<void> => {
   //   const profile: KakaoProfile = await getProfile();
@@ -193,6 +184,9 @@ export default function Main({navigation}) {
   //     // 에러 처리 코드
   //   }
   // };
+
+
+
 
   // const signOutWithKakao = async (): Promise<void> => {
   //   const message = await logout();
