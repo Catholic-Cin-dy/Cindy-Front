@@ -14,37 +14,67 @@ import {NavigationContainer} from '@react-navigation/native';
 
 export default class Test3 extends Component {
   state = {
-    isButtonPressed: false,
+    maleButtonPressed: false,
+    femaleButtonPressed: false,
     nickname: this.props.route.params.nickname,
     gender: '',
   };
   handlePress = gender => {
-    this.setState({isButtonPressed: !this.state.isButtonPressed, gender});
+    this.setState({
+      maleButtonPressed: gender === 'male',
+      femaleButtonPressed: gender === 'female',
+      gender,
+    });
   };
 
   render() {
     const {navigation} = this.props;
     const {nickname} = this.props.route.params;
-    const {isButtonPressed, gender} = this.state;
+    const {maleButtonPressed, femaleButtonPressed} = this.state;
     return (
       <View style={styles.default}>
         <Text style={styles.header3}>성별을 선택해주세요</Text>
         <View style={styles.buttonContent}>
           <TouchableOpacity
-            style={[styles.button2, isButtonPressed ? styles.pressed : null]}
+            style={[
+              styles.inactiveButton,
+              maleButtonPressed ? styles.activeButton : styles.inactiveButton,
+            ]}
             onPress={() => this.handlePress('male')}>
-            <Text style={styles.buttonText}>남성</Text>
+            <Text
+              style={[
+                styles.inactiveButtonText,
+                maleButtonPressed
+                  ? styles.activeButtonText
+                  : styles.inactiveButtonText,
+              ]}>
+              남성
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.button2, isButtonPressed ? styles.pressed : null]}
+            style={[
+              styles.inactiveButton,
+              femaleButtonPressed ? styles.activeButton : styles.inactiveButton,
+            ]}
             onPress={() => this.handlePress('female')}>
-            <Text style={styles.buttonText}>여성</Text>
+            <Text
+              style={[
+                styles.inactiveButtonText,
+                femaleButtonPressed
+                  ? styles.activeButtonText
+                  : styles.inactiveButtonText,
+              ]}>
+              여성
+            </Text>
           </TouchableOpacity>
         </View>
         <TouchableOpacity
           style={styles.button}
           onPress={() =>
-            navigation.navigate('Test2', {nickname: nickname, gender: gender})
+            navigation.navigate('Test2', {
+              nickname: nickname,
+              gender: this.state.gender,
+            })
           }>
           <Text style={styles.buttonText}>다음</Text>
         </TouchableOpacity>
@@ -113,6 +143,27 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     justifyContent: 'center',
   },
+  buttonText2: {
+    color: 'black',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    justifyContent: 'center',
+  },
+  activeButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    justifyContent: 'center',
+  },
+  inactiveButtonText: {
+    color: 'black',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    justifyContent: 'center',
+  },
   button: {
     backgroundColor: 'black',
     paddingVertical: 10,
@@ -126,10 +177,31 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 20,
     backgroundColor: 'white',
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: 'black',
     borderRadius: 4,
   },
+  inactiveButton: {
+    width: 100,
+    height: 48,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    backgroundColor: 'white',
+    borderWidth: 2,
+    borderColor: 'black',
+    borderRadius: 4,
+  },
+  activeButton: {
+    width: 100,
+    height: 48,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    backgroundColor: 'black',
+    borderWidth: 2,
+    borderColor: 'black',
+    borderRadius: 4,
+  },
+
   buttonUnclicked: {
     backgroundColor: 'white',
     borderWidth: 1,
@@ -139,7 +211,8 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   pressed: {
-    backgroundColor: 'black',
+    color: 'black',
+    backgroundColor: 'white',
   },
   buttonContent: {
     flexDirection: 'row',

@@ -15,6 +15,12 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {getProfile, KakaoProfile} from '@react-native-seoul/kakao-login';
 
+// const CATEGORY_MINIMAL = 1;
+// const CATEGORY_CASUAL = 2;
+// const CATEGORY_STREET = 3;
+// const CATEGORY_VINTAGE = 4;
+// const CATEGORY_FEMININE = 5;
+// const CATEGORY_CITY_BOY = 6;
 export default class Test2 extends Component {
   state = {
     isButtonPressed: false,
@@ -23,18 +29,19 @@ export default class Test2 extends Component {
     categoryList: [],
   };
   handlePress = category => {
-    let newCategoryList = this.state.categoryList;
-    if (category === '미니멀') {
-      newCategoryList.push(1);
-    } else if (category === '캐주얼') {
-      newCategoryList.push(2);
+    let newCategoryList = [...this.state.categoryList];
+    const index = newCategoryList.indexOf(category);
+    if (index > -1) {
+      newCategoryList.splice(index, 1);
+    } else {
+      newCategoryList.push(category);
     }
-    // @ts-ignore
     this.setState({
       isButtonPressed: !this.state.isButtonPressed,
       categoryList: newCategoryList,
     });
   };
+
   submitBtn = async () => {
     try {
       const profile = await getProfile();
@@ -81,24 +88,131 @@ export default class Test2 extends Component {
   render() {
     const {navigation} = this.props;
     const {nickname, gender} = this.props.route.params;
-    const {isButtonPressed} = this.state;
+    const {isButtonPressed, categoryList} = this.state;
+
     return (
       <View style={styles.default}>
         <Text style={styles.header3}>관심 스타일을 선택해주세요</Text>
         <Text style={styles.headerSub}>
           사용자님의 평소 스타일이나, 선호하는 스타일을 선택해주세요!
         </Text>
-        <View style={styles.buttonContent2}>
-          <View style={styles.buttonContent3}>
+        <View style={styles.buttonContent3}>
+          <View style={styles.buttonContent2}>
             <TouchableOpacity
-              style={[styles.button2, isButtonPressed ? styles.pressed : null]}
-              onPress={() => this.handlePress('미니멀')}>
-              <Text style={styles.buttonText}>미니멀</Text>
+              style={[
+                styles.button,
+                categoryList.includes('1')
+                  ? styles.activeButton
+                  : styles.inactiveButton,
+              ]}
+              onPress={() => this.handlePress('1')}>
+              <Text
+                style={[
+                  styles.buttonText,
+                  categoryList.includes('1')
+                    ? styles.activeButtonText
+                    : styles.inactiveButtonText,
+                ]}>
+                미니멀
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[styles.button2, isButtonPressed ? styles.pressed : null]}
-              onPress={() => this.handlePress('캐주얼')}>
-              <Text style={styles.buttonText}>캐주얼</Text>
+              style={[
+                styles.button,
+                categoryList.includes('2')
+                  ? styles.activeButton
+                  : styles.inactiveButton,
+              ]}
+              onPress={() => this.handlePress('2')}>
+              <Text
+                style={[
+                  styles.buttonText,
+                  categoryList.includes('2')
+                    ? styles.activeButtonText
+                    : styles.inactiveButtonText,
+                ]}>
+                캐쥬얼
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+        <View style={styles.buttonContent3}>
+          <View style={styles.buttonContent2}>
+            <TouchableOpacity
+              style={[
+                styles.button,
+                categoryList.includes('3')
+                  ? styles.activeButton
+                  : styles.inactiveButton,
+              ]}
+              onPress={() => this.handlePress('3')}>
+              <Text
+                style={[
+                  styles.buttonText,
+                  categoryList.includes('3')
+                    ? styles.activeButtonText
+                    : styles.inactiveButtonText,
+                ]}>
+                스트릿
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.button,
+                categoryList.includes('4')
+                  ? styles.activeButton
+                  : styles.inactiveButton,
+              ]}
+              onPress={() => this.handlePress('4')}>
+              <Text
+                style={[
+                  styles.buttonText,
+                  categoryList.includes('4')
+                    ? styles.activeButtonText
+                    : styles.inactiveButtonText,
+                ]}>
+                빈티지
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+        <View style={styles.buttonContent3}>
+          <View style={styles.buttonContent2}>
+            <TouchableOpacity
+              style={[
+                styles.button,
+                categoryList.includes('5')
+                  ? styles.activeButton
+                  : styles.inactiveButton,
+              ]}
+              onPress={() => this.handlePress('5')}>
+              <Text
+                style={[
+                  styles.buttonText,
+                  categoryList.includes('5')
+                    ? styles.activeButtonText
+                    : styles.inactiveButtonText,
+                ]}>
+                페미닌
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.button,
+                categoryList.includes('6')
+                  ? styles.activeButton
+                  : styles.inactiveButton,
+              ]}
+              onPress={() => this.handlePress('6')}>
+              <Text
+                style={[
+                  styles.buttonText,
+                  categoryList.includes('6')
+                    ? styles.activeButtonText
+                    : styles.inactiveButtonText,
+                ]}>
+                시티보이
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -170,6 +284,20 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     justifyContent: 'center',
   },
+  inactiveButtonText: {
+    color: 'black',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    justifyContent: 'center',
+  },
+  activeButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    justifyContent: 'center',
+  },
   button: {
     backgroundColor: 'black',
     paddingVertical: 10,
@@ -187,6 +315,32 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'black',
     borderRadius: 4,
+  },
+  inactiveButton: {
+    width: 'auto',
+    height: 48,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    marginRight: 16,
+    backgroundColor: 'white',
+    borderWidth: 1,
+    borderColor: 'black',
+    borderRadius: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  activeButton: {
+    width: 'auto',
+    height: 48,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    marginRight: 16,
+    backgroundColor: 'black',
+    borderWidth: 1,
+    borderColor: 'black',
+    borderRadius: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   buttonUnclicked: {
     backgroundColor: 'white',
