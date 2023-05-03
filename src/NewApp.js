@@ -22,7 +22,7 @@ export default function App() {
         <Stack.Navigator initialRouteName="Main">
           <Stack.Screen name="Main" component={Main} options={{headerTitle: props => <LogoTitle {...props} />}} />
           <Stack.Screen name="KakaoLogin" component={KakaoLogin} />
-          <Stack.Screen name="MainPage" component={MainPage}/>
+          <Stack.Screen name="MainPage" component={MainPage} options={{ headerShown: false }}/>
         </Stack.Navigator>
       </NavigationContainer>
 

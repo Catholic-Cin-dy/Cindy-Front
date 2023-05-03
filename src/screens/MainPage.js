@@ -13,6 +13,9 @@ import RecruitPage from './RecruitScreen/RecruitPage';
 import Main1 from '../Main1';
 import Detail1 from "./MainDetail/Detail1";
 import Detail2 from "./MainDetail/Detail2";
+import LogoTitle from "./LogoTitle";
+import CommuScreen from "./Community/CommuScreen";
+import CommWrite from "./Community/CommWrite";
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 const TestStack = createStackNavigator();
@@ -24,7 +27,7 @@ const MainStack =createStackNavigator();
 const HomeScreen = () => {
   return (
       <Stack.Navigator>
-          <MainStack.Screen name="Main1" component={Main1} />
+          <MainStack.Screen name="Main1" component={Main1} options={{ headerShown: false }}/>
           <MainStack.Screen name="Detail1" component={Detail1} />
           <MainStack.Screen name="Detail2" component={Detail2} />
       </Stack.Navigator>
@@ -44,11 +47,12 @@ const SearchResultScreen = ({ navigation }) => {
     </View>
   );
 };
-const BookMarkScreen = ({ navigation }) => {
+const BookMarkScreen = () => {
   return (
-    <View style={styles.container}>
-      <Text>This is BookMarkScreen.</Text>
-    </View>
+      <Stack.Navigator>
+          <MainStack.Screen name="Community" component={CommuScreen} options={{ headerShown: false }}/>
+          <MainStack.Screen name="CommWrite" component={CommWrite} />
+      </Stack.Navigator>
   );
 };
 const RecruitProductsScreen = ({ navigation }) => {
@@ -75,7 +79,7 @@ const MyPageScreen = ({ navigation }) => {
 const HomeStackScreen = () => {
   return (
     <Stack.Navigator>
-      <HomeStack.Screen name="Home" component={HomeScreen} />
+      <HomeStack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }}/>
       <HomeStack.Screen name="Search" component={SearchScreen} />
       <HomeStack.Screen name="SearchResult" component={SearchResultScreen} />
     </Stack.Navigator>
@@ -107,11 +111,11 @@ const MyPageStackScreen = () => {
 
 const MainTabScreen = () => {
   return (
-    <Tab.Navigator initialRouteName="HomeStack">
-      <Tab.Screen name="홈화면" component={HomeStackScreen} />
-      <Tab.Screen name="상품 전체조회" component={RecruitProductsStackScreen} />
-      <Tab.Screen name="북마크" component={BookMarkStackScreen} />
-      <Tab.Screen name="내정보" component={MyPageStackScreen} />
+    <Tab.Navigator initialRouteName="HomeStack" >
+      <Tab.Screen name="홈화면" component={HomeStackScreen } options={{ headerShown: false }}/>
+      <Tab.Screen name="상품 전체조회" component={RecruitProductsStackScreen} options={{ headerShown: false }}/>
+      <Tab.Screen name="커뮤니티" component={BookMarkStackScreen} options={{ headerShown: false }}/>
+      <Tab.Screen name="내정보" component={MyPageStackScreen} options={{ headerShown: false }}/>
     </Tab.Navigator>
   );
 };
