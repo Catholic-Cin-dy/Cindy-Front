@@ -12,8 +12,10 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import RecruitPage from './RecruitPage';
 import ProductDetail from './ProductDetail';
-const baseUrl = 'https://www.awesominki.shop'; //api 연결을 위한 baseUrl
-
+const baseUrl = 'https://www.awesominki.shop/'; //api 연결을 위한 baseUrl
+const config = {
+  headers: { 'X-AUTH-TOKEN': `eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWQiOjIsImlhdCI6MTY3OTkyMjIwNSwiZXhwIjoxNzExNDU4MjA1fQ.A45bXqITjpGnywheSkEzfv5St2jD08DefUW2VQEbDpo` }
+};
 const RecruitAll = (props) => {
   // props에서 tabIndex 값을 받아옴
   const { tabIndex } = props;
@@ -24,9 +26,6 @@ const RecruitAll = (props) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const config = {
-    headers: { 'X-AUTH-TOKEN': `eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWQiOjIsImlhdCI6MTY3OTkyMjIwNSwiZXhwIjoxNzExNDU4MjA1fQ.A45bXqITjpGnywheSkEzfv5St2jD08DefUW2VQEbDpo` }
-  };
 
   useEffect(() => {
 
@@ -36,7 +35,7 @@ const RecruitAll = (props) => {
       filter: tabIndex
     };
 
-    axios.get(baseUrl + '/products', { params, ...config })
+    axios.get(baseUrl + 'products', { params, ...config })
       .then(response =>
         setData(response.data.result.contents)
       )
@@ -60,16 +59,21 @@ const RecruitAll = (props) => {
     };
 
     setLiked(!liked);
-    axios.patch(baseUrl + '/products/like/' + productId, {}, config)
+    axios.patch(baseUrl + 'products/like/' + productId, {}, config)
       .then(response => setLiked(response.data.result))
       .catch(error => console.error(error));
 
-    axios.get(baseUrl + '/products', { params, ...config })
+    axios.get(baseUrl + 'products', { params, ...config })
       .then(response =>
         setData(response.data.result.contents)
       )
       .catch(error => console.error(error))
 
+
+    if(liked)
+      console.log(productId + "번 상품 좋아요 취소 버튼 누름");
+    else
+      console.log(productId + "번 상품 좋아요 버튼 누름");
   };
 
   return (

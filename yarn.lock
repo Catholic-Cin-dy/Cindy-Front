@@ -5274,7 +5274,7 @@
   dependencies:
     "p-locate" "^5.0.0"
 
-"lodash.debounce@^4.0.8":
+"lodash.debounce@*", "lodash.debounce@^4.0.8":
   "integrity" "sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow=="
   "resolved" "https://registry.npmjs.org/lodash.debounce/-/lodash.debounce-4.0.8.tgz"
   "version" "4.0.8"
@@ -6529,6 +6529,16 @@
   "resolved" "https://registry.npmjs.org/react-is/-/react-is-18.2.0.tgz"
   "version" "18.2.0"
 
+"react-native-autocomplete-dropdown@^2.1.1":
+  "integrity" "sha512-U7k7UYdr9GGDi/oT4oJO+9fnHgGebt8NDMuoHmRkMwW5N1NADdBMv1fX2+SoW1bqqqi9bHYMkOCVnKqzD8/33Q=="
+  "resolved" "https://registry.npmjs.org/react-native-autocomplete-dropdown/-/react-native-autocomplete-dropdown-2.1.1.tgz"
+  "version" "2.1.1"
+  dependencies:
+    "lodash.debounce" "*"
+    "prop-types" "*"
+    "react-native-size-matters" "^0.4.0"
+    "react-native-vector-icons" ">=7.0.0"
+
 "react-native-cli@^2.0.1":
   "integrity" "sha512-QgkB1urUhGe9q1vcqQLIfNdCd/Qf3MdNQe19QO6lVjhIVKljlVMKtaK8RaZ8PCNB/cdXlO/G3tKUGk+ghMXE6w=="
   "resolved" "https://registry.npmjs.org/react-native-cli/-/react-native-cli-2.0.1.tgz"
@@ -6642,6 +6652,11 @@
   "resolved" "https://registry.npmjs.org/react-native-size-matters/-/react-native-size-matters-0.3.1.tgz"
   "version" "0.3.1"
 
+"react-native-size-matters@^0.4.0":
+  "integrity" "sha512-8/C0htHrFWeUm9N8JegmadovUfgTWkGBkDPZ1N3YkXtDWb+98Ya2gThiKcu445r8c7YhcrBfnHz/mYsXIusaOQ=="
+  "resolved" "https://registry.npmjs.org/react-native-size-matters/-/react-native-size-matters-0.4.0.tgz"
+  "version" "0.4.0"
+
 "react-native-snap-carousel@latest":
   "integrity" "sha512-xWEGusacIgK1YaDXLi7Gao2+ISLoGPVEBR8fcMf4tOOJQufutlNwkoLu0l6B8Qgsrre0nTxoVZikRgGRDWlLaQ=="
   "resolved" "https://registry.npmjs.org/react-native-snap-carousel/-/react-native-snap-carousel-3.9.1.tgz"
@@ -6677,7 +6692,7 @@
   "resolved" "https://registry.npmjs.org/react-native-toast/-/react-native-toast-1.0.1.tgz"
   "version" "1.0.1"
 
-"react-native-vector-icons@^9.2.0", "react-native-vector-icons@>7.0.0":
+"react-native-vector-icons@^9.2.0", "react-native-vector-icons@>=7.0.0", "react-native-vector-icons@>7.0.0":
   "integrity" "sha512-wKYLaFuQST/chH3AJRjmOLoLy3JEs1JR6zMNgTaemFpNoXs0ztRnTxcxFD9xhX7cJe1/zoN5BpQYe7kL0m5yyA=="
   "resolved" "https://registry.npmjs.org/react-native-vector-icons/-/react-native-vector-icons-9.2.0.tgz"
   "version" "9.2.0"
@@ -6692,7 +6707,7 @@
   dependencies:
     "prop-types" "^15.6.2"
 
-"react-native@*", "react-native@>=0.20.0", "react-native@>=0.57", "react-native@0.71.4":
+"react-native@*", "react-native@>=0.20.0", "react-native@>=0.40.0", "react-native@>=0.57", "react-native@0.71.4":
   "integrity" "sha512-3hSYqvWrOdKhpV3HpEKp1/CkWx8Sr/N/miCrmUIAsVTSJUR7JW0VvIsrV9urDhUj/s6v2WF4n7qIEEJsmTCrPw=="
   "resolved" "https://registry.npmjs.org/react-native/-/react-native-0.71.4.tgz"
   "version" "0.71.4"

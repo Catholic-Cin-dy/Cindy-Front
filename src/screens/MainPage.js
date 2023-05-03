@@ -8,6 +8,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 
+import SearchTag from '../screens/AutoComplete/SearchTag';
 import RecruitPage from './RecruitScreen/RecruitPage';
 import ProductDetail from './RecruitScreen/ProductDetail';
 import Main1 from '../Main1';
@@ -48,20 +49,6 @@ const SearchResultScreen = ({ navigation }) => {
     </View>
   );
 };
-const BookMarkScreen = ({ navigation }) => {
-  return (
-    <View style={styles.container}>
-      <Text>This is BookMarkScreen.</Text>
-    </View>
-  );
-};
-const RecruitProductsScreen = ({ navigation }) => {
-  return (
-    <View style={styles.container}>
-      <Text>This is RecruitProductsScreen.</Text>
-    </View>
-  );
-};
 
 const MyPageScreen = ({ navigation }) => {
   return (
@@ -85,7 +72,7 @@ const HomeStackScreen = () => {
 const BookMarkStackScreen = () => {
   return (
     <Stack.Navigator>
-      <BookMarkStack.Screen name="BookMark" component={BookMarkScreen} />
+      <RecruitStack.Screen name="AutoComplete" component={SearchTag} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 };
@@ -153,12 +140,3 @@ export default function MainPage() {
 
 const styles = StyleSheet.create({});
 
-// <NavigationContainer>
-//   <Stack.Navigator initialRouteName="MainTabScreen">
-//     <Stack.Screen name="MainTab" component={MainTabScreen} />
-//   </Stack.Navigator>
-// </NavigationContainer>
-
-// <View>
-//   <Text>여기탭 뷰 올거야</Text>
-// </View>

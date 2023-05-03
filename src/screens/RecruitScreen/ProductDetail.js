@@ -11,7 +11,7 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import RecruitPage from './RecruitPage';
-const baseUrl = 'https://www.awesominki.shop'; //api 연결을 위한 baseUrl
+const baseUrl = 'https://www.awesominki.shop/'; //api 연결을 위한 baseUrl
 const config = {
   headers: { 'X-AUTH-TOKEN': `eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWQiOjIsImlhdCI6MTY3OTkyMjIwNSwiZXhwIjoxNzExNDU4MjA1fQ.A45bXqITjpGnywheSkEzfv5St2jD08DefUW2VQEbDpo` }
 };
@@ -28,8 +28,9 @@ export default function ProductDetail({ route }) {
   const [liked, setLiked] = useState();
 
   useEffect(() => {
+    console.log('ProductDetail - productId : '+productId)
 
-    axios.get(baseUrl + '/products/'+productId, { ...config })
+    axios.get(baseUrl + 'products/' + productId, { ...config })
       .then(response => {
         setData(response.data.result)
         setLiked(response.data.result.bookmark) //like가 true or false
@@ -49,7 +50,7 @@ export default function ProductDetail({ route }) {
 
     setLiked(!liked);
 
-    /*axios.get(baseUrl + '/products/'+productId, { ...config })
+    /*axios.get(baseUrl + 'products/'+productId, { ...config })
       .then((response)=>{
         if(response.data.result.bookmark == true){ //이미 좋아요가 눌려있는 상태
           //showToastMessage("좋아요 삭제");
@@ -63,11 +64,11 @@ export default function ProductDetail({ route }) {
         }
       })*/
 
-    axios.patch(baseUrl + '/products/like/' + productId, {}, config)
+    axios.patch(baseUrl + 'products/like/' + productId, {}, config)
       .then(response => setLiked(response.data.result))
       .catch(error => console.error(error));
 
-    axios.get(baseUrl + '/products/'+productId, { ...config })
+    axios.get(baseUrl + 'products/' + productId, { ...config })
       .then(response => {
         setData(response.data.result)
       })
@@ -75,6 +76,125 @@ export default function ProductDetail({ route }) {
       .catch(error => console.error(error))
 
   }
+
+  const ProductDetailBrand = () => {
+    const [data, setData] = useState([]);
+
+    useEffect(() => {
+      console.log('ProductDetailBrand - productId : ' + productId);
+
+      const fetchData = async () => {
+        try {
+          const response = await axios.get(baseUrl + 'products/brand/' + productId, { ...config });
+          setData(response.data.result);
+        } catch (error) {
+          console.error(error);
+        }
+      };
+
+      fetchData();
+
+    }, []);
+
+    // 상품 항목 클릭 시 ProductDetail 화면으로 이동하는 함수
+    const navigation = useNavigation();
+    /*const handleItemPress = (productId) => {
+      // 해당 상품 정보를 route.params로 넘겨주고 ProductDetail 화면으로 이동
+      console.log('product ID : ' + productId);
+      navigation.navigate('ProductDetail', { productId });
+    };*/
+
+    return (
+      <ScrollView
+        horizontal // 가로 스크롤 가능하도록 설정
+        contentContainerStyle={{ flexDirection: 'row' }} // 가로 방향으로 컨텐츠 배치
+        style={styles.hscroll}
+      >
+        {/*<Text>{productId}</Text>*/}
+        <View style={styles.content}>
+          {data.map(item => (
+            <TouchableOpacity
+              style={styles.contentbox}
+              key={item.productId}
+              onPress={() => handleItemPress(item.productId)}
+            >
+              <Image style={styles.sImg} source={{ uri: item.imgUrl }} />
+              <View style={styles.heartIconBackground2} key={item.productId}>
+                <TouchableOpacity onPress={() => handleLike(item.productId)}>
+                  <Image
+                    style={styles.heartIcon2}
+                    source={item.bookmark ? require("../../assets/like.png") : require("../../assets/unlike.png")}
+                  />
+                </TouchableOpacity>
+              </View>
+              <Text style={styles.info1_s}>{item.brandName}</Text>
+              <Text style={styles.info2_s}>{item.productName}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </ScrollView>
+    );
+  };
+
+  const ProductDetailOther = () => {
+    const [data, setData] = useState([]);
+
+    useEffect(() => {
+      console.log('ProductDetailOther - productId : ' + productId);
+
+      const fetchData = async () => {
+        try {
+          const response = await axios.get(baseUrl + 'products/other/' + productId, { ...config });
+          setData(response.data.result);
+        } catch (error) {
+          console.error(error);
+        }
+      };
+
+      fetchData();
+
+    }, []);
+
+    // 상품 항목 클릭 시 ProductDetail 화면으로 이동하는 함수
+    const navigation = useNavigation();
+    /*const handleItemPress = (productId) => {
+      // 해당 상품 정보를 route.params로 넘겨주고 ProductDetail 화면으로 이동
+      console.log('product ID : ' + productId);
+      navigation.navigate('ProductDetail', { productId });
+    };*/
+
+    return (
+      <ScrollView
+        horizontal={true} // 가로 스크롤 가능하도록 설정
+        contentContainerStyle={{ flexDirection: 'row' }} // 가로 방향으로 컨텐츠 배치
+        style={styles.hscroll}
+      >
+        {/*<Text>{productId}</Text>*/}
+        <View style={styles.content}>
+          {data.map(item => (
+            <TouchableOpacity
+              style={styles.contentbox}
+              key={item.productId}
+              onPress={() => handleItemPress(item.productId)}
+            >
+              <Image style={styles.sImg} source={{ uri: item.imgUrl }} />
+              <View style={styles.heartIconBackground2} key={item.productId}>
+                <TouchableOpacity onPress={() => handleLike(item.productId)}>
+                  <Image
+                    style={styles.heartIcon2}
+                    source={item.bookmark ? require("../../assets/like.png") : require("../../assets/unlike.png")}
+                  />
+                </TouchableOpacity>
+              </View>
+              <Text style={styles.info1_s}>{item.brandName}</Text>
+              <Text style={styles.info2_s}>{item.productName}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </ScrollView>
+    );
+  };
+
 
 
   return (
@@ -109,13 +229,15 @@ export default function ProductDetail({ route }) {
 
 
         <Text>같은 브랜드 상품 조회</Text>
-        <ProductDetailSamebrand productId={data.productId}/>
+        <Text>{data.productId}</Text>
+        <ProductDetailBrand/>
         <Text />
         <Text />
 
 
         <Text>다른 사람이 본 상품 리스트</Text>
-        <ProductDetailOther productId={data.productId}/>
+        <Text>{data.productId}</Text>
+        <ProductDetailOther/>
         <Text />
         <Text />
       </View>
@@ -124,96 +246,7 @@ export default function ProductDetail({ route }) {
 
 };
 
-const ProductDetailSamebrand = ({productId}) => {
-  const [data, setData] = useState([]);
 
-  axios.get(baseUrl + '/products/brand/'+productId, { ...config })
-    .then(response =>
-      setData(response.data.result)
-    )
-    .catch(error => console.error(error))
-
-  // 상품 항목 클릭 시 ProductDetail 화면으로 이동하는 함수
-  const navigation = useNavigation();
-  const handleItemPress = (productId) => {
-    // 해당 상품 정보를 route.params로 넘겨주고 ProductDetail 화면으로 이동
-    console.log('product ID : ' + productId);
-    navigation.navigate('ProductDetail', { productId });
-  };
-
-  return(
-    <ScrollView
-      horizontal // 가로 스크롤 가능하도록 설정
-      contentContainerStyle={{ flexDirection: 'row' }} // 가로 방향으로 컨텐츠 배치
-      style={styles.hscroll}
-    >
-      {/*<Text>{productId}</Text>*/}
-      <View style={styles.content}>
-        {data.map(item => (
-          <TouchableOpacity
-            style={styles.contentbox}
-            key={item.productId}
-            onPress={() => handleItemPress(item.productId)}
-          >
-            <Image style={styles.sImg} source={{ uri: item.imgUrl }}/>
-            <View style={styles.heartIconBackground2} key={item.productId}>
-              <TouchableOpacity onPress={() => handleLike(item.productId)}>
-                <Image style={styles.heartIcon2} source={item.bookmark ? require("../../assets/like.png") : require("../../assets/unlike.png")} />
-              </TouchableOpacity>
-            </View>
-            <Text style={styles.info1_s}>{item.brandName}</Text>
-            <Text style={styles.info2_s}>{item.productName}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-    </ScrollView>
-  )
-}
-const ProductDetailOther = ({productId}) => {
-  const [data, setData] = useState([]);
-
-  axios.get(baseUrl + '/products/other/'+productId, { ...config })
-    .then(response =>
-      setData(response.data.result)
-    )
-    .catch(error => console.error(error))
-
-  // 상품 항목 클릭 시 ProductDetail 화면으로 이동하는 함수
-  const navigation = useNavigation();
-  const handleItemPress = (productId) => {
-    // 해당 상품 정보를 route.params로 넘겨주고 ProductDetail 화면으로 이동
-    console.log('product ID : ' + productId);
-    navigation.navigate('ProductDetail', { productId });
-  };
-
-  return(
-    <ScrollView
-      horizontal={true} // 가로 스크롤 가능하도록 설정
-      contentContainerStyle={{ flexDirection: 'row' }} // 가로 방향으로 컨텐츠 배치
-      style={styles.hscroll}
-    >
-      {/*<Text>{productId}</Text>*/}
-      <View style={styles.content}>
-        {data.map(item => (
-          <TouchableOpacity
-            style={styles.contentbox}
-            key={item.productId}
-            onPress={() => handleItemPress(item.productId)}
-          >
-            <Image style={styles.sImg} source={{ uri: item.imgUrl }}/>
-            <View style={styles.heartIconBackground2} key={item.productId}>
-              <TouchableOpacity onPress={() => handleLike(item.productId)}>
-                <Image style={styles.heartIcon2} source={item.bookmark ? require("../../assets/like.png") : require("../../assets/unlike.png")} />
-              </TouchableOpacity>
-            </View>
-            <Text style={styles.info1_s}>{item.brandName}</Text>
-            <Text style={styles.info2_s}>{item.productName}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-    </ScrollView>
-  )
-}
 
 
 const styles = {
