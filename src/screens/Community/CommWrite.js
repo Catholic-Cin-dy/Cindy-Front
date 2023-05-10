@@ -5,6 +5,8 @@ import { launchImageLibrary, launchCamera } from "react-native-image-picker";
 import UploadModeModal from "./UploadModeModal";
 export default function CommWrite() {
     const[text, setText] = useState('');
+    const [img, setImageSource ] = useState("");
+
     const onChangeText=(inputText) => {
         setText(inputText);
     }
@@ -13,8 +15,8 @@ export default function CommWrite() {
     }
     const imagePickerOption = {
         mediaType: "photo",
-        maxWidth: 768,
-        maxHeight: 768,
+        maxWidth: 300,
+        maxHeight: 300,
         includeBase64: Platform.OS === "android",
     };
     const onPickImage = (res) => {
@@ -22,6 +24,7 @@ export default function CommWrite() {
             return;
         }
         console.log("PickImage", res);
+        setImageSource(res.uri);
     }
 
     // 카메라 촬영
@@ -49,11 +52,15 @@ export default function CommWrite() {
         <ScrollView>
             <SafeAreaView style={styles.container}>
                 <Text>이미지를 선택해주세요</Text>
-                <View style={styles.image}>
-                    <Pressable onPress={() => modalOpen()}>
-                        <Text>Open Modal</Text>
-                    </Pressable>
-                </View>
+                        {img ?   // 이미지가 있으면 라이브러리에서 받아온 이미지로 출력, 없으면 디폴트 이미지 출력!
+                            <Pressable style={styles.image} onPress={() => modalOpen()}>
+                                <Image source={{uri: img}} style={{ width: 300, height: 300 }}/>
+                            </Pressable>
+                            :
+                            <Pressable style={styles.image} onPress={() => modalOpen()}>
+                                <View style={styles.image}></View>
+                            </Pressable>
+                        }
             <UploadModeModal
                 visible={modalVisible}
                 onClose={() => setModalVisible(false)}
@@ -82,8 +89,8 @@ const styles = StyleSheet.create({
     },
     image:{
         marginLeft:50,
-        width:300,
-        height:300,
+        width:768,
+        height:768,
         backgroundColor:'gray',
     },
     map:{
