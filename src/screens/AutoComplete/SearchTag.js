@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Text, Button } from 'react-native';
+import { FlatList, TextInput, View, StyleSheet, Text, Button } from 'react-native';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import 'react-native-gesture-handler';
@@ -12,114 +12,60 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useDispatch, useSelector } from "react-redux";
 
 const TopTap = createMaterialTopTabNavigator(); //상단 탭
-/*
-const onChangeData = (e:React.FormEvent<HTMLInputElement>) => {
-  setKeyword(e.currentTarget.value);
+const baseUrl = 'https://www.awesominki.shop/'; //api 연결을 위한 baseUrl
+const config = {
+  headers: { 'X-AUTH-TOKEN': `eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWQiOjIsImlhdCI6MTY3OTkyMjIwNSwiZXhwIjoxNzExNDU4MjA1fQ.A45bXqITjpGnywheSkEzfv5St2jD08DefUW2VQEbDpo` }
 };
-*/
-
-/*const Search = () => {
-  const dispatch = useDispatch()
-  const inputRef = useRef(null)
-  const { searchedFoodLists } = useSelector((state) => state.addEat)
-  const [value, setValue] = useState('')
-  const disabled = useRef(false)
-  const onChangeInput = (e) => setValue(e.target.value)
-
-  const onSearchForFood = () => { //검색버튼 클릭 이벤트
-    if (disabled.current) return //disabled.current를 이용해 3초에 한번씩만 콜하기
-    else {
-      disabled.current = true
-      if (!value) {
-        //검색어를 입력하세요 알람 띄위기
-      } else {
-        let params = { searchText: value }
-        dispatch(searchForFood(params)) //음식찾기 api 콜
-        setValue('')
-      }
-      setTimeout(() => disabled.current = false, 3000)
-    }
-  }
-
-  useEffect(() => { //검색어 자동 완성
-    let params = { searchText: value }
-    const debounce = setTimeout(() => {
-      if (value) dispatch(searchForFood(params))//음식찾기 api
-      else dispatch(onResetSearchedFood()) //찾은 음식 없애주기 api
-    }, 200)
-    return () => {
-      clearTimeout(debounce)
-    }
-  }, [value])
-
-  state = {
-    text: '',
-    inputText: ''
-  }
-
-  submitBtn = () => {
-    this.setState({text: this.state.inputText});
-    //
-    onSearchForFood();
-  }
-
-  // 상품 항목 클릭 시 ProductDetail 화면으로 이동하는 함수
-  const navigation = useNavigation();
-  const handleItemPress = (productId) => {
-    // 해당 상품 정보를 route.params로 넘겨주고 ProductDetail 화면으로 이동
-    console.log('product ID : ' + productId);
-
-    //navigation.navigate('ProductDetail', { productId });
-  };
-
-  return (
-    <View>
-
-      <View style={styles.container}>
-        <Text style={styles.headerText}>TextInput 테스트</Text>
-        <View style={styles.bodyContainer}>
-          <TextInput
-            style={styles.textInput}
-            onChangeText={(text) => {
-              this.setState({ inputText: text });
-            }}
-            placeholder="검색어를 입력해주세요."
-          />
-          <Button title="검색" onPress={this.submitBtn} />
-          <Text style={styles.showText}>{this.state.text}</Text>
-        </View>
-      </View>
-
-      <View>
-        <Text>검색결과</Text>
-        <View>
-          {data.map(item => (
-            // 첫 번째 열에 해당하는 데이터를 매핑하여 표시
-            <TouchableOpacity
-              key={item.id}
-              onPress={() => handleItemPress(item.productId)}
-            >
-              <Text>검색 결과들 보여줄거에요</Text>
-              {/!*<Text>{item.productName}</Text>*!/}
-            </TouchableOpacity>
-          ))}
-        </View>
-      </View>
-
-    </View>
-  );
-};*/
-
 
 const SearchTag = () => {
 
+  const [text, setText] = useState('');
+
+  const [searchText, setSearchText] = useState('');
+  const [suggestions, setSuggestions] = useState([]);
+
+  const handleSearchTextChange = (text) => {
+    setSearchText(text);
+    if (text.length > 0) {
+      // TODO: Implement your logic to get suggestions based on the input text
+      //setSuggestions([...Array(5)].map((_, i) => ({ label: `${text} ${i + 1}` })));
+      const params = {
+        content: text
+      };
+
+      axios.get(baseUrl + 'boards/tag', { params, ...config })
+        .then(response =>
+          setSuggestions(response.data.result)
+        )
+        .catch(error => console.error(error))
+
+      //setSuggestions(['검색어', '이거 검색어', '검색검색']);
+    } else {
+      setSuggestions([]);
+    }
+
+
+  };
+
+  const renderSuggestion = ({ item }) => {
+    return <Text>{item}</Text>;
+  };
+
   return(
-    <View>
-      <Text>
-        여기에
-        {/*<Search/>*/}
-      </Text>
+    <View style={styles.container}>
+      <TextInput
+        style={styles.input}
+        placeholder="검색어를 입력하세요."
+        onChangeText={handleSearchTextChange}
+        value={searchText}
+      />
+      <FlatList
+        data={suggestions}
+        renderItem={renderSuggestion}
+        keyExtractor={(item) => item}
+      />
     </View>
+
 
   );
 };
@@ -176,6 +122,17 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     // outline: none,
-  }
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingHorizontal: 10,
+  },
+  input: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    paddingHorizontal: 10,
+  },
 
 });
