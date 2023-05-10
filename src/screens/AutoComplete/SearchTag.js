@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, TextInput, View, StyleSheet, Text, Button } from 'react-native';
+import { TouchableOpacity, FlatList, TextInput, View, StyleSheet, Text, Button } from 'react-native';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import 'react-native-gesture-handler';
@@ -39,16 +39,22 @@ const SearchTag = () => {
         )
         .catch(error => console.error(error))
 
-      //setSuggestions(['검색어', '이거 검색어', '검색검색']);
-    } else {
+    } else { //검색어 없으면 빈칸
       setSuggestions([]);
     }
-
-
+  };
+  const handleSuggestionPress = (item) => {
+    setSearchText(item);
   };
 
   const renderSuggestion = ({ item }) => {
-    return <Text>{item}</Text>;
+    return (
+      <TouchableOpacity
+        onPress={() => handleSuggestionPress(item)}
+      >
+        <Text>{item}</Text>
+      </TouchableOpacity>
+    );
   };
 
   return(
@@ -64,6 +70,8 @@ const SearchTag = () => {
         renderItem={renderSuggestion}
         keyExtractor={(item) => item}
       />
+
+      <Text>검색어 : {searchText}</Text>
     </View>
 
 
