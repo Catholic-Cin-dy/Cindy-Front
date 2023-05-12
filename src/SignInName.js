@@ -1,5 +1,4 @@
 import React, {Component, useState} from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   Button,
   Alert,
@@ -20,7 +19,7 @@ import {NavigationContainer} from '@react-navigation/native';
 //   inputText: '',
 // };
 
-export default class Test extends Component {
+export default class SignInName extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -41,7 +40,7 @@ export default class Test extends Component {
         <TouchableOpacity
           style={styles.button}
           onPress={() =>
-            navigation.navigate('Test3', {nickname: this.state.nickname})
+            navigation.navigate('SignInGender', {nickname: this.state.nickname})
           }>
           <Text style={styles.buttonText}>다음</Text>
         </TouchableOpacity>

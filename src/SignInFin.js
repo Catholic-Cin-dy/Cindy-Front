@@ -12,7 +12,6 @@ import {
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {NavigationContainer} from '@react-navigation/native';
 import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {getProfile, KakaoProfile} from '@react-native-seoul/kakao-login';
 
 // const CATEGORY_MINIMAL = 1;
@@ -21,7 +20,7 @@ import {getProfile, KakaoProfile} from '@react-native-seoul/kakao-login';
 // const CATEGORY_VINTAGE = 4;
 // const CATEGORY_FEMININE = 5;
 // const CATEGORY_CITY_BOY = 6;
-export default class Test2 extends Component {
+export default class SignInFin extends Component {
   state = {
     isButtonPressed: false,
     nickname: this.props.route.params.nickname,

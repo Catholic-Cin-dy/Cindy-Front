@@ -12,7 +12,7 @@ import {
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {NavigationContainer} from '@react-navigation/native';
 
-export default class Test3 extends Component {
+export default class SignInGender extends Component {
   state = {
     maleButtonPressed: false,
     femaleButtonPressed: false,
@@ -71,7 +71,7 @@ export default class Test3 extends Component {
         <TouchableOpacity
           style={styles.button}
           onPress={() =>
-            navigation.navigate('Test2', {
+            navigation.navigate('SignInFin', {
               nickname: nickname,
               gender: this.state.gender,
             })

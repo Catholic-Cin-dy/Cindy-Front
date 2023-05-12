@@ -13,7 +13,7 @@ import axios from 'axios';
 import {useState, useEffect} from 'react';
 import 'react-native-gesture-handler';
 import {useNavigation, useRoute} from '@react-navigation/native';
-import Main from './Main';
+import Main from '../Main';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 // import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
