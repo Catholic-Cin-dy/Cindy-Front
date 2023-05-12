@@ -10,7 +10,7 @@ import {
 import React, {useState} from 'react';
 import {KakaoOAuthToken, login} from '@react-native-seoul/kakao-login';
 import axios from 'axios';
-
+import SignInName from './SignInName';
 export default function Main({navigation}) {
   // @ts-ignore
   const signInWithKakao = async (): Promise<void> => {
@@ -28,7 +28,7 @@ export default function Main({navigation}) {
       .catch(err => {
         console.log(response);
         console.log(JSON.stringify(err.response));
-        navigation.navigate('Test');
+        navigation.navigate('SignInName');
       });
   };
 

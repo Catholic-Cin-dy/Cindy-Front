@@ -11,7 +11,7 @@ import {
 
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {NavigationContainer} from '@react-navigation/native';
-
+import SignInFin from './SignInFin';
 export default class SignInGender extends Component {
   state = {
     maleButtonPressed: false,

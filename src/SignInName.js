@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import {getProfile} from '@react-native-seoul/kakao-login';
-
+import SignInGender from './SignInGender';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {NavigationContainer} from '@react-navigation/native';
 

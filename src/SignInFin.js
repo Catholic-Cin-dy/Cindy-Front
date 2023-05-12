@@ -13,6 +13,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {NavigationContainer} from '@react-navigation/native';
 import axios from 'axios';
 import {getProfile, KakaoProfile} from '@react-native-seoul/kakao-login';
+import MainPage from './screens/MainPage';
 
 // const CATEGORY_MINIMAL = 1;
 // const CATEGORY_CASUAL = 2;
@@ -81,7 +82,7 @@ export default class SignInFin extends Component {
     console.log(response);
     // await AsyncStorage.setItem('myKey', response.data);
     //asyncStorage에 response 형태를 바꿔서 저장해야할듯
-    navigation.navigate('How');
+    navigation.navigate("MainPage");
   };
 
   render() {
