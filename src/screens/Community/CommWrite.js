@@ -78,7 +78,6 @@ export default function CommWrite() {
                 />
                 <Button title="제출" onPress = {submitBtn} />
             </SafeAreaView>
-
         </ScrollView>
 
     );
