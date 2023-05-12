@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {Component, useState} from 'react';
 import {
   Button,
@@ -82,7 +83,12 @@ export default class SignInFin extends Component {
     console.log(response);
     // await AsyncStorage.setItem('myKey', response.data);
     //asyncStorage에 response 형태를 바꿔서 저장해야할듯
-    navigation.navigate("MainPage");
+    const {
+      data: {accessToken},
+    } = response;
+    //로컬 스토리지에 토큰을 저장
+    await AsyncStorage.setItem('token', accessToken);
+    navigation.navigate('MainPage');
   };
 
   render() {
