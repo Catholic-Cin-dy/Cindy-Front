@@ -30,9 +30,9 @@ export default function Mainslider() {
               {data.map(item => (
                 <View style={styles.slide} key={item.id} >
                     <Image style={styles.image} source={{ uri: item.bannerUrl}}/>
-                    <View>
-                        <Text>dkdkdk</Text>
-                    </View>
+                    <Text  style={styles.text1}>{item.title}</Text>
+                    <Text  style={styles.text2}>{item.content}</Text>
+
                 </View>
               ))}
 
@@ -52,14 +52,30 @@ const styles = StyleSheet.create({
     },
     slide: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
+
     },
     image: {
         width: '100%',
         height: '100%',
         resizeMode: 'cover',
     },
+    text1:{ //타이틀
+        position: 'absolute',
+        color:'white',
+        fontSize: 30,
+        marginTop:350,
+        marginLeft:27,
+        fontWeight:"bold",
+    },
+    text2:{ //타이틀 밑에
+        position: 'absolute',
+        color:'white',
+        fontSize: 16,
+        marginTop:400,
+        marginLeft:30,
+        fontWeight:"bold",
+    },
+
 
 });
 

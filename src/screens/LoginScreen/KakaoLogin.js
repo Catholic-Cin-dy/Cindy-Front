@@ -14,10 +14,27 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 //productId, brandName, productName, imgUrl
 export default function KakaoLogin() {
-    const signInWithKakao = async (): Promise<void> => {
+
+    /*const signInWithKakao = async(): Promise<void> => {
         const token: KakaoOAuthToken = await login();
 
         setResult(JSON.stringify(token));
+    };*/
+
+    const signInWithKakao = async (): Promise<void> => {
+        try {
+            const token: KakaoOAuthToken = await login();
+            const accessToken = token.accessToken;
+            const response = await axios.post(
+              'https://www.awesominki.shop/auth/kakao',
+              {accessToken},
+            );
+            console.log(response);
+            //실험용 화면 전환
+            //navigation.navigate('Test');
+        } catch (err) {
+            console.log(err);
+        }
     };
 
     const signOutWithKakao = async (): Promise<void> => {
@@ -39,11 +56,11 @@ export default function KakaoLogin() {
     };
 
     //이건 내가 만듦!!
-    const getUserAccessToken = async (): Promise<void> => {
+    /*const getUserAccessToken = async (): Promise<void> => {
         const token: KakaoAccessTokenInfo = await getAccessToken();
 
         setResult(JSON.stringify(token));
-    };
+    };*/
 
     return (
         <View>
