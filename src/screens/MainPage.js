@@ -60,15 +60,6 @@ const SearchResultScreen = ({ navigation }) => {
     </View>
   );
 };
-
-/*const BookMarkScreen = () => {
-  return (
-      <Stack.Navigator>
-          <MainStack.Screen name="Community" component={CommuScreen} options={{ headerShown: false }}/>
-          <MainStack.Screen name="CommWrite" component={CommWrite} />
-      </Stack.Navigator>
-  );
-};*/
 const RecruitProductsScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
@@ -103,9 +94,6 @@ const HomeStackScreen = () => {
 const BookMarkStackScreen = () => {
   return (
     <Stack.Navigator>
-{/*
-      <RecruitStack.Screen name="AutoComplete" component={SearchTag} options={{ headerShown: false }} />
-*/}
       <RecruitStack.Screen name="Community" component={CommuScreen} options={{ headerShown: false }}/>
       <RecruitStack.Screen name="CommWrite" component={CommWrite} />
     </Stack.Navigator>
