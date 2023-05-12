@@ -23,16 +23,27 @@ const bookmarkUnSelected = require('../assets/btab-bookmark-unselected.png');
 const userSelected = require('../assets/btab-user-selected.png');
 const userUnSelected = require('../assets/btab-user-unselected.png');
 
+
+import Detail1 from "./MainDetail/Detail1";
+import Detail2 from "./MainDetail/Detail2";
+import LogoTitle from "./LogoTitle";
+import CommuScreen from "./Community/CommuScreen";
+import CommWrite from "./Community/CommWrite";
+
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 const MyPageStack = createStackNavigator();
 const HomeStack = createStackNavigator();
 const RecruitStack = createStackNavigator();
 const BookMarkStack = createStackNavigator();
-
-const HomeScreen = ({ navigation }) => {
+const MainStack =createStackNavigator();
+const HomeScreen = () => {
   return (
-    <Main1/>
+      <Stack.Navigator>
+          <MainStack.Screen name="Main1" component={Main1} options={{ headerShown: false }}/>
+          <MainStack.Screen name="Detail1" component={Detail1} />
+          <MainStack.Screen name="Detail2" component={Detail2} />
+      </Stack.Navigator>
   );
 };
 const SearchScreen = ({ navigation }) => {
@@ -50,6 +61,26 @@ const SearchResultScreen = ({ navigation }) => {
   );
 };
 
+/*const BookMarkScreen = () => {
+  return (
+      <Stack.Navigator>
+          <MainStack.Screen name="Community" component={CommuScreen} options={{ headerShown: false }}/>
+          <MainStack.Screen name="CommWrite" component={CommWrite} />
+      </Stack.Navigator>
+  );
+};*/
+const RecruitProductsScreen = ({ navigation }) => {
+  return (
+    <View style={styles.container}>
+      <Text>This is RecruitProductsScreen.</Text>
+    </View>
+  );
+};
+const TestReadScreen = ({ navigation }) => {
+  return (
+    <RecruitPage/>
+  );
+};
 const MyPageScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
@@ -62,7 +93,7 @@ const MyPageScreen = ({ navigation }) => {
 const HomeStackScreen = () => {
   return (
     <Stack.Navigator>
-      <HomeStack.Screen name="Home" component={HomeScreen} />
+      <HomeStack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }}/>
       <HomeStack.Screen name="Search" component={SearchScreen} />
       <HomeStack.Screen name="SearchResult" component={SearchResultScreen} />
     </Stack.Navigator>
@@ -72,7 +103,11 @@ const HomeStackScreen = () => {
 const BookMarkStackScreen = () => {
   return (
     <Stack.Navigator>
+{/*
       <RecruitStack.Screen name="AutoComplete" component={SearchTag} options={{ headerShown: false }} />
+*/}
+      <RecruitStack.Screen name="Community" component={CommuScreen} options={{ headerShown: false }}/>
+      <RecruitStack.Screen name="CommWrite" component={CommWrite} />
     </Stack.Navigator>
   );
 };
@@ -94,6 +129,12 @@ const MyPageStackScreen = () => {
 };
 
 export default function MainPage() {
+  return (
+    <MainTabScreen/>
+  );
+};
+
+const MainTabScreen = () => {
   return (
     <Tab.Navigator
       initialRouteName="HomeStack"
@@ -137,6 +178,7 @@ export default function MainPage() {
     </Tab.Navigator>
   );
 };
+
 
 const styles = StyleSheet.create({});
 
