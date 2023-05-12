@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import { TouchableOpacity, FlatList, TextInput, View, StyleSheet, Text, Button,SafeAreaView,ScrollView } from 'react-native';
 import CommWrite from "./CommWrite";
+import CommuWriteMap from "./CommuWriteMap";
 import axios from 'axios';
 import {useNavigation} from "@react-navigation/native";
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {PermissionsAndroid} from 'react-native';
+
+
 
 const baseUrl = 'https://www.awesominki.shop/'; //api 연결을 위한 baseUrl
 const config = {
@@ -71,8 +74,13 @@ export default function CommuScreen() {
           <Text>검색어 : {searchText}</Text>
 
 
+
+
           <Button title={"글쓰기"} onPress={() => {
             navigation.navigate("CommWrite");
+          }} />
+          <Button title={"지도"} onPress={() => {
+            navigation.navigate("CommuWriteMap");
           }} />
         </SafeAreaView>
 

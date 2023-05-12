@@ -29,6 +29,7 @@ import Detail2 from "./MainDetail/Detail2";
 import LogoTitle from "./LogoTitle";
 import CommuScreen from "./Community/CommuScreen";
 import CommWrite from "./Community/CommWrite";
+import CommuWriteMap from "./Community/CommuWriteMap";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -96,6 +97,7 @@ const BookMarkStackScreen = () => {
     <Stack.Navigator>
       <RecruitStack.Screen name="Community" component={CommuScreen} options={{ headerShown: false }}/>
       <RecruitStack.Screen name="CommWrite" component={CommWrite} />
+      <RecruitStack.Screen name="CommuWriteMap" component={CommuWriteMap} />
     </Stack.Navigator>
   );
 };
