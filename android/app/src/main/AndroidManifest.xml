@@ -12,6 +12,11 @@
             android:allowBackup="true"
             android:theme="@style/AppTheme">
 
+
+        <meta-data
+                android:name="com.kakao.sdk.AppKey"
+                android:value="	4b0303383dbb3db73c8e4a22fbbe1b65" />
+
         <!-- <meta-data
         android:name="com.kakao.sdk.AppKey"
         android:value="@string/kakao_app_key" /> -->
