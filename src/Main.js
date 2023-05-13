@@ -13,6 +13,8 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SignInName from './SignInName';
 export default function Main({navigation}) {
+  //이부분 수정이 필요함
+  //작동 검증 필요
   const signInWithKakao = async (): Promise<void> => {
     //AsyncStorage에 accessToken이 있는지 확인
     const accessToken = await AsyncStorage.getItem('accessToken');
