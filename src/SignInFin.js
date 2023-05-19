@@ -87,8 +87,9 @@ export default class SignInFin extends Component {
       data: {accessToken},
     } = response;
     //로컬 스토리지에 토큰을 저장
-    await AsyncStorage.setItem('token', accessToken);
-    navigation.navigate('MainPage');
+    // await AsyncStorage.setItem('token', accessToken);
+    // navigation.navigate('MainPage');
+    navigation.navigate('MapScreen');
   };
 
   render() {
