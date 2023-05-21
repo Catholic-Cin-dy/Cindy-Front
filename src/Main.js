@@ -17,7 +17,7 @@ export default function Main({navigation}) {
   //작동 검증 필요
   const signInWithKakao = async (): Promise<void> => {
     //AsyncStorage에 accessToken이 있는지 확인
-    const accessToken = await AsyncStorage.getItem('accessToken');
+    const accessToken = await AsyncStorage.getItem('token');
 
     if (accessToken) {
       // accesstoken이 있다면 MainPage로
