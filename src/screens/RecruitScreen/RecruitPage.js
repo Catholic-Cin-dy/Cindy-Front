@@ -12,112 +12,61 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 const TopTap = createMaterialTopTabNavigator(); //상단 탭
 
 import RecruitAll from './RecruitAll';
-import RecruitTop from './RecruitTop';
-import RecruitBottom from './RecruitBottom';
-import RecruitOuter from './RecruitOuter';
-import RecruitCap from './RecruitCap';
-import RecruitBag from './RecruitBag';
-import RecruitAccessories from './RecruitAccessories';
 
-function RecruitScreen({ navigation }) {
-
-
+export default function RecruitPage() {
   return (
     <TopTap.Navigator
       initialRouteName="All"
       tabBarOptions={{
         scrollEnabled: true, // 스크롤 가능하게 설정
-        tabStyle: { width: 100, alignItems: 'flex-start' }, // 왼쪽 정렬
-        indicatorStyle: { backgroundColor: 'black' }, // 선택된 탭 하단에 라인 표시
+        tabStyle: { width: 'auto', }, // alignItems: "flex-start",  왼쪽 정렬
+        tabBarLabelStyle: { flex: 1, textAlign: 'center', textTransform: "none" },
+        indicatorStyle: { backgroundColor: "black", marginRight: 10, }, //marginRight는 안먹혀 왤까........?
+        labelStyle: { fontSize: 14, fontWeight: "bold" },
       }}>
       <TopTap.Screen
         name="All"
-        component={RAllScreen}
+        component={(props) => <RecruitAll {...props} tabIndex={0} />}
         options={{
-          tabBarLabel: 'All',
-        }}/>
+          tabBarLabel: "All",
+        }} />
       <TopTap.Screen
         name="Top"
-        component={RTopScreen}
+        component={(props) => <RecruitAll {...props} tabIndex={1} />}
         options={{
-          tabBarLabel: 'Top',
-        }}/>
+          tabBarLabel: "Top",
+        }} />
       <TopTap.Screen
         name="Bottom"
-        component={RBottomScreen}
+        component={(props) => <RecruitAll {...props} tabIndex={2} />}
         options={{
-          tabBarLabel: 'Bottom',
-        }}/>
+          tabBarLabel: "Bottom",
+        }} />
       <TopTap.Screen
         name="Outer"
-        component={ROuterScreen}
+        component={(props) => <RecruitAll {...props} tabIndex={3} />}
         options={{
-          tabBarLabel: 'Outer',
-        }}/>
+          tabBarLabel: "Outer",
+        }} />
       <TopTap.Screen
         name="Cap"
-        component={RCapScreen}
+        component={(props) => <RecruitAll {...props} tabIndex={4} />}
         options={{
-          tabBarLabel: 'Cap',
-        }}/>
+          tabBarLabel: "Cap",
+        }} />
       <TopTap.Screen
         name="Bag"
-        component={RBagScreen}
+        component={(props) => <RecruitAll {...props} tabIndex={5} />}
         options={{
-          tabBarLabel: 'Bag',
-        }}/>
+          tabBarLabel: "Bag",
+        }} />
       <TopTap.Screen
         name="Accessories"
-        component={RAccesoriesScreen}
+        component={(props) => <RecruitAll {...props} tabIndex={6} />}
         options={{
-          tabBarLabel: 'Accessories',
-        }}/>
+          tabBarLabel: "Accessories",
+        }} />
     </TopTap.Navigator>
-  );
-}
-function RAllScreen({navigation}) {
-  return (
-
-    <View>
-      <RecruitAll/>
-    </View>
-
-  );
-}
-function RTopScreen() {
-  return (
-    <RecruitTop/>
-  );
-}
-function RBottomScreen() {
-  return (
-    <RecruitBottom/>
-  );
-}
-function ROuterScreen() {
-  return (
-    <RecruitOuter/>
-  );
-}
-function RCapScreen() {
-  return (
-    <RecruitCap/>
-  );
-}
-function RBagScreen() {
-  return (
-    <RecruitBag/>
-  );
-}
-function RAccesoriesScreen() {
-  return (
-    <RecruitAccessories/>
-  );
-}
-
-export default function RecruitPage() {
-  return(
-    <RecruitScreen/>
   );
 };
 

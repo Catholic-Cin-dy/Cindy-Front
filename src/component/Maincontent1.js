@@ -1,8 +1,16 @@
 import React, { useState, useEffect }  from 'react';
-import {StyleSheet, Text, View, Button, Alert,Image,SafeAreaView,ScrollView} from 'react-native';
+import {StyleSheet, Text, View, Button, Alert,Image,SafeAreaView,ScrollView,TouchableOpacity} from 'react-native';
 import {red} from "react-native-reanimated/src";
 import axios from 'axios';
+import {NavigationContainer, useNavigation} from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 const baseUrl = 'https://www.awesominki.shop';
+
+const Stack = createStackNavigator();
+const Main1Stack = createStackNavigator();
+import Detail1 from '../screens/MainDetail/Detail1';
+
+
 export default function Maincontent() {
 
     const [data, setData] = useState([]);
@@ -17,19 +25,26 @@ export default function Maincontent() {
 
 
 
-        axios.get(baseUrl + '/products', {...config })
+        axios.get(baseUrl + '/home/recommend', {...config })
             .then(response => setData(response.data.result.contents))
             .catch(error => console.error(error))
     }, []);
 
-
-
+    // const handleViewAllPress = () => {
+    //     navigation.navigate('Detail1');
+    // }
+    const navigation = useNavigation();
+    function handleMaincontent1Press() {
+        navigation.navigate('Detail1');
+    }
     return (
         <View>
             <View style={styles.maincontent}>
                 <View style={styles.maintext}>
                     <Text style={styles.text1}>신디들을 위한 추천상품</Text>
-                    <Text style={styles.text2}>전체보기</Text>
+                    <TouchableOpacity onPress={handleMaincontent1Press}>
+                        <Text style={styles.text2}>전체 보기</Text>
+                    </TouchableOpacity>
                 </View>
                 <ScrollView
                     horizontal={true}
@@ -55,11 +70,16 @@ export default function Maincontent() {
         </View>
     )}
 
+// const ShowAll = ({navigation}) => {
+//     return (
+//
+//     );
+// };
+
 const styles = StyleSheet.create({
     maincontent:{
         width: '100%',
-        borderWidth:1,
-        borderColor:'black',
+
     },
     maintext:{
         justifyContent: 'space-between',
@@ -79,16 +99,14 @@ const styles = StyleSheet.create({
     content: {
         width: '100%',
         height:250,
-        borderWidth:1,
-        borderColor:'red',
+
         flexDirection: 'row',
 
     },
     contentbox:{
         width: 167,
         height:240,
-        borderWidth:1,
-        borderColor:'red',
+
     },
     intext:{
 
