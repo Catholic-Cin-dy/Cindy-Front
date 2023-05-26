@@ -81,7 +81,7 @@ export default function CommuPostDetail({ route }) {
   return (
     <ScrollView>
       <View style={styles.profileContainer}>
-        {item.profileImg ? (
+        {item.profileImgUrl ? (
           <Image style={styles.profileImg} source={{ uri: item.profileImgUrl }} />
         ) : (
           <Image style={styles.defaultImg} source={require("../../assets/user.png")} />
