@@ -95,8 +95,8 @@ export default class SignInFin extends Component {
     // AsyncStorage에서 토큰 값을 가져와서 확인
     const storedToken = await AsyncStorage.getItem('token');
     console.log('Stored Token:', storedToken);
-    // navigation.navigate('MainPage');
-    navigation.navigate('MapScreen');
+    navigation.navigate('MainPage');
+    // navigation.navigate('MapScreen');
   };
 
   render() {
