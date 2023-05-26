@@ -10,26 +10,37 @@ import {
 import React, {useState} from 'react';
 import {KakaoOAuthToken, login} from '@react-native-seoul/kakao-login';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import SignInName from './SignInName';
 export default function Main({navigation}) {
-  // @ts-ignore
+  //이부분 수정이 필요함
+  //작동 검증 필요
   const signInWithKakao = async (): Promise<void> => {
-    const token: KakaoOAuthToken = await login();
-    const code = token.accessToken;
-    console.log(code);
-    const response = await axios
-      .post(
-        'https://www.awesominki.shop/auth/kakao',
-        {accessToken: code},
-        {
-          headers: {Authorization: `Bearer ${code}`},
-        },
-      )
-      .catch(err => {
-        console.log(response);
-        console.log(JSON.stringify(err.response));
-        navigation.navigate('SignInName');
-      });
+    //AsyncStorage에 accessToken이 있는지 확인
+    const accessToken = await AsyncStorage.getItem('token');
+
+    if (accessToken) {
+      // accesstoken이 있다면 MainPage로
+      navigation.navigate('MapScreen');
+    } else {
+      //accesstoken이 없으면 그냥 그대로 진행
+      const token: KakaoOAuthToken = await login();
+      const code = token.accessToken;
+      console.log(code);
+      const response = await axios
+        .post(
+          'https://www.awesominki.shop/auth/kakao',
+          {accessToken: code},
+          {
+            headers: {Authorization: `Bearer ${code}`},
+          },
+        )
+        .catch(err => {
+          console.log(response);
+          console.log(JSON.stringify(err.response));
+          navigation.navigate('SignInName');
+        });
+    }
   };
 
   // const [result, setResult] = useState<string>('');
