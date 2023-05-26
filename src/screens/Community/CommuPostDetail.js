@@ -118,6 +118,7 @@ export default function CommuPostDetail({route}) {
 
           <View style={styles.content} key={data.boardId}>
             <ScrollView
+              //일단 비활성화 시킴 imgcontainView
               style={styles.imgcontainView}
               horizontal={true}
               showsHorizontalScrollIndicator={true}
