@@ -1,6 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://schemas.android.com/apk/res/android ">
+          xsi:schemaLocation="http://schemas.android.com/apk/res/android "
+          android:targetSandboxVersion="1">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -12,6 +13,7 @@
             android:icon="@mipmap/ic_launcher"
             android:roundIcon="@mipmap/ic_launcher_round"
             android:allowBackup="true"
+            android:usesCleartextTraffic="true"
             android:theme="@style/AppTheme">
 
         <!-- <meta-data

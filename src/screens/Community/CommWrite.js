@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import FormData from 'form-data';
 import {
   View,
   StyleSheet,
@@ -65,45 +66,47 @@ export default function CommWrite() {
     }
   };
   const imageUrls = [
-    'https://example.com/image1.jpg',
-    'https://example.com/image2.jpg',
-    'https://example.com/image3.jpg',
+    'https://example.com/image1.jpeg',
+    'https://example.com/image2.jpeg',
+    'https://example.com/image3.jpeg',
     // Add more URLs as needed
   ];
   const submitBtn = () => {
-    const config = {
+    const formData = new FormData();
+    formData.append('content', JSON.stringify(content));
+    formData.append('title', JSON.stringify(title));
+    imageUrls.forEach((url, index) => {
+      formData.append(`image${index + 1}`, {
+        uri: url,
+        name: `image${index + 1}.jpg`,
+        type: 'image/jpeg',
+      });
+    });
+    console.log('formData : ' + formData.title);
+    const authToken =
+      'eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWQiOjIsImlhdCI6MTY3OTkyMjIwNSwiZXhwIjoxNzExNDU4MjA1fQ.A45bXqITjpGnywheSkEzfv5St2jD08DefUW2VQEbDpo';
+    const requestOptions = {
+      method: 'POST',
       headers: {
-        'X-AUTH-TOKEN': `eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWQiOjIsImlhdCI6MTY3OTkyMjIwNSwiZXhwIjoxNzExNDU4MjA1fQ.A45bXqITjpGnywheSkEzfv5St2jD08DefUW2VQEbDpo`,
+        // multipart/
+        'Content-Type': 'multipart/form-data',
+        'X-AUTH-TOKEN': authToken,
       },
+      //body: formData,
     };
-
-    const payload = {
-      content: content,
-      title: title,
-      imgList: imageUrls.map(imageUrl => ({
-        imgTags: [
-          {
-            brandId: Math.floor(Math.random() * 4) + 1, // Random brandId between 1 and 4
-            x: Math.floor(Math.random() * 300), // Random x coordinate between 0 and 300
-            y: Math.floor(Math.random() * 300), // Random y coordinate between 0 and 300
-          },
-          // Add more imgTags as needed
-        ],
-      })),
-    };
-
-    axios
-      .post(baseUrl + '/boards/new', payload, config)
+    fetch(baseUrl + '/boards/new', requestOptions)
       .then(response => {
-        setData(response.data);
-        // Reset the text and image state variables
-        setTitle('');
-        setContent('');
-        setImageSource('');
-        // setImageSource('');
+        // Handle the response as needed
+        // For example, check the response status and do appropriate actions
+        if (response.ok) {
+          console.log('Request successful');
+        } else {
+          console.log('Request failed');
+        }
       })
       .catch(error => console.error(error));
   };
+
   return (
     <ScrollView>
       <SafeAreaView style={styles.container}>
@@ -114,7 +117,7 @@ export default function CommWrite() {
           </Pressable>
         ) : (
           <Pressable style={styles.image} onPress={() => modalOpen()}>
-            <View style={styles.image}></View>
+            <View style={styles.image} />
           </Pressable>
         )}
         <UploadModeModal
@@ -125,7 +128,7 @@ export default function CommWrite() {
         />
         {/*모달 띄우기*/}
         <Text>지도</Text>
-        <View style={styles.map}></View>
+        <View style={styles.map} />
         <Text>제목을 작성해주세요</Text>
         <TextInput
           style={styles.input}
@@ -133,7 +136,7 @@ export default function CommWrite() {
           value={title}
           placeholder="제목을 작성해주세요."
         />
-        <Text> 내용을 asdasd작성해주세요</Text>
+        <Text> 내용을 작성해주세요</Text>
         <TextInput
           style={styles.input}
           onChangeText={onChangeContent}

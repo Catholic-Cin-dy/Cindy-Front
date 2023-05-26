@@ -10,7 +10,6 @@ import {
   unlink, getAccessToken,
 } from '@react-native-seoul/kakao-login';
 import {KakaoAccessTokenInfo} from "@react-native-seoul/kakao-login/src/types";
-
 export default function App() {
   const signInWithKakao = async (): Promise<void> => {
     const token: KakaoOAuthToken = await login();
@@ -51,9 +50,6 @@ export default function App() {
 }
 */
 
-
-
-
 /*
 import React from 'react';
 import {View, StyleSheet, Text, Button} from 'react-native';
@@ -91,9 +87,6 @@ const styles = StyleSheet.create({
 
 export default App;
 */
-
-
-
 
 /*
 import React from 'react';
