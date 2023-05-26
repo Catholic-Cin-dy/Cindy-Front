@@ -80,51 +80,73 @@ export default function CommuPostDetail({ route }) {
 
   return (
     <ScrollView>
-      <View style={styles.profileContainer}>
-        {item.profileImgUrl ? (
-          <Image style={styles.profileImg} source={{ uri: item.profileImgUrl }} />
-        ) : (
-          <Image style={styles.defaultImg} source={require("../../assets/user.png")} />
-        )}
-        <Text style={styles.info2}>{item.writer}</Text>
-      </View>
+      <View style={styles.column1}>
+        {data.map(item => (
+          <View
+            style={styles.item}
+            key={item.boardId}
+          >
+            <View style={styles.profileContainer}>
+              {item.profileImgUrl ? (
+                <Image style={styles.profileImg} source={{ uri: item.profileImgUrl }} />
+              ) : (
+                <Image style={styles.defaultImg} source={require("../../assets/user.png")} />
+              )}
+              <Text style={styles.info2}>{item.writer}</Text>
+            </View>
 
-      <View style={styles.heartIconBackground} key={data.boardId}>
-        <Text>{data.likeCheck ? data.likeCheck.toString() : "유효값x pid: " + data.boardId}</Text>
-        <TouchableOpacity onPress={handleLike}>
-          {/*<Image source={liked ? require('../../assets/like.png') : require('../../assets/unlike.png')} />*/}
-          <Image style={styles.heartIcon}
-                 source={data.likeCheck ? require("../../assets/like.png") : require("../../assets/unlike.png")} />
-        </TouchableOpacity>
-      </View>
-      <View
-        style={styles.content}
-        key={data.boardId}
-      >
-        <ScrollView
-          style={styles.imgcontainView}
-          horizontal={true}
-          showsHorizontalScrollIndicator={true}
-          onMomentumScrollEnd={
-            () => {
-              console.log("Scrolling is End");
-            }
-          }
-        >
-          {/*{item.imgList.map((imgUrl, index) => (
+            <View style={styles.heartIconBackground} key={data.boardId}>
+              <Text>{data.likeCheck ? data.likeCheck.toString() : "유효값x pid: " + data.boardId}</Text>
+              <TouchableOpacity onPress={handleLike}>
+                {/*<Image source={liked ? require('../../assets/like.png') : require('../../assets/unlike.png')} />*/}
+                <Image style={styles.heartIcon}
+                       source={data.likeCheck ? require("../../assets/like.png") : require("../../assets/unlike.png")} />
+              </TouchableOpacity>
+            </View>
+
+            <View
+              style={styles.content}
+              key={data.boardId}
+            >
+              <ScrollView
+                style={styles.imgcontainView}
+                horizontal={true}
+                showsHorizontalScrollIndicator={true}
+                onMomentumScrollEnd={
+                  () => {
+                    console.log("Scrolling is End");
+                  }
+                }
+              >
+                {/*{item.imgList.map((imgUrl, index) => (
               <Image key={index} source={{ uri: imgUrl }} style={styles.pImg} />
           ))}*/}
-        </ScrollView>
-
-
-        <Text style={styles.info1}>{data.title}</Text>
-        <Text style={styles.info2}>{data.content}</Text>
-        <Text />
-        <Text />
+              </ScrollView>
+              <Text style={styles.info1}>{data.title}</Text>
+              <Text style={styles.info2}>{data.content}</Text>
+            </View>
 
 
 
+
+          </View>
+        ))}
       </View>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     </ScrollView>
   );
 
