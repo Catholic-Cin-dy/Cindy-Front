@@ -1,9 +1,20 @@
-import React, { useState, useEffect } from "react";
-import { Image, TouchableOpacity, FlatList, TextInput, View, StyleSheet, Text, Button,SafeAreaView,ScrollView } from 'react-native';
-import CommWrite from "./CommWrite";
-import CommuWriteMap from "./CommuWriteMap";
+import React, {useState, useEffect} from 'react';
+import {
+  Image,
+  TouchableOpacity,
+  FlatList,
+  TextInput,
+  View,
+  StyleSheet,
+  Text,
+  Button,
+  SafeAreaView,
+  ScrollView,
+} from 'react-native';
+import CommWrite from './CommWrite';
+import CommuWriteMap from './CommuWriteMap';
 import axios from 'axios';
-import {useNavigation} from "@react-navigation/native";
+import {useNavigation} from '@react-navigation/native';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {PermissionsAndroid} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
@@ -11,11 +22,13 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 
-import CommuPostDetail from "./CommuPostDetail";
+import CommuPostDetail from './CommuPostDetail';
 
 const baseUrl = 'https://www.awesominki.shop/'; //api 연결을 위한 baseUrl
 const config = {
-  headers: { 'X-AUTH-TOKEN': `eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWQiOjIsImlhdCI6MTY3OTkyMjIwNSwiZXhwIjoxNzExNDU4MjA1fQ.A45bXqITjpGnywheSkEzfv5St2jD08DefUW2VQEbDpo` }
+  headers: {
+    'X-AUTH-TOKEN': `eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWQiOjIsImlhdCI6MTY3OTkyMjIwNSwiZXhwIjoxNzExNDU4MjA1fQ.A45bXqITjpGnywheSkEzfv5St2jD08DefUW2VQEbDpo`,
+  },
 };
 export default function CommuScreen() {
   const navigation = useNavigation();
@@ -26,64 +39,58 @@ export default function CommuScreen() {
   const [suggestions, setSuggestions] = useState([]);
 
   const [data, setData] = useState([]); //커뮤니티 전체 데이터
-  const payload = { latitude: 37.541, longitude: 126.986 }; //사용자의 위치 받아온거 여기 들어가야 함.
+  const payload = {latitude: 37.541, longitude: 126.986}; //사용자의 위치 받아온거 여기 들어가야 함.
   useEffect(() => {
-
     const params = {
       page: 0,
     };
 
-    axios.post(baseUrl + 'boards', payload, { params, ...config })
+    axios
+      .post(baseUrl + 'boards', payload, {params, ...config})
       .then(response =>
         // POST 요청이 성공한 경우 실행되는 코드
-        setData(response.data.result.contents)
+        setData(response.data.result.contents),
       )
       .catch(error => {
         // POST 요청이 실패한 경우 실행되는 코드
         console.error(error);
       });
-
-
   }, []);
 
-
-  const handleSearchTextChange = (text) => {
+  const handleSearchTextChange = text => {
     setSearchText(text);
     if (text.length > 0) {
       // TODO: Implement your logic to get suggestions based on the input text
       //setSuggestions([...Array(5)].map((_, i) => ({ label: `${text} ${i + 1}` })));
       const params = {
-        content: text
+        content: text,
       };
 
-      axios.get(baseUrl + 'boards/tag', { params, ...config })
-        .then(response =>
-          setSuggestions(response.data.result)
-        )
-        .catch(error => console.error(error))
-
-    } else { //검색어 없으면 빈칸
+      axios
+        .get(baseUrl + 'boards/tag', {params, ...config})
+        .then(response => setSuggestions(response.data.result))
+        .catch(error => console.error(error));
+    } else {
+      //검색어 없으면 빈칸
       setSuggestions([]);
     }
   };
-  const handleSuggestionPress = (item) => {
+  const handleSuggestionPress = item => {
     setSearchText(item);
   };
 
-  const renderSuggestion = ({ item }) => {
+  const renderSuggestion = ({item}) => {
     return (
-      <TouchableOpacity
-        onPress={() => handleSuggestionPress(item)}
-      >
+      <TouchableOpacity onPress={() => handleSuggestionPress(item)}>
         <Text>{item}</Text>
       </TouchableOpacity>
     );
   };
 
-  const handlePostImgPress = (boardId) => {
+  const handlePostImgPress = boardId => {
     // 해당 상품 정보를 route.params로 넘겨주고 ProductDetail 화면으로 이동
-    console.log('boardId ID : ' + boardId);
-    navigation.navigate('CommuPostDetail', { boardId });
+    // console.log('boardId ID : ' + boardId);
+    navigation.navigate('CommuPostDetail', {boardId});
   };
 
   return (
@@ -100,19 +107,23 @@ export default function CommuScreen() {
         <FlatList
           data={suggestions}
           renderItem={renderSuggestion}
-          keyExtractor={(item) => item}
+          keyExtractor={item => item}
         />
 
         <Text>검색어 : {searchText}</Text>
 
-
-        <Button title={"글쓰기"} onPress={() => {
-          navigation.navigate("CommWrite");
-        }} />
-        <Button title={"지도"} onPress={() => {
-          navigation.navigate("CommuWriteMap");
-        }} />
-
+        <Button
+          title={'글쓰기'}
+          onPress={() => {
+            navigation.navigate('CommWrite');
+          }}
+        />
+        <Button
+          title={'지도'}
+          onPress={() => {
+            navigation.navigate('CommuWriteMap');
+          }}
+        />
 
         <ScrollView style={styles.scrollView}>
           <View style={styles.row}>
@@ -125,12 +136,17 @@ export default function CommuScreen() {
                   key={item.boardId}
                   // onPress={() => handleItemPress(item.boardId)}
                 >
-
                   <View style={styles.profileContainer}>
                     {item.profileImg ? (
-                      <Image style={styles.profileImg} source={{ uri: item.profileImg }} />
+                      <Image
+                        style={styles.profileImg}
+                        source={{uri: item.profileImg}}
+                      />
                     ) : (
-                      <Image style={styles.defaultImg} source={require("../../assets/user.png")} />
+                      <Image
+                        style={styles.defaultImg}
+                        source={require('../../assets/user.png')}
+                      />
                     )}
                     <Text style={styles.info2}>{item.writer}</Text>
                   </View>
@@ -138,31 +154,40 @@ export default function CommuScreen() {
                   <ScrollView
                     horizontal={true}
                     showsHorizontalScrollIndicator={true}
-                    onMomentumScrollEnd={
-                      () => {
-                        console.log("Scrolling is End");
-                      }
-                    }
-                  >
+                    onMomentumScrollEnd={() => {
+                      console.log('Scrolling is End');
+                    }}>
                     {item.boardImg.map((imgUrl, index) => (
-                      <TouchableOpacity onPress={() => handlePostImgPress(item.boardId)}>
-                      <Image key={index} source={{ uri: imgUrl }} style={styles.pImg} />
+                      <TouchableOpacity
+                        onPress={() => handlePostImgPress(item.boardId)}>
+                        <Image
+                          key={index}
+                          source={{uri: imgUrl}}
+                          style={styles.pImg}
+                        />
                       </TouchableOpacity>
                     ))}
                   </ScrollView>
                   <Text style={styles.info1}>제목 : {item.title}</Text>
 
                   <Text style={styles.info1}>좋아요 수 : {item.likeCount}</Text>
-                  <Text style={styles.info1}>댓글 수 : {item.commentCount}</Text>
+                  <Text style={styles.info1}>
+                    댓글 수 : {item.commentCount}
+                  </Text>
 
                   <View style={styles.heartIconBackground} key={item.boardId}>
                     <TouchableOpacity onPress={() => handleLike(item.boardId)}>
-                      <Image style={styles.heartIcon}
-                             source={item.likeCheck ? require("../../../src/assets/like.png") : require("../../../src/assets/unlike.png")} />
+                      <Image
+                        style={styles.heartIcon}
+                        source={
+                          item.likeCheck
+                            ? require('../../../src/assets/like.png')
+                            : require('../../../src/assets/unlike.png')
+                        }
+                      />
                     </TouchableOpacity>
                   </View>
                   <Text style={styles.info1}>작성일시 {item.boardTime}</Text>
-
                 </View>
               ))}
             </View>
@@ -173,13 +198,18 @@ export default function CommuScreen() {
                 <View
                   style={styles.item}
                   key={item.boardId}
-                  onPress={() => handleItemPress(item.boardId)}
-                >
+                  onPress={() => handleItemPress(item.boardId)}>
                   <View style={styles.profileContainer}>
                     {item.profileImg ? (
-                      <Image style={styles.profileImg} source={{ uri: item.profileImg }} />
+                      <Image
+                        style={styles.profileImg}
+                        source={{uri: item.profileImg}}
+                      />
                     ) : (
-                      <Image style={styles.defaultImg} source={require("../../assets/user.png")} />
+                      <Image
+                        style={styles.defaultImg}
+                        source={require('../../assets/user.png')}
+                      />
                     )}
                     <Text style={styles.info2}>{item.writer}</Text>
                   </View>
@@ -187,40 +217,44 @@ export default function CommuScreen() {
                   <ScrollView
                     horizontal={true}
                     showsHorizontalScrollIndicator={true}
-                    onMomentumScrollEnd={
-                      () => {
-                        console.log("Scrolling is End");
-                      }
-                    }
-                  >
+                    onMomentumScrollEnd={() => {
+                      console.log('Scrolling is End');
+                    }}>
                     {item.boardImg.map((imgUrl, index) => (
-                      <Image key={index} source={{ uri: imgUrl }} style={styles.pImg} />
+                      <Image
+                        key={index}
+                        source={{uri: imgUrl}}
+                        style={styles.pImg}
+                      />
                     ))}
                   </ScrollView>
                   <Text style={styles.info1}>제목 : {item.title}</Text>
 
                   <Text style={styles.info1}>좋아요 수 : {item.likeCount}</Text>
-                  <Text style={styles.info1}>댓글 수 : {item.commentCount}</Text>
+                  <Text style={styles.info1}>
+                    댓글 수 : {item.commentCount}
+                  </Text>
 
                   <View style={styles.heartIconBackground} key={item.boardId}>
                     <TouchableOpacity onPress={() => handleLike(item.boardId)}>
-                      <Image style={styles.heartIcon}
-                             source={item.likeCheck ? require("../../../src/assets/like.png") : require("../../../src/assets/unlike.png")} />
+                      <Image
+                        style={styles.heartIcon}
+                        source={
+                          item.likeCheck
+                            ? require('../../../src/assets/like.png')
+                            : require('../../../src/assets/unlike.png')
+                        }
+                      />
                     </TouchableOpacity>
                   </View>
                   <Text style={styles.info1}>작성일시 {item.boardTime}</Text>
-
                 </View>
               ))}
             </View>
           </View>
         </ScrollView>
-
-
       </SafeAreaView>
-
     </ScrollView>
-
   );
 }
 const styles = StyleSheet.create({
@@ -242,10 +276,10 @@ const styles = StyleSheet.create({
     height: 30,
     borderRadius: 0,
   },
-  pImg:{
+  pImg: {
     width: 156,
     height: 156,
-    backgroundColor:'gray',
+    backgroundColor: 'gray',
     borderRadius: 0,
   },
   row: {
@@ -297,7 +331,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FDF5DC',
     paddingHorizontal: 20,
     marginVertical: 30,
-    flex: 1
+    flex: 1,
   },
   textInput: {
     marginTop: 20,
@@ -306,27 +340,27 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 10,
     borderColor: 'gray',
-    borderWidth: 1
+    borderWidth: 1,
   },
   showText: {
     marginTop: 10,
     fontSize: 25,
   },
 
-  Product : {
+  Product: {
     width: 156,
     height: 168,
     borderRadius: 8,
   },
 
-  SearchContainer : {
+  SearchContainer: {
     width: 400,
     height: 45,
     // position: relative,
     border: 0,
   },
 
-  Search : {
+  Search: {
     border: 0,
     backgroundColor: '#eaeaea',
     paddingLeft: 10,
