@@ -6,6 +6,12 @@ import axios from 'axios';
 import {useNavigation} from "@react-navigation/native";
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {PermissionsAndroid} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+
+import CommuPostDetail from "./CommuPostDetail";
 
 const baseUrl = 'https://www.awesominki.shop/'; //api 연결을 위한 baseUrl
 const config = {
@@ -74,6 +80,12 @@ export default function CommuScreen() {
     );
   };
 
+  const handlePostImgPress = (boardId) => {
+    // 해당 상품 정보를 route.params로 넘겨주고 ProductDetail 화면으로 이동
+    console.log('boardId ID : ' + boardId);
+    navigation.navigate('CommuPostDetail', { boardId });
+  };
+
   return (
     <ScrollView>
       <SafeAreaView style={styles.container}>
@@ -107,30 +119,35 @@ export default function CommuScreen() {
             <View style={styles.column1}>
               {data.slice(0, data.length / 2).map(item => (
                 // 첫 번째 열에 해당하는 데이터를 매핑하여 표시
-                // View가 아니라 TouchableOpacity였음
+                // View가 아니라 TouchableOpacity 였음
                 <View
                   style={styles.item}
                   key={item.boardId}
-                  onPress={() => handleItemPress(item.boardId)}
+                  // onPress={() => handleItemPress(item.boardId)}
                 >
+
                   <View style={styles.profileContainer}>
                     {item.profileImg ? (
                       <Image style={styles.profileImg} source={{ uri: item.profileImg }} />
                     ) : (
-                      <Image style={styles.defaultImg} source={require('../../assets/user.png')} />
+                      <Image style={styles.defaultImg} source={require("../../assets/user.png")} />
                     )}
                     <Text style={styles.info2}>{item.writer}</Text>
                   </View>
 
                   <ScrollView
                     horizontal={true}
-                    showsHorizontalScrollIndicator = {true}
-                    onMomentumScrollEnd ={
-                      () => {console.log('Scrolling is End')}
+                    showsHorizontalScrollIndicator={true}
+                    onMomentumScrollEnd={
+                      () => {
+                        console.log("Scrolling is End");
+                      }
                     }
                   >
                     {item.boardImg.map((imgUrl, index) => (
+                      <TouchableOpacity onPress={() => handlePostImgPress(item.boardId)}>
                       <Image key={index} source={{ uri: imgUrl }} style={styles.pImg} />
+                      </TouchableOpacity>
                     ))}
                   </ScrollView>
                   <Text style={styles.info1}>제목 : {item.title}</Text>
@@ -162,16 +179,18 @@ export default function CommuScreen() {
                     {item.profileImg ? (
                       <Image style={styles.profileImg} source={{ uri: item.profileImg }} />
                     ) : (
-                      <Image style={styles.defaultImg} source={require('../../assets/user.png')} />
+                      <Image style={styles.defaultImg} source={require("../../assets/user.png")} />
                     )}
                     <Text style={styles.info2}>{item.writer}</Text>
                   </View>
 
                   <ScrollView
                     horizontal={true}
-                    showsHorizontalScrollIndicator = {true}
-                    onMomentumScrollEnd ={
-                      () => {console.log('Scrolling is End')}
+                    showsHorizontalScrollIndicator={true}
+                    onMomentumScrollEnd={
+                      () => {
+                        console.log("Scrolling is End");
+                      }
                     }
                   >
                     {item.boardImg.map((imgUrl, index) => (

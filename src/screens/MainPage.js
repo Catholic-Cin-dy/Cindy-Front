@@ -28,6 +28,7 @@ import Detail1 from "./MainDetail/Detail1";
 import Detail2 from "./MainDetail/Detail2";
 import LogoTitle from "./LogoTitle";
 import CommuScreen from "./Community/CommuScreen";
+import CommuPostDetail from "./Community/CommuPostDetail";
 import CommWrite from "./Community/CommWrite";
 import CommuWriteMap from "./Community/CommuWriteMap";
 
@@ -96,6 +97,7 @@ const BookMarkStackScreen = () => {
   return (
     <Stack.Navigator>
       <RecruitStack.Screen name="Community" component={CommuScreen} options={{ headerShown: false }}/>
+      <RecruitStack.Screen name = "CommuPostDetail" component = {CommuPostDetail} options = {{ headerShown : false }}/>
       <RecruitStack.Screen name="CommWrite" component={CommWrite} />
       <RecruitStack.Screen name="CommuWriteMap" component={CommuWriteMap} />
     </Stack.Navigator>
