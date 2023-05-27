@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
+import Swiper from 'react-native-swiper'
 import axios from 'axios';
 import {useState, useEffect} from 'react';
 import 'react-native-gesture-handler';
@@ -84,6 +85,29 @@ export default function CommuPostDetail({route}) {
         </View>
 
         <View style={styles.content} key={data.boardId}>
+          <Swiper
+            autoplay={true}
+            autoplayTimeout = {2.5}
+            showsPagination={false}>
+            {data && data.imgList && data.imgList.map((img, index) => (
+              <View style={styles.slide} key={data.boardId} >
+              <Image
+                key={index}
+                source={{ uri: img.imgUrl }}
+                style={styles.pImg}
+              />
+              </View>
+            ))}
+            {/*{data.map(item => (
+              <View style={styles.slide} key={item.id} >
+                <Image style={styles.image} source={{ uri: item.bannerUrl}}/>
+                <Text  style={styles.text1}>{item.title}</Text>
+                <Text  style={styles.text2}>{item.content}</Text>
+              </View>
+            ))}*/}
+
+          </Swiper>
+
           <ScrollView
             horizontal={true}
             showsHorizontalScrollIndicator={true}
@@ -118,6 +142,9 @@ export default function CommuPostDetail({route}) {
 }
 
 const styles = {
+  slide: {
+    flex: 1,
+  },
   profileContainer: {
     marginLeft: 15,
     marginTop: 10,
