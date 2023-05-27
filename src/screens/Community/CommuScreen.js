@@ -31,7 +31,6 @@ const config = {
   },
 };
 export default function CommuScreen() {
-  const navigation = useNavigation();
 
   const [text, setText] = useState('');
 
@@ -87,11 +86,29 @@ export default function CommuScreen() {
     );
   };
 
+  const navigation = useNavigation();
   const handlePostImgPress = boardId => {
     // 해당 상품 정보를 route.params로 넘겨주고 ProductDetail 화면으로 이동
     // console.log('boardId ID : ' + boardId);
     navigation.navigate('CommuPostDetail', {boardId});
   };
+
+  function handleLike() {
+    setLiked(!liked);
+
+    axios
+      .patch(baseUrl + 'boards/like/' + boardId, {}, config)
+      .then(response => setLiked(response.data.result.likeCheck))
+      .catch(error => console.error(error));
+
+    axios
+      .get(baseUrl + 'boards/' + boardId, {...config})
+      .then(response => {
+        setData(response.data.result);
+      })
+
+      .catch(error => console.error(error));
+  }
 
   return (
     <ScrollView>

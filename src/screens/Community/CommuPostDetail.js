@@ -28,8 +28,7 @@ const config = {
 export default function CommuPostDetail({route}) {
   // route.params에서 전달받은 item 파라미터 추출
   const {boardId} = route.params; // route.params에서 boardId 추출
-
-  //const [product, setProduct] = useState(null);
+  //console.log('route 값으로 받은 params : ' + boardId);
 
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -49,26 +48,8 @@ export default function CommuPostDetail({route}) {
       .catch(error => console.error(error));
   }, []);
 
-  //useState(false)로 하든 useState(data.likeCheck)로 하든 api 연결은 문제 없음. 현재 상태 못받아오는게 문젠듯
-  //const [liked, setLiked] = useState(false);
-  // const [liked, setLiked] = useState(data.likeCheck);
-  // false: 좋아요를 누르지 않은 상태, true: 좋아요를 누른 상태
   function handleLike() {
     setLiked(!liked);
-
-    /*axios.get(baseUrl + 'products/'+boardId, { ...config })
-      .then((response)=>{
-        if(response.data.result.likeCheck == true){ //이미 좋아요가 눌려있는 상태
-          //showToastMessage("좋아요 삭제");
-          //비워진 하트로 바뀌게
-          // 토스트 메시지 띄우기
-          setLiked(false);
-        }else {
-          //showToastMessage("좋아요");
-          //채워진 하트로 바뀌게
-          setLiked(true);
-        }
-      })*/
 
     axios
       .patch(baseUrl + 'boards/like/' + boardId, {}, config)
@@ -109,7 +90,7 @@ export default function CommuPostDetail({route}) {
             onMomentumScrollEnd={() => {
               console.log("Scrolling is End");
             }}>
-            {data.imgList.map((img, index) => (
+            {data && data.imgList && data.imgList.map((img, index) => (
               <Image
                 key={index}
                 source={{ uri: img.imgUrl }}
@@ -118,24 +99,18 @@ export default function CommuPostDetail({route}) {
             ))}
           </ScrollView>
 
-
           <View style = {styles.contentContainer}>
-            <View>
-              <Text style={styles.info1}>{data.title}</Text>
-              <Text style={styles.info2}>{data.content}</Text>
-            </View>
+            <Text style={styles.info1}>{data.title}</Text>
             <View style={styles.heartIconBackground} key={data.boardId}>
-              <Text>
-                {data.likeCheck
-                  ? data.likeCheck.toString()
-                  : "유효값x pid: " + data.boardId}
-              </Text>
               <TouchableOpacity onPress={handleLike}>
                 <Image style={styles.heartIcon}
                        source={data.likeCheck ? require("../../assets/like.png") : require("../../assets/unlike.png")} />
               </TouchableOpacity>
             </View>
           </View>
+          <Text/>
+          <Text style={styles.info2}>{data.content}</Text>
+
         </View>
       </View>
     </ScrollView>
