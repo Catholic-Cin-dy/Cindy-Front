@@ -7,8 +7,9 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
+  SafeAreaView,
 } from 'react-native';
-import Swiper from 'react-native-swiper'
+import Swiper from 'react-native-swiper';
 import axios from 'axios';
 import {useState, useEffect} from 'react';
 import 'react-native-gesture-handler';
@@ -26,9 +27,9 @@ const config = {
   },
 };
 
-export default function CommuPostDetail({route}) {
+export default function CommuPostDetail({ route }) {
   // route.params에서 전달받은 item 파라미터 추출
-  const {boardId} = route.params; // route.params에서 boardId 추출
+  const { boardId } = route.params; // route.params에서 boardId 추출
   //console.log('route 값으로 받은 params : ' + boardId);
 
   const [data, setData] = useState([]);
@@ -39,31 +40,32 @@ export default function CommuPostDetail({route}) {
   useEffect(() => {
     console.log('CommuPostDetail - boardId : ' + boardId);
 
-    axios
-      .get(baseUrl + 'boards/' + boardId, {...config})
+    axios.get(baseUrl + 'boards/' + boardId, {...config})
       .then(response => {
         setData(response.data.result);
         setLiked(response.data.result.likeCheck); //like가 true or false
       })
 
       .catch(error => console.error(error));
+
+
+
   }, []);
 
   function handleLike() {
     setLiked(!liked);
 
-    axios
-      .patch(baseUrl + 'boards/like/' + boardId, {}, config)
-      .then(response => setLiked(response.data.result.likeCheck))
+    axios.patch(baseUrl + 'boards/like/' + boardId, {}, config)
+      .then(response => setLiked(response.data.result))
       .catch(error => console.error(error));
 
-    axios
-      .get(baseUrl + 'boards/' + boardId, {...config})
+    axios.get(baseUrl + 'boards/' + boardId, { ...config })
       .then(response => {
-        setData(response.data.result);
+        setData(response.data.result)
       })
 
-      .catch(error => console.error(error));
+      .catch(error => console.error(error))
+
   }
 
   return (
@@ -84,30 +86,23 @@ export default function CommuPostDetail({route}) {
           <Text style={styles.info2}>{data.writer}</Text>
         </View>
 
-        <View style={styles.content} key={data.boardId}>
-          <Swiper
+        <View>
+          {/*<Swiper
             autoplay={true}
-            autoplayTimeout = {2.5}
+            autoplayTimeout={2.5}
             showsPagination={false}>
-            {data && data.imgList && data.imgList.map((img, index) => (
-              <View style={styles.slide} key={data.boardId} >
-              <Image
-                key={index}
-                source={{ uri: img.imgUrl }}
-                style={styles.pImg}
-              />
+            {data && data.imgList && data.imgList.map((img, imgId) => (
+              <View key={imgId}>
+                <Image
+                  source={{ uri: img.imgUrl }}
+                  style={styles.pImg}
+                />
               </View>
             ))}
-            {/*{data.map(item => (
-              <View style={styles.slide} key={item.id} >
-                <Image style={styles.image} source={{ uri: item.bannerUrl}}/>
-                <Text  style={styles.text1}>{item.title}</Text>
-                <Text  style={styles.text2}>{item.content}</Text>
-              </View>
-            ))}*/}
+          </Swiper>*/}
+        </View>
 
-          </Swiper>
-
+        <View>
           <ScrollView
             horizontal={true}
             showsHorizontalScrollIndicator={true}
@@ -122,17 +117,20 @@ export default function CommuPostDetail({route}) {
               />
             ))}
           </ScrollView>
+        </View>
 
-          <View style = {styles.contentContainer}>
+        <View style={styles.content} key={data.boardId}>
+          <View style={styles.contentContainer}>
             <Text style={styles.info1}>{data.title}</Text>
             <View style={styles.heartIconBackground} key={data.boardId}>
+              <Text>{data.likeCheck ? data.likeCheck.toString() : "유효값x pid: " + data.boardId}</Text>
               <TouchableOpacity onPress={handleLike}>
                 <Image style={styles.heartIcon}
                        source={data.likeCheck ? require("../../assets/like.png") : require("../../assets/unlike.png")} />
               </TouchableOpacity>
             </View>
           </View>
-          <Text/>
+          <Text />
           <Text style={styles.info2}>{data.content}</Text>
 
         </View>
@@ -142,6 +140,10 @@ export default function CommuPostDetail({route}) {
 }
 
 const styles = {
+  container1: {
+    width:'100%',
+    height: 519,
+  },
   slide: {
     flex: 1,
   },
