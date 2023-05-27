@@ -86,51 +86,55 @@ export default function CommuPostDetail({route}) {
 
   return (
     <ScrollView>
-      <View style={styles.column1}>
-        <View style={styles.item} key={data.boardId}>
-          <View style={styles.profileContainer}>
-            {data.profileImgUrl ? (
-              <Image
-                style={styles.profileImg}
-                source={{uri: data.profileImgUrl}}
-              />
-            ) : (
-              <Image
-                style={styles.defaultImg}
-                source={require('../../assets/user.png')}
-              />
-            )}
-            <Text style={styles.info2}>{data.writer}</Text>
-          </View>
+      <View style={styles.item} key={data.boardId}>
+        <View style={styles.profileContainer}>
+          {data.profileImgUrl ? (
+            <Image
+              style={styles.profileImg}
+              source={{ uri: data.profileImgUrl }}
+            />
+          ) : (
+            <Image
+              style={styles.defaultImg}
+              source={require("../../assets/user.png")}
+            />
+          )}
+          <Text style={styles.info2}>{data.writer}</Text>
+        </View>
 
-          <View style={styles.heartIconBackground} key={data.boardId}>
-            <Text>
-              {data.likeCheck
-                ? data.likeCheck.toString()
-                : '유효값x pid: ' + data.boardId}
-            </Text>
-            <TouchableOpacity onPress={handleLike}>
-              {/*{/<Image source={liked ? require('../../assets/like.png') : require('../../assets/unlike.png')} />/}*/}
-              {/*  <Image style={styles.heartIcon}*/}
-              {/*  source={data.likeCheck ? require("../../assets/like.png") : require("../../assets/unlike.png")} />*/}
-            </TouchableOpacity>
-          </View>
+        <View style={styles.content} key={data.boardId}>
+          <ScrollView
+            horizontal={true}
+            showsHorizontalScrollIndicator={true}
+            onMomentumScrollEnd={() => {
+              console.log("Scrolling is End");
+            }}>
+            {data.imgList.map((img, index) => (
+              <Image
+                key={index}
+                source={{ uri: img.imgUrl }}
+                style={styles.pImg}
+              />
+            ))}
+          </ScrollView>
 
-          <View style={styles.content} key={data.boardId}>
-            <ScrollView
-              //일단 비활성화 시킴 imgcontainView
-              style={styles.imgcontainView}
-              horizontal={true}
-              showsHorizontalScrollIndicator={true}
-              onMomentumScrollEnd={() => {
-                console.log('Scrolling is End');
-              }}>
-              {/*  {/{item.imgList.map((imgUrl, index) => (*/}
-              {/*    <Image key={index} source={{ uri: imgUrl }} style={styles.pImg} />*/}
-              {/*))}/}*/}
-            </ScrollView>
-            <Text style={styles.info1}>{data.title}</Text>
-            <Text style={styles.info2}>{data.content}</Text>
+
+          <View style = {styles.contentContainer}>
+            <View>
+              <Text style={styles.info1}>{data.title}</Text>
+              <Text style={styles.info2}>{data.content}</Text>
+            </View>
+            <View style={styles.heartIconBackground} key={data.boardId}>
+              <Text>
+                {data.likeCheck
+                  ? data.likeCheck.toString()
+                  : "유효값x pid: " + data.boardId}
+              </Text>
+              <TouchableOpacity onPress={handleLike}>
+                <Image style={styles.heartIcon}
+                       source={data.likeCheck ? require("../../assets/like.png") : require("../../assets/unlike.png")} />
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </View>
@@ -140,8 +144,14 @@ export default function CommuPostDetail({route}) {
 
 const styles = {
   profileContainer: {
+    marginLeft: 15,
+    marginTop: 10,
+    marginBottom: 5,
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  contentContainer: {
+    flexDirection: 'row',
   },
   profileImg: {
     width: 30,
@@ -154,9 +164,9 @@ const styles = {
     borderRadius: 0,
   },
   pImg: {
-    width: 156,
-    height: 156,
-    backgroundColor: 'gray',
+    width: 360,
+    height: 400,
+    backgroundColor: 'white',
     borderRadius: 0,
   },
   row: {
