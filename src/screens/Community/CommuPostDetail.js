@@ -45,6 +45,7 @@ export default function CommuPostDetail({route}) {
   const [error, setError] = useState(null);
   const [liked, setLiked] = useState();
   const [comment, setComment] = useState('');
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const navigation = useNavigation();
 
@@ -68,9 +69,11 @@ export default function CommuPostDetail({route}) {
       .get(baseUrl + 'boards/comments/' + boardId, {...config})
       .then(response => {
         setCData(response.data.result.contents);
+        // setIsRefreshing(false); // 화면 새로고침 완료
       })
       .catch(error => console.error(error));
   }, [isFocused]);
+  // }, [isFocused, isRefreshing]);
 
   function handleLike() {
     setLiked(!liked);
@@ -114,7 +117,13 @@ export default function CommuPostDetail({route}) {
     console.log(commentId);
     axios
       .delete(baseUrl + 'boards/comments/' + commentId, {...config})
-      .then(response => {})
+      .then(response => {
+        console.log(cdata);
+        // setCData(prevData =>
+        //   prevData.filter(cdata => cdata.commentId !== commentId),
+        // );
+        // setIsRefreshing(true);
+      })
       .catch(error => console.error(error));
   }
 
