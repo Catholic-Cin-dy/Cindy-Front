@@ -21,12 +21,15 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
+import CommuScreen from './CommuScreen';
+
 const baseUrl = 'https://www.awesominki.shop/'; //api 연결을 위한 baseUrl
 const config = {
   headers: {
     'X-AUTH-TOKEN': `eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWQiOjIsImlhdCI6MTY3OTkyMjIwNSwiZXhwIjoxNzExNDU4MjA1fQ.A45bXqITjpGnywheSkEzfv5St2jD08DefUW2VQEbDpo`,
   },
 };
+const payload = {latitude: 37.541, longitude: 126.986}; //사용자의 위치 받아온거 여기 들어가야 함.
 
 export default function CommuPostDetail({ route }) {
   // route.params에서 전달받은 item 파라미터 추출
@@ -38,8 +41,11 @@ export default function CommuPostDetail({ route }) {
   const [error, setError] = useState(null);
   const [liked, setLiked] = useState();
 
+  const navigation = useNavigation();
+
   useEffect(() => {
     console.log('CommuPostDetail - boardId : ' + boardId);
+
 
     axios.get(baseUrl + 'boards/' + boardId, {...config})
       .then(response => {
@@ -48,7 +54,6 @@ export default function CommuPostDetail({ route }) {
       })
 
       .catch(error => console.error(error));
-
 
 
   }, []);
@@ -75,6 +80,25 @@ export default function CommuPostDetail({ route }) {
 
   }
 
+
+  function deletePost(){
+    const params = {
+      boardId : boardId,
+    };
+
+    axios.delete(baseUrl + 'boards/delete/' + boardId, { ...config })
+      .then(response => {
+
+      })
+      .catch(error => console.error(error))
+  }
+
+  function movePost() {
+
+    navigation.navigate('CommuScreen');
+  }
+
+
   const AddGoods = (props) => {
     const [ImageSelectorPopupVisiable, setImageSelectorPopupVisiable] = useState(false);
   };
@@ -82,6 +106,8 @@ export default function CommuPostDetail({ route }) {
   return (
     <ScrollView>
       <View style={styles.item} key={data.boardId}>
+        <Text>boardId : </Text>
+        <Text>{data.boardId}</Text>
         <View style={styles.profileContainer}>
           {data.profileImgUrl ? (
             <Image
@@ -95,6 +121,19 @@ export default function CommuPostDetail({ route }) {
             />
           )}
           <Text style={styles.info2}>{data.writer}</Text>
+
+          <Text>
+            {data.my ?
+              <TouchableOpacity style={styles.deleteBtn} onPress={() => { deletePost(); navigation.pop(); }}>
+                <Text>삭제</Text>
+              </TouchableOpacity> : "유효값x pid: " + data.boardId}
+          </Text>
+
+          <Text>
+            <TouchableOpacity style={styles.deleteBtn} onPress={() => navigation.pop()}>
+              <Text>이동</Text>
+            </TouchableOpacity>
+          </Text>
         </View>
 
         <View>
@@ -122,29 +161,16 @@ export default function CommuPostDetail({ route }) {
             }}>
             {data && data.imgList && data.imgList.map((img, index) => (
               <TouchableOpacity onPress={showCoordinate}>
-              <Image
-                key={index}
-                source={{ uri: img.imgUrl }}
-                style={styles.pImg}
-              />
+                <Image
+                  key={index}
+                  source={{ uri: img.imgUrl }}
+                  style={styles.pImg}
+                />
                 <Text>x,y 좌표</Text>
                 <Text>imgId : {`${img.imgId}`}</Text>
                 {img.imgTags && img.imgTags.map((tag, index) => (
                   <View key={index}>
                     <Text>{`x: ${tag.x}, y: ${tag.y}, brandName: ${tag.brandName}`}</Text>
-                    {/*<Modal
-                      animationType='fade'
-                      transparent={true}
-                      visible={this.state.ImageSelectorPopupVisiable}
-                      onRequestClose={() => this.setState({ ImageSelectorPopupVisiable: false })}>
-                      <ImageSelectorPopup
-                        x={`${tag.x}`}
-                        y={`${tag.y}`}
-                        closeCameraPopupMenu={() => this.setState({ ImageSelectorPopupVisiable: false })}
-                        goCameraScreen={this.goCameraScreen}
-                        goGalleryScreen={this.goGalleryScreen}
-                      />
-                    </Modal>*/}
                   </View>
                 ))}
               </TouchableOpacity>
@@ -156,7 +182,10 @@ export default function CommuPostDetail({ route }) {
           <View style={styles.contentContainer}>
             <Text style={styles.info1}>{data.title}</Text>
             <View style={styles.heartIconBackground} key={data.boardId}>
-              <Text>{data.likeCheck ? data.likeCheck.toString() : "유효값x pid: " + data.boardId}</Text>
+              {/*<Text>{data.likeCheck ? data.likeCheck.toString() : "유효값x pid: " + data.boardId}</Text>*/}
+
+              <Text>{data.my ? data.my.toString() : "false" + data.boardId}</Text>
+
               <TouchableOpacity onPress={handleLike}>
                 <Image style={styles.heartIcon}
                        source={data.likeCheck ? require("../../assets/like.png") : require("../../assets/unlike.png")} />
@@ -179,6 +208,9 @@ const styles = {
   },
   slide: {
     flex: 1,
+  },
+  deleteBtn: {
+    marginLeft: 210,
   },
   profileContainer: {
     marginLeft: 15,
