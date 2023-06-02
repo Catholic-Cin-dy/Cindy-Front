@@ -9,6 +9,7 @@ import {
   Image,
   SafeAreaView,
 } from 'react-native';
+import Modal from 'react-native-simple-modal';
 import Swiper from 'react-native-swiper';
 import axios from 'axios';
 import {useState, useEffect} from 'react';
@@ -33,7 +34,7 @@ export default function CommuPostDetail({ route }) {
   //console.log('route 값으로 받은 params : ' + boardId);
 
   const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
+  //const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [liked, setLiked] = useState();
 
@@ -52,6 +53,8 @@ export default function CommuPostDetail({ route }) {
 
   }, []);
 
+
+
   function handleLike() {
     setLiked(!liked);
 
@@ -67,6 +70,14 @@ export default function CommuPostDetail({ route }) {
       .catch(error => console.error(error))
 
   }
+
+  function showCoordinate(){
+
+  }
+
+  const AddGoods = (props) => {
+    const [ImageSelectorPopupVisiable, setImageSelectorPopupVisiable] = useState(false);
+  };
 
   return (
     <ScrollView>
@@ -110,11 +121,33 @@ export default function CommuPostDetail({ route }) {
               console.log("Scrolling is End");
             }}>
             {data && data.imgList && data.imgList.map((img, index) => (
+              <TouchableOpacity onPress={showCoordinate}>
               <Image
                 key={index}
                 source={{ uri: img.imgUrl }}
                 style={styles.pImg}
               />
+                <Text>x,y 좌표</Text>
+                <Text>imgId : {`${img.imgId}`}</Text>
+                {img.imgTags && img.imgTags.map((tag, index) => (
+                  <View key={index}>
+                    <Text>{`x: ${tag.x}, y: ${tag.y}, brandName: ${tag.brandName}`}</Text>
+                    {/*<Modal
+                      animationType='fade'
+                      transparent={true}
+                      visible={this.state.ImageSelectorPopupVisiable}
+                      onRequestClose={() => this.setState({ ImageSelectorPopupVisiable: false })}>
+                      <ImageSelectorPopup
+                        x={`${tag.x}`}
+                        y={`${tag.y}`}
+                        closeCameraPopupMenu={() => this.setState({ ImageSelectorPopupVisiable: false })}
+                        goCameraScreen={this.goCameraScreen}
+                        goGalleryScreen={this.goGalleryScreen}
+                      />
+                    </Modal>*/}
+                  </View>
+                ))}
+              </TouchableOpacity>
             ))}
           </ScrollView>
         </View>

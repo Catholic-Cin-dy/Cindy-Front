@@ -10,6 +10,7 @@ import {
   Button,
   SafeAreaView,
   ScrollView,
+  Modal,
 } from 'react-native';
 import CommWrite from './CommWrite';
 import CommuWriteMap from './CommuWriteMap';
@@ -41,11 +42,10 @@ export default function CommuScreen() {
   const payload = {latitude: 37.541, longitude: 126.986}; //사용자의 위치 받아온거 여기 들어가야 함.
   useEffect(() => {
     const params = {
-      page: 0,
+      page: 3,
     };
 
-    axios
-      .post(baseUrl + 'boards', payload, {params, ...config})
+    axios.post(baseUrl + 'boards', payload, {params, ...config})
       .then(response =>
         // POST 요청이 성공한 경우 실행되는 코드
         setData(response.data.result.contents),
