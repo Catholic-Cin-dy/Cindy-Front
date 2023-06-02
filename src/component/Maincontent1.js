@@ -26,7 +26,7 @@ export default function Maincontent() {
 
 
         axios.get(baseUrl + '/home/recommend', {...config })
-            .then(response => setData(response.data.result.contents))
+            .then(response => setData(response.data.result))
             .catch(error => console.error(error))
     }, []);
 
@@ -57,7 +57,7 @@ export default function Maincontent() {
                         {data && data.map(item => (
 
                             <View style={styles.contentbox}>
-                                <View><Image key={item.productId} style={styles.box} source={{ uri: item.imgUrl }}/></View>
+                                <View><Image key={item.productId} style={styles.box} source={{ uri: item.productImgUrl }}/></View>
                                 <View style={styles.intext}>
                                     <Text key={item.productId} style={styles.Info1}>{item.brandName}</Text>
                                     <Text key={item.productId} style={styles.Info2}>{item.productName}</Text>

@@ -8,7 +8,9 @@ import {
   TouchableOpacity,
   Image,
   SafeAreaView,
+  TextInput,
 } from 'react-native';
+import Modal from 'react-native-simple-modal';
 import Swiper from 'react-native-swiper';
 import axios from 'axios';
 import {useState, useEffect} from 'react';
@@ -19,6 +21,10 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { useIsFocused } from '@react-navigation/native';
+
+
+import CommuScreen from './CommuScreen';
 
 const baseUrl = 'https://www.awesominki.shop/'; //api 연결을 위한 baseUrl
 const config = {
@@ -26,6 +32,7 @@ const config = {
     'X-AUTH-TOKEN': `eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWQiOjIsImlhdCI6MTY3OTkyMjIwNSwiZXhwIjoxNzExNDU4MjA1fQ.A45bXqITjpGnywheSkEzfv5St2jD08DefUW2VQEbDpo`,
   },
 };
+const payload = {latitude: 37.541, longitude: 126.986}; //사용자의 위치 받아온거 여기 들어가야 함.
 
 export default function CommuPostDetail({ route }) {
   // route.params에서 전달받은 item 파라미터 추출
@@ -33,24 +40,40 @@ export default function CommuPostDetail({ route }) {
   //console.log('route 값으로 받은 params : ' + boardId);
 
   const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [cdata, setCData] = useState([]);
+  //const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [liked, setLiked] = useState();
+  const [comment, setComment] = useState('');
 
+  const navigation = useNavigation();
+
+
+  const onChangeComment = inputText => {
+    setComment(inputText);
+  };
+
+  const isFocused = useIsFocused(); // isFoucesd Define
   useEffect(() => {
     console.log('CommuPostDetail - boardId : ' + boardId);
+
 
     axios.get(baseUrl + 'boards/' + boardId, {...config})
       .then(response => {
         setData(response.data.result);
         setLiked(response.data.result.likeCheck); //like가 true or false
       })
-
       .catch(error => console.error(error));
 
+    axios.get(baseUrl + 'boards/comments/' + boardId, {...config})
+      .then(response => {
+        setCData(response.data.result.contents);
+      })
+      .catch(error => console.error(error));
+
+  }, [isFocused]);
 
 
-  }, []);
 
   function handleLike() {
     setLiked(!liked);
@@ -68,26 +91,85 @@ export default function CommuPostDetail({ route }) {
 
   }
 
-  return (
-    <ScrollView>
-      <View style={styles.item} key={data.boardId}>
-        <View style={styles.profileContainer}>
-          {data.profileImgUrl ? (
-            <Image
-              style={styles.profileImg}
-              source={{ uri: data.profileImgUrl }}
-            />
-          ) : (
-            <Image
-              style={styles.defaultImg}
-              source={require("../../assets/user.png")}
-            />
-          )}
-          <Text style={styles.info2}>{data.writer}</Text>
-        </View>
+  function showCoordinate(){
 
-        <View>
-          {/*<Swiper
+  }
+
+  //전송버튼 누르면
+  const writeComment = () => {
+    const commentpayload = {boardId: boardId, comment: comment}; //사용자의 위치 받아온거 여기 들어가야 함.
+    const params = {
+      page: 0,
+    };
+
+    console.log('boardId : ',boardId);
+    console.log('comment : ',comment);
+
+    axios.post(baseUrl + 'boards/comments', commentpayload, {...config})
+  }
+
+  function deletePost(){
+    const params = {
+      boardId : boardId,
+    };
+
+    axios.delete(baseUrl + 'boards/delete/' + boardId, { ...config })
+      .then(response => {
+
+      })
+      .catch(error => console.error(error))
+  }
+
+  function movePost() {
+
+    navigation.navigate('CommuScreen');
+  }
+
+
+
+
+  const AddGoods = (props) => {
+    const [ImageSelectorPopupVisiable, setImageSelectorPopupVisiable] = useState(false);
+  };
+
+  return (
+    <View>
+      <ScrollView>
+        <View style={styles.item} key={data.boardId}>
+          <Text>boardId : {data.boardId}</Text>
+          <View style={styles.profileContainer}>
+            {data.profileImgUrl ? (
+              <Image
+                style={styles.profileImg}
+                source={{ uri: data.profileImgUrl }}
+              />
+            ) : (
+              <Image
+                style={styles.defaultImg}
+                source={require("../../assets/user.png")}
+              />
+            )}
+            <Text style={styles.info2}>{data.writer}</Text>
+
+            <Text style={styles.deleteBtn}>
+              {data.my ?
+                <TouchableOpacity onPress={() => {
+                  deletePost();
+                  navigation.pop();
+                }}>
+                  <Text>삭제</Text>
+                </TouchableOpacity> : "유효값x pid: " + data.boardId}
+            </Text>
+
+            {/*<Text>
+            <TouchableOpacity style={styles.deleteBtn} onPress={() => navigation.pop()}>
+              <Text>이동</Text>
+            </TouchableOpacity>
+          </Text>*/}
+          </View>
+
+          <View>
+            {/*<Swiper
             autoplay={true}
             autoplayTimeout={2.5}
             showsPagination={false}>
@@ -100,42 +182,94 @@ export default function CommuPostDetail({ route }) {
               </View>
             ))}
           </Swiper>*/}
-        </View>
-
-        <View>
-          <ScrollView
-            horizontal={true}
-            showsHorizontalScrollIndicator={true}
-            onMomentumScrollEnd={() => {
-              console.log("Scrolling is End");
-            }}>
-            {data && data.imgList && data.imgList.map((img, index) => (
-              <Image
-                key={index}
-                source={{ uri: img.imgUrl }}
-                style={styles.pImg}
-              />
-            ))}
-          </ScrollView>
-        </View>
-
-        <View style={styles.content} key={data.boardId}>
-          <View style={styles.contentContainer}>
-            <Text style={styles.info1}>{data.title}</Text>
-            <View style={styles.heartIconBackground} key={data.boardId}>
-              <Text>{data.likeCheck ? data.likeCheck.toString() : "유효값x pid: " + data.boardId}</Text>
-              <TouchableOpacity onPress={handleLike}>
-                <Image style={styles.heartIcon}
-                       source={data.likeCheck ? require("../../assets/like.png") : require("../../assets/unlike.png")} />
-              </TouchableOpacity>
-            </View>
           </View>
-          <Text />
-          <Text style={styles.info2}>{data.content}</Text>
 
+          <View>
+            <ScrollView
+              horizontal={true}
+              showsHorizontalScrollIndicator={true}
+              onMomentumScrollEnd={() => {
+                console.log("Scrolling is End");
+              }}>
+              {data && data.imgList && data.imgList.map((img, index) => (
+                <TouchableOpacity onPress={showCoordinate}>
+                  <Image
+                    key={index}
+                    source={{ uri: img.imgUrl }}
+                    style={styles.pImg}
+                  />
+                  <Text>x,y 좌표</Text>
+                  <Text>imgId : {`${img.imgId}`}</Text>
+                  {img.imgTags && img.imgTags.map((tag, index) => (
+                    <View key={index}>
+                      <Text>{`x: ${tag.x}, y: ${tag.y}, brandName: ${tag.brandName}`}</Text>
+                    </View>
+                  ))}
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
+
+          <View style={styles.content} key={data.boardId}>
+            <View style={styles.contentContainer}>
+              <Text style={styles.info1}>{data.title}</Text>
+              <View style={styles.heartIconBackground} key={data.boardId}>
+                {/*<Text>{data.likeCheck ? data.likeCheck.toString() : "유효값x pid: " + data.boardId}</Text>*/}
+
+                <Text>{data.my ? data.my.toString() : "false" + data.boardId}</Text>
+
+                <TouchableOpacity onPress={handleLike}>
+                  <Image style={styles.heartIcon}
+                         source={data.likeCheck ? require("../../assets/like.png") : require("../../assets/unlike.png")} />
+                </TouchableOpacity>
+              </View>
+            </View>
+            <Text />
+            <Text style={styles.info2}>{data.content}</Text>
+
+          </View>
         </View>
-      </View>
-    </ScrollView>
+
+        <View style={styles.column1}>
+          {cdata.map(item => (
+            <View
+              style={styles.item}
+              key={item.commentId}
+            >
+              <View style={styles.profileContainer}>
+                {item.profileImgUrl ? (
+                  <Image
+                    style={styles.profileImg}
+                    source={{ uri: item.profileImgUrl }}
+                  />
+                ) : (
+                  <Image
+                    style={styles.defaultImg}
+                    source={require("../../assets/user.png")}
+                  />
+                )}
+                <Text style={styles.info2}>{item.nickName}</Text>
+              </View>
+              <Text style={styles.info2}>{item.comment}</Text>
+              <Text style={styles.info1}>작성일시 {item.commentTime}</Text>
+              <Text style={styles.info2}>{item.my}</Text>
+            </View>
+          ))}
+        </View>
+
+        <Text />
+        <Text />
+        <Text />
+        <TextInput
+          style={styles.input}
+          onChangeText={onChangeComment}
+          value={comment}
+          placeholder="댓글을 입력해주세요."
+        />
+        <Button title="전송" onPress={writeComment} />
+      </ScrollView>
+    </View>
+
   );
 }
 
@@ -146,6 +280,9 @@ const styles = {
   },
   slide: {
     flex: 1,
+  },
+  deleteBtn: {
+    marginLeft: 210,
   },
   profileContainer: {
     marginLeft: 15,
@@ -284,5 +421,13 @@ const styles = {
     fontWeight: 'bold',
     fontColor: 'gray',
     marginLeft: 4,
+  },
+  input: {
+    marginTop: 40,
+    marginLeft: 5,
+    marginBottom: 30,
+    width: '97%',
+    height: 50,
+    backgroundColor: 'gray',
   },
 };

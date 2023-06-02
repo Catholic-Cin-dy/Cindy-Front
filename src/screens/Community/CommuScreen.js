@@ -10,6 +10,7 @@ import {
   Button,
   SafeAreaView,
   ScrollView,
+  Modal,
 } from 'react-native';
 import CommWrite from './CommWrite';
 import CommuWriteMap from './CommuWriteMap';
@@ -44,8 +45,7 @@ export default function CommuScreen() {
       page: 0,
     };
 
-    axios
-      .post(baseUrl + 'boards', payload, {params, ...config})
+    axios.post(baseUrl + 'boards', payload, {params, ...config})
       .then(response =>
         // POST 요청이 성공한 경우 실행되는 코드
         setData(response.data.result.contents),
@@ -137,6 +137,7 @@ export default function CommuScreen() {
             navigation.navigate('CommWrite');
           }}
         />
+
         <Button
           title={'지도'}
           onPress={() => {

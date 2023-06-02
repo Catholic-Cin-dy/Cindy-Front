@@ -136,6 +136,7 @@ const MainTabScreen = () => {
     >
       <Tab.Screen name="홈화면" component={HomeStackScreen}
                   options={{
+                    unmountOnBlur: true,
                     tabBarIcon: ({ focused, color, size }) => (
                       <Image
                         source={focused ? homeSelected : homeUnSelected} />
@@ -144,6 +145,7 @@ const MainTabScreen = () => {
       />
       <Tab.Screen name="상품 전체조회" component={RecruitProductsStackScreen}
                   options={{
+                    unmountOnBlur: true,
                     headerRight: props => <SearchBar {...props} />,
                     tabBarIcon: ({ focused, color, size }) => (
                       <Image
@@ -153,6 +155,7 @@ const MainTabScreen = () => {
       />
       <Tab.Screen name="커뮤니티" component={CommunityStackScreen}
                   options={{
+                    unmountOnBlur: true,
                     tabBarIcon: ({ focused, color, size }) => (
                       <Image
                         source={focused ? bookmarkSelected : bookmarkUnSelected} />
@@ -161,6 +164,7 @@ const MainTabScreen = () => {
       />
       <Tab.Screen name="내정보" component={MyPageStackScreen}
                   options={{
+                    unmountOnBlur: true,
                     tabBarIcon: ({ focused, color, size }) => (
                       <Image
                         source={focused ? userSelected : userUnSelected} />
