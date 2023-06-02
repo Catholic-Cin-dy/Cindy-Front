@@ -93,7 +93,7 @@ const HomeStackScreen = () => {
   );
 };
 
-const BookMarkStackScreen = () => {
+const CommunityStackScreen = () => {
   return (
     <Stack.Navigator>
       <RecruitStack.Screen name="Community" component={CommuScreen} options={{ headerShown: false }}/>
@@ -151,7 +151,7 @@ const MainTabScreen = () => {
                     ),
                   }}
       />
-      <Tab.Screen name="북마크" component={BookMarkStackScreen}
+      <Tab.Screen name="커뮤니티" component={CommunityStackScreen}
                   options={{
                     tabBarIcon: ({ focused, color, size }) => (
                       <Image

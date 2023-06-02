@@ -31,7 +31,6 @@ const config = {
   },
 };
 export default function CommuScreen() {
-  const navigation = useNavigation();
 
   const [text, setText] = useState('');
 
@@ -87,10 +86,30 @@ export default function CommuScreen() {
     );
   };
 
+  const navigation = useNavigation();
   const handlePostImgPress = boardId => {
     // 해당 상품 정보를 route.params로 넘겨주고 ProductDetail 화면으로 이동
     // console.log('boardId ID : ' + boardId);
     navigation.navigate('CommuPostDetail', {boardId});
+  };
+
+  const [liked, setLiked] = useState();
+  const handleLike = (boardId) => {
+    const params = {
+      page: 0,
+    };
+
+    setLiked(!liked);
+
+    axios.patch(baseUrl + 'boards/like/' + boardId, {}, config)
+      .then(response => setLiked(response.data.result))
+      .catch(error => console.error(error));
+
+    axios.post(baseUrl + "boards", payload, { params, ...config })
+      .then(response => setData(response.data.result.contents),
+      )
+      .catch(error => console.error(error));
+
   };
 
   return (
@@ -194,11 +213,11 @@ export default function CommuScreen() {
 
             <View style={styles.column2}>
               {data.slice(data.length / 2).map(item => (
-                // 두 번째 열에 해당하는 데이터를 매핑하여 표시
                 <View
                   style={styles.item}
                   key={item.boardId}
-                  onPress={() => handleItemPress(item.boardId)}>
+                  // onPress={() => handleItemPress(item.boardId)}
+                >
                   <View style={styles.profileContainer}>
                     {item.profileImg ? (
                       <Image
@@ -221,11 +240,14 @@ export default function CommuScreen() {
                       console.log('Scrolling is End');
                     }}>
                     {item.boardImg.map((imgUrl, index) => (
-                      <Image
-                        key={index}
-                        source={{uri: imgUrl}}
-                        style={styles.pImg}
-                      />
+                      <TouchableOpacity
+                        onPress={() => handlePostImgPress(item.boardId)}>
+                        <Image
+                          key={index}
+                          source={{uri: imgUrl}}
+                          style={styles.pImg}
+                        />
+                      </TouchableOpacity>
                     ))}
                   </ScrollView>
                   <Text style={styles.info1}>제목 : {item.title}</Text>
