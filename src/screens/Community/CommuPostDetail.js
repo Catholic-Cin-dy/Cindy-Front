@@ -21,8 +21,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { useIsFocused } from '@react-navigation/native';
-
+import {useIsFocused} from '@react-navigation/native';
 
 import CommuScreen from './CommuScreen';
 
@@ -34,9 +33,10 @@ const config = {
 };
 const payload = {latitude: 37.541, longitude: 126.986}; //사용자의 위치 받아온거 여기 들어가야 함.
 
-export default function CommuPostDetail({ route }) {
+export default function CommuPostDetail({route}) {
   // route.params에서 전달받은 item 파라미터 추출
-  const { boardId } = route.params; // route.params에서 boardId 추출
+  const {boardId} = route.params; // route.params에서 boardId 추출
+  const {commentId} = route.params;
   //console.log('route 값으로 받은 params : ' + boardId);
 
   const [data, setData] = useState([]);
@@ -48,7 +48,6 @@ export default function CommuPostDetail({ route }) {
 
   const navigation = useNavigation();
 
-
   const onChangeComment = inputText => {
     setComment(inputText);
   };
@@ -57,43 +56,44 @@ export default function CommuPostDetail({ route }) {
   useEffect(() => {
     console.log('CommuPostDetail - boardId : ' + boardId);
 
-
-    axios.get(baseUrl + 'boards/' + boardId, {...config})
+    axios
+      .get(baseUrl + 'boards/' + boardId, {...config})
       .then(response => {
         setData(response.data.result);
         setLiked(response.data.result.likeCheck); //like가 true or false
       })
       .catch(error => console.error(error));
 
-    axios.get(baseUrl + 'boards/comments/' + boardId, {...config})
+    axios
+      .get(baseUrl + 'boards/comments/' + boardId, {...config})
       .then(response => {
         setCData(response.data.result.contents);
       })
       .catch(error => console.error(error));
-
   }, [isFocused]);
-
-
+  axios
+    .delete(baseUrl + 'boards/comments/' + commentId, {...config})
+    .then(response => {})
+    .catch(error => console.error(error));
 
   function handleLike() {
     setLiked(!liked);
 
-    axios.patch(baseUrl + 'boards/like/' + boardId, {}, config)
+    axios
+      .patch(baseUrl + 'boards/like/' + boardId, {}, config)
       .then(response => setLiked(response.data.result))
       .catch(error => console.error(error));
 
-    axios.get(baseUrl + 'boards/' + boardId, { ...config })
+    axios
+      .get(baseUrl + 'boards/' + boardId, {...config})
       .then(response => {
-        setData(response.data.result)
+        setData(response.data.result);
       })
 
-      .catch(error => console.error(error))
-
+      .catch(error => console.error(error));
   }
 
-  function showCoordinate(){
-
-  }
+  function showCoordinate() {}
 
   //전송버튼 누르면
   const writeComment = () => {
@@ -102,34 +102,44 @@ export default function CommuPostDetail({ route }) {
       page: 0,
     };
 
-    console.log('boardId : ',boardId);
-    console.log('comment : ',comment);
+    console.log('boardId : ', boardId);
+    console.log('comment : ', comment);
 
-    axios.post(baseUrl + 'boards/comments', commentpayload, {...config})
-  }
+    axios.post(baseUrl + 'boards/comments', commentpayload, {...config});
+  };
 
-  function deletePost(){
+  function deleteComment(item) {
+    console.log('댓글은', item);
+    const commentId = item.commentId;
     const params = {
-      boardId : boardId,
+      commentId: commentId,
     };
 
-    axios.delete(baseUrl + 'boards/delete/' + boardId, { ...config })
-      .then(response => {
+    console.log(commentId);
+    axios
+      .delete(baseUrl + 'boards/comments/' + commentId, {...config})
+      .then(response => {})
+      .catch(error => console.error(error));
+  }
 
-      })
-      .catch(error => console.error(error))
+  function deletePost() {
+    const params = {
+      boardId: boardId,
+    };
+
+    axios
+      .delete(baseUrl + 'boards/delete/' + boardId, {...config})
+      .then(response => {})
+      .catch(error => console.error(error));
   }
 
   function movePost() {
-
     navigation.navigate('CommuScreen');
   }
 
-
-
-
-  const AddGoods = (props) => {
-    const [ImageSelectorPopupVisiable, setImageSelectorPopupVisiable] = useState(false);
+  const AddGoods = props => {
+    const [ImageSelectorPopupVisiable, setImageSelectorPopupVisiable] =
+      useState(false);
   };
 
   return (
@@ -141,24 +151,28 @@ export default function CommuPostDetail({ route }) {
             {data.profileImgUrl ? (
               <Image
                 style={styles.profileImg}
-                source={{ uri: data.profileImgUrl }}
+                source={{uri: data.profileImgUrl}}
               />
             ) : (
               <Image
                 style={styles.defaultImg}
-                source={require("../../assets/user.png")}
+                source={require('../../assets/user.png')}
               />
             )}
             <Text style={styles.info2}>{data.writer}</Text>
 
             <Text style={styles.deleteBtn}>
-              {data.my ?
-                <TouchableOpacity onPress={() => {
-                  deletePost();
-                  navigation.pop();
-                }}>
+              {data.my ? (
+                <TouchableOpacity
+                  onPress={() => {
+                    deletePost();
+                    navigation.pop();
+                  }}>
                   <Text>삭제</Text>
-                </TouchableOpacity> : "유효값x pid: " + data.boardId}
+                </TouchableOpacity>
+              ) : (
+                '유효값x pid: ' + data.boardId
+              )}
             </Text>
 
             {/*<Text>
@@ -189,24 +203,27 @@ export default function CommuPostDetail({ route }) {
               horizontal={true}
               showsHorizontalScrollIndicator={true}
               onMomentumScrollEnd={() => {
-                console.log("Scrolling is End");
+                console.log('Scrolling is End');
               }}>
-              {data && data.imgList && data.imgList.map((img, index) => (
-                <TouchableOpacity onPress={showCoordinate}>
-                  <Image
-                    key={index}
-                    source={{ uri: img.imgUrl }}
-                    style={styles.pImg}
-                  />
-                  <Text>x,y 좌표</Text>
-                  <Text>imgId : {`${img.imgId}`}</Text>
-                  {img.imgTags && img.imgTags.map((tag, index) => (
-                    <View key={index}>
-                      <Text>{`x: ${tag.x}, y: ${tag.y}, brandName: ${tag.brandName}`}</Text>
-                    </View>
-                  ))}
-                </TouchableOpacity>
-              ))}
+              {data &&
+                data.imgList &&
+                data.imgList.map((img, index) => (
+                  <TouchableOpacity onPress={showCoordinate}>
+                    <Image
+                      key={index}
+                      source={{uri: img.imgUrl}}
+                      style={styles.pImg}
+                    />
+                    <Text>x,y 좌표</Text>
+                    <Text>imgId : {`${img.imgId}`}</Text>
+                    {img.imgTags &&
+                      img.imgTags.map((tag, index) => (
+                        <View key={index}>
+                          <Text>{`x: ${tag.x}, y: ${tag.y}, brandName: ${tag.brandName}`}</Text>
+                        </View>
+                      ))}
+                  </TouchableOpacity>
+                ))}
             </ScrollView>
           </View>
 
@@ -216,36 +233,40 @@ export default function CommuPostDetail({ route }) {
               <View style={styles.heartIconBackground} key={data.boardId}>
                 {/*<Text>{data.likeCheck ? data.likeCheck.toString() : "유효값x pid: " + data.boardId}</Text>*/}
 
-                <Text>{data.my ? data.my.toString() : "false" + data.boardId}</Text>
+                <Text>
+                  {data.my ? data.my.toString() : 'false' + data.boardId}
+                </Text>
 
                 <TouchableOpacity onPress={handleLike}>
-                  <Image style={styles.heartIcon}
-                         source={data.likeCheck ? require("../../assets/like.png") : require("../../assets/unlike.png")} />
+                  <Image
+                    style={styles.heartIcon}
+                    source={
+                      data.likeCheck
+                        ? require('../../assets/like.png')
+                        : require('../../assets/unlike.png')
+                    }
+                  />
                 </TouchableOpacity>
               </View>
             </View>
             <Text />
             <Text style={styles.info2}>{data.content}</Text>
-
           </View>
         </View>
 
         <View style={styles.column1}>
           {cdata.map(item => (
-            <View
-              style={styles.item}
-              key={item.commentId}
-            >
+            <View style={styles.item} key={item.commentId}>
               <View style={styles.profileContainer}>
                 {item.profileImgUrl ? (
                   <Image
                     style={styles.profileImg}
-                    source={{ uri: item.profileImgUrl }}
+                    source={{uri: item.profileImgUrl}}
                   />
                 ) : (
                   <Image
                     style={styles.defaultImg}
-                    source={require("../../assets/user.png")}
+                    source={require('../../assets/user.png')}
                   />
                 )}
                 <Text style={styles.info2}>{item.nickName}</Text>
@@ -253,6 +274,12 @@ export default function CommuPostDetail({ route }) {
               <Text style={styles.info2}>{item.comment}</Text>
               <Text style={styles.info1}>작성일시 {item.commentTime}</Text>
               <Text style={styles.info2}>{item.my}</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  deleteComment(item);
+                }}>
+                <Text>댓글 삭제</Text>
+              </TouchableOpacity>
             </View>
           ))}
         </View>
@@ -269,13 +296,12 @@ export default function CommuPostDetail({ route }) {
         <Button title="전송" onPress={writeComment} />
       </ScrollView>
     </View>
-
   );
 }
 
 const styles = {
   container1: {
-    width:'100%',
+    width: '100%',
     height: 519,
   },
   slide: {
