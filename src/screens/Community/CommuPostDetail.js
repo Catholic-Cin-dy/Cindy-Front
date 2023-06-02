@@ -71,10 +71,6 @@ export default function CommuPostDetail({route}) {
       })
       .catch(error => console.error(error));
   }, [isFocused]);
-  axios
-    .delete(baseUrl + 'boards/comments/' + commentId, {...config})
-    .then(response => {})
-    .catch(error => console.error(error));
 
   function handleLike() {
     setLiked(!liked);
