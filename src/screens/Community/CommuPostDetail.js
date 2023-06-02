@@ -11,6 +11,7 @@ import {
 import axios from 'axios';
 import {useState, useEffect} from 'react';
 import 'react-native-gesture-handler';
+
 import {NavigationContainer} from '@react-navigation/native';
 import {useNavigation} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -83,11 +84,18 @@ export default function CommuPostDetail({route}) {
 
       .catch(error => console.error(error));
   }
+  const navigation = useNavigation();
+  const move = () => {
+    navigation.pop();
+  };
 
   return (
     <ScrollView>
       <View style={styles.column1}>
         <View style={styles.item} key={data.boardId}>
+          <TouchableOpacity onPress={() => move}>
+            <Text>이동</Text>
+          </TouchableOpacity>
           <View style={styles.profileContainer}>
             {data.profileImgUrl ? (
               <Image
