@@ -37,6 +37,7 @@ export default function CommuPostDetail({ route }) {
   //console.log('route 값으로 받은 params : ' + boardId);
 
   const [data, setData] = useState([]);
+  const [cdata, setCData] = useState([]);
   //const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [liked, setLiked] = useState();
@@ -52,9 +53,13 @@ export default function CommuPostDetail({ route }) {
         setData(response.data.result);
         setLiked(response.data.result.likeCheck); //like가 true or false
       })
-
       .catch(error => console.error(error));
 
+    axios.get(baseUrl + 'boards/comments/' + boardId, {...config})
+      .then(response => {
+        setCData(response.data.result.contents);
+      })
+      .catch(error => console.error(error));
 
   }, []);
 
@@ -122,18 +127,21 @@ export default function CommuPostDetail({ route }) {
           )}
           <Text style={styles.info2}>{data.writer}</Text>
 
-          <Text>
+          <Text style={styles.deleteBtn}>
             {data.my ?
-              <TouchableOpacity style={styles.deleteBtn} onPress={() => { deletePost(); navigation.pop(); }}>
+              <TouchableOpacity onPress={() => {
+                deletePost();
+                navigation.pop();
+              }}>
                 <Text>삭제</Text>
               </TouchableOpacity> : "유효값x pid: " + data.boardId}
           </Text>
 
-          <Text>
+          {/*<Text>
             <TouchableOpacity style={styles.deleteBtn} onPress={() => navigation.pop()}>
               <Text>이동</Text>
             </TouchableOpacity>
-          </Text>
+          </Text>*/}
         </View>
 
         <View>
@@ -197,6 +205,45 @@ export default function CommuPostDetail({ route }) {
 
         </View>
       </View>
+
+      <View style={styles.column1}>
+        {cdata.map(item => (
+          <View
+            style={styles.item}
+            key={item.commentId}
+          >
+            <View style={styles.profileContainer}>
+              {item.profileImgUrl ? (
+                <Image
+                  style={styles.profileImg}
+                  source={{uri: item.profileImgUrl}}
+                />
+              ) : (
+                <Image
+                  style={styles.defaultImg}
+                  source={require('../../assets/user.png')}
+                />
+              )}
+              <Text style={styles.info2}>{item.nickName}</Text>
+            </View>
+            <Text style={styles.info2}>{item.comment}</Text>
+            <Text style={styles.info1}>작성일시 {item.commentTime}</Text>
+            <Text style={styles.info2}>{item.my}</Text>
+          </View>
+        ))}
+      </View>
+
+
+
+
+
+
+
+      <Text>댓글 모음</Text>
+      <Text/>
+      <Text/>
+      <Text/>
+
     </ScrollView>
   );
 }
