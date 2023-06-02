@@ -42,7 +42,7 @@ export default function CommuScreen() {
   const payload = {latitude: 37.541, longitude: 126.986}; //사용자의 위치 받아온거 여기 들어가야 함.
   useEffect(() => {
     const params = {
-      page: 3,
+      page: 0,
     };
 
     axios.post(baseUrl + 'boards', payload, {params, ...config})
@@ -137,6 +137,7 @@ export default function CommuScreen() {
             navigation.navigate('CommWrite');
           }}
         />
+
         <Button
           title={'지도'}
           onPress={() => {

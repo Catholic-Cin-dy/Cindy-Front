@@ -18,18 +18,16 @@ import {useFocusEffect} from '@react-navigation/native';
 const baseUrl = 'https://www.awesominki.shop';
 const baseUrl2 = 'http://localhost:9000';
 
-const config = {
-    headers: {
-        'Content-Type': 'multipart/form-data',
-        'X-AUTH-TOKEN': `eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWQiOjIsImlhdCI6MTY3OTkyMjIwNSwiZXhwIjoxNzExNDU4MjA1fQ.A45bXqITjpGnywheSkEzfv5St2jD08DefUW2VQEbDpo`,
-    },
+const headers = {
+    'Content-Type': 'multipart/form-data',
+    'X-AUTH-TOKEN': `eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWQiOjIsImlhdCI6MTY3OTkyMjIwNSwiZXhwIjoxNzExNDU4MjA1fQ.A45bXqITjpGnywheSkEzfv5St2jD08DefUW2VQEbDpo`,
 };
 
 export default function CommWrite() {
     const [data, setData] = useState([]);
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
-    const [img, setImageSource] = useState('');
+    const [img, setImage] = useState('');
     const [imgurl, setImgurl] = useState([]);
 
     const onChangeTitle = inputText => {
@@ -55,19 +53,20 @@ export default function CommWrite() {
         //console.log(res);
         //console.log(res.uri);
         console.log(res.assets[0].uri);
-        imgUrlsource = res.assets[0].uri;
-        setImageSource(res.assets[0].uri);
+        //imgUrlsource = res.assets[0].uri;
+        setImage(res.assets[0].uri);
+        // imgurl.type = 'image/jpeg';
+        // imgurl.name = 'image.jpg';
         //submitBtn();
         //submitBtn(); 비로 실행되게 만듦 이유 :imgUrlsource 변수에 값을 할당되기 전 먼저 함수 호출된다 해서 ㅅㅍ
-        const newImgList = [
-            {
-                uri: imgUrlsource,
-                type: 'image/jpeg',
-                name: 'image.jpg',
-            },
-        ];
+        const imgUrlsource = {
+            uri: res.assets[0].uri,
+            type: res.assets[0].type,
+            name: res.assets[0].fileName,
+        };
+        console.log(imgUrlsource);
         //const newImgList = imgUrlsource;
-        setImgurl(newImgList);
+        setImgurl(imgUrlsource);
     };
 
     // 카메라 촬영
@@ -100,43 +99,56 @@ export default function CommWrite() {
             latitude: 11.12,
             longitude: 23.45,
             tags: [],
-            imgList: [
+            imgFiles: [],
+            imgTagList: [
                 {
-                    imgTags: [],
+                    imgTags: [
+                        {
+                            brandId: 1,
+                            x: 30,
+                            y: 67,
+                        },
+                        {
+                            brandId: 2,
+                            x: 251,
+                            y: 125,
+                        },
+                    ],
                 },
             ],
         };
 
         const formData = new FormData();
-        console.log('ddddfdf', formData);
-        const imgUrl = imgurl;
-        console.log('i am', imgUrl);
+        //const imgUrl = imgurl;
+        //console.log('i am', imgUrl);
 
-        formData.append('title', JSON.stringify(postBoard.title), {
-            type: 'application/json',
-        });
-        formData.append('content', JSON.stringify(postBoard.content), {
-            type: 'application/json',
-        });
-        formData.append('latitude', JSON.stringify(postBoard.latitude), {
-            type: 'application/json',
-        });
-        formData.append('longitude', JSON.stringify(postBoard.longitude), {
-            type: 'application/json',
-        });
-        formData.append('tags', JSON.stringify(postBoard.tags), {
-            type: 'application/json',
-        });
-        formData.append('imgList', JSON.stringify(postBoard.imgList), {
-            type: 'application/json',
-        });
-        formData.append('imgUrl', imgurl);
+        formData.append('title', postBoard.title.toString());
+        formData.append('content', postBoard.content.toString());
+        formData.append('latitude', postBoard.latitude.toString());
+        formData.append('longitude', postBoard.longitude.toString());
+        formData.append('tags', postBoard.tags);
+        formData.append(
+          'imgTagList',
+          JSON.stringify(postBoard.imgTagList).toString(),
+        );
 
+        // const form = {
+        //   title: postBoard.title,
+        //   content: postBoard.content,
+        //   latitude: postBoard.latitude,
+        //   longitude: postBoard.longitude,
+        //   tags: postBoard.tags,
+        //   imgList: postBoard.imgList,
+        // };
+        //formData.append('postBoard', JSON.stringify(form));
+        formData.append('imgFiles ', imgurl);
+        //console.log('postBoard 는 이거임', form);
+        console.log('imgUrl 은 이거임', imgurl);
         //console.log(formData.imgList);
 
-        console.log('formData:', formData);
+        //console.log('formData:', formData);
         const formList = formData._parts;
-        console.log(formList);
+        //console.log(formList);
         //요기
         const arrayValue = formData._parts;
         const objectValue = Object.fromEntries(arrayValue);
@@ -151,16 +163,41 @@ export default function CommWrite() {
           })
           .catch(error => console.error(error));*/
 
-        const payload = {imgUrl: imgUrl, postBoard: JSON.stringify(objectValue)};
-        console.log(payload.imgUrl);
-        console.log(payload.postBoard);
-        console.log(payload);
-
+        //const payload = {imgUrl: imgUrl, postBoard: JSON.stringify(objectValue)};
+        // console.log(payload.imgUrl);
+        // console.log(payload.postBoard);
+        // console.log(payload);
         console.log('formData마지막:', formData);
-        axios.post(baseUrl + '/boards/new', payload, {...config}).catch(error => {
-            // POST 요청이 실패한 경우 실행되는 코드
-            console.error(error);
-        });
+
+        axios
+          .post(baseUrl + '/boards/write', formData, {
+              headers: {
+                  ...headers,
+                  'Content-Type': 'multipart/form-data',
+              },
+          })
+          .then(response => {
+              if (response) {
+                  console.log(response.data);
+              }
+          })
+          .catch(error => {
+              if (error.response) {
+                  // The request was made and the server responded with a status code
+                  // that falls out of the range of 2xx
+                  console.log('음 1' + error.response.data);
+                  console.log('음 2' + error.response.status);
+                  console.log('음 3' + error.response.headers);
+              } else if (error.request) {
+                  // The request was made but no response was received
+                  // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+                  // http.ClientRequest in node.js
+                  console.log('음 4' + error.request);
+              } else {
+                  // Something happened in setting up the request that triggered an Error
+                  console.log('Error', error.message);
+              }
+          });
     };
 
     return (
