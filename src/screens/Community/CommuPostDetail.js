@@ -21,6 +21,8 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { useIsFocused } from '@react-navigation/native';
+
 
 import CommuScreen from './CommuScreen';
 
@@ -46,10 +48,12 @@ export default function CommuPostDetail({ route }) {
 
   const navigation = useNavigation();
 
+
   const onChangeComment = inputText => {
     setComment(inputText);
   };
 
+  const isFocused = useIsFocused(); // isFoucesd Define
   useEffect(() => {
     console.log('CommuPostDetail - boardId : ' + boardId);
 
@@ -67,7 +71,7 @@ export default function CommuPostDetail({ route }) {
       })
       .catch(error => console.error(error));
 
-  }, []);
+  }, [isFocused]);
 
 
 
@@ -102,17 +106,6 @@ export default function CommuPostDetail({ route }) {
     console.log('comment : ',comment);
 
     axios.post(baseUrl + 'boards/comments', commentpayload, {...config})
-    axios.post(baseUrl + 'boards', payload, {params, ...config})
-      .then(response =>
-        // POST 요청이 성공한 경우 실행되는 코드
-        setData(response.data.result.contents),
-      )
-      .catch(error => {
-        // POST 요청이 실패한 경우 실행되는 코드
-        console.error(error);
-      });
-
-
   }
 
   function deletePost(){
