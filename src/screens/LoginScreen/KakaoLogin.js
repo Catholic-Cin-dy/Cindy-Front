@@ -1,5 +1,6 @@
 import {StyleSheet, Text, View, Button, Alert, TouchableOpacity, Image} from 'react-native';
 import React from 'react';
+import { useNavigation } from '@react-navigation/native';
 import {
     KakaoOAuthToken,
     KakaoProfile,
@@ -11,31 +12,32 @@ import {
 import {KakaoAccessTokenInfo} from "@react-native-seoul/kakao-login/src/types";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import axios from "axios";
 
 //productId, brandName, productName, imgUrl
 export default function KakaoLogin() {
-
-    /*const signInWithKakao = async(): Promise<void> => {
-        const token: KakaoOAuthToken = await login();
-
-        setResult(JSON.stringify(token));
-    };*/
-
-    const signInWithKakao = async (): Promise<void> => {
-        try {
+    const navigation = useNavigation();
+    const signInWithKakao = async (): // @ts-ignore
+    Promise<void> =>
+    {
+    try {
             const token: KakaoOAuthToken = await login();
             const accessToken = token.accessToken;
             const response = await axios.post(
               'https://www.awesominki.shop/auth/kakao',
-              {accessToken},
+              { accessToken },
             );
             console.log(response);
             //실험용 화면 전환
-            //navigation.navigate('Test');
+            navigation.navigate('MainPage');
         } catch (err) {
             console.log(err);
         }
     };
+    // const signInWithKakao = async (): Promise<void> => {
+    //     const token: KakaoOAuthToken = await login();
+    //
+    //     setResult(JSON.stringify(token));
 
     const signOutWithKakao = async (): Promise<void> => {
         const message = await logout();
@@ -56,11 +58,11 @@ export default function KakaoLogin() {
     };
 
     //이건 내가 만듦!!
-    /*const getUserAccessToken = async (): Promise<void> => {
+    const getUserAccessToken = async (): Promise<void> => {
         const token: KakaoAccessTokenInfo = await getAccessToken();
 
         setResult(JSON.stringify(token));
-    };*/
+    };
 
     return (
         <View>

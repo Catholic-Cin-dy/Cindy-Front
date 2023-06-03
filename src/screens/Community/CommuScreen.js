@@ -1,5 +1,6 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
+  Image,
   TouchableOpacity,
   FlatList,
   TextInput,
@@ -11,10 +12,17 @@ import {
   ScrollView,
 } from 'react-native';
 import CommWrite from './CommWrite';
+import CommuWriteMap from './CommuWriteMap';
 import axios from 'axios';
 import {useNavigation} from '@react-navigation/native';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {PermissionsAndroid} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+
+import CommuPostDetail from './CommuPostDetail';
 
 const baseUrl = 'https://www.awesominki.shop/'; //api 연결을 위한 baseUrl
 const config = {
@@ -29,6 +37,25 @@ export default function CommuScreen() {
 
   const [searchText, setSearchText] = useState('');
   const [suggestions, setSuggestions] = useState([]);
+
+  const [data, setData] = useState([]); //커뮤니티 전체 데이터
+  const payload = {latitude: 37.541, longitude: 126.986}; //사용자의 위치 받아온거 여기 들어가야 함.
+  useEffect(() => {
+    const params = {
+      page: 0,
+    };
+
+    axios
+      .post(baseUrl + 'boards', payload, {params, ...config})
+      .then(response =>
+        // POST 요청이 성공한 경우 실행되는 코드
+        setData(response.data.result.contents),
+      )
+      .catch(error => {
+        // POST 요청이 실패한 경우 실행되는 코드
+        console.error(error);
+      });
+  }, []);
 
   const handleSearchTextChange = text => {
     setSearchText(text);
@@ -60,6 +87,12 @@ export default function CommuScreen() {
     );
   };
 
+  const handlePostImgPress = boardId => {
+    // 해당 상품 정보를 route.params로 넘겨주고 ProductDetail 화면으로 이동
+    // console.log('boardId ID : ' + boardId);
+    navigation.navigate('CommuPostDetail', {boardId});
+  };
+
   return (
     <ScrollView>
       <SafeAreaView style={styles.container}>
@@ -85,11 +118,213 @@ export default function CommuScreen() {
             navigation.navigate('CommWrite');
           }}
         />
+        <Button
+          title={'지도'}
+          onPress={() => {
+            navigation.navigate('CommuWriteMap');
+          }}
+        />
+
+        <ScrollView style={styles.scrollView}>
+          <View style={styles.row}>
+            <View style={styles.column1}>
+              {data.slice(0, data.length / 2).map(item => (
+                // 첫 번째 열에 해당하는 데이터를 매핑하여 표시
+                // View가 아니라 TouchableOpacity 였음
+                <View
+                  style={styles.item}
+                  key={item.boardId}
+                  // onPress={() => handleItemPress(item.boardId)}
+                >
+                  <View style={styles.profileContainer}>
+                    {item.profileImg ? (
+                      <Image
+                        style={styles.profileImg}
+                        source={{uri: item.profileImg}}
+                      />
+                    ) : (
+                      <Image
+                        style={styles.defaultImg}
+                        source={require('../../assets/user.png')}
+                      />
+                    )}
+                    <Text style={styles.info2}>{item.writer}</Text>
+                  </View>
+
+                  <ScrollView
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={true}
+                    onMomentumScrollEnd={() => {
+                      console.log('Scrolling is End');
+                    }}>
+                    {item.boardImg.map((imgUrl, index) => (
+                      <TouchableOpacity
+                        onPress={() => handlePostImgPress(item.boardId)}>
+                        <Image
+                          key={index}
+                          source={{uri: imgUrl}}
+                          style={styles.pImg}
+                        />
+                      </TouchableOpacity>
+                    ))}
+                  </ScrollView>
+                  <Text style={styles.info1}>제목 : {item.title}</Text>
+
+                  <Text style={styles.info1}>좋아요 수 : {item.likeCount}</Text>
+                  <Text style={styles.info1}>
+                    댓글 수 : {item.commentCount}
+                  </Text>
+
+                  <View style={styles.heartIconBackground} key={item.boardId}>
+                    <TouchableOpacity onPress={() => handleLike(item.boardId)}>
+                      <Image
+                        style={styles.heartIcon}
+                        source={
+                          item.likeCheck
+                            ? require('../../../src/assets/like.png')
+                            : require('../../../src/assets/unlike.png')
+                        }
+                      />
+                    </TouchableOpacity>
+                  </View>
+                  <Text style={styles.info1}>작성일시 {item.boardTime}</Text>
+                </View>
+              ))}
+            </View>
+
+            <View style={styles.column2}>
+              {data.slice(data.length / 2).map(item => (
+                // 두 번째 열에 해당하는 데이터를 매핑하여 표시
+                <View
+                  style={styles.item}
+                  key={item.boardId}
+                  onPress={() => handleItemPress(item.boardId)}>
+                  <View style={styles.profileContainer}>
+                    {item.profileImg ? (
+                      <Image
+                        style={styles.profileImg}
+                        source={{uri: item.profileImg}}
+                      />
+                    ) : (
+                      <Image
+                        style={styles.defaultImg}
+                        source={require('../../assets/user.png')}
+                      />
+                    )}
+                    <Text style={styles.info2}>{item.writer}</Text>
+                  </View>
+
+                  <ScrollView
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={true}
+                    onMomentumScrollEnd={() => {
+                      console.log('Scrolling is End');
+                    }}>
+                    {item.boardImg.map((imgUrl, index) => (
+                      <Image
+                        key={index}
+                        source={{uri: imgUrl}}
+                        style={styles.pImg}
+                      />
+                    ))}
+                  </ScrollView>
+                  <Text style={styles.info1}>제목 : {item.title}</Text>
+
+                  <Text style={styles.info1}>좋아요 수 : {item.likeCount}</Text>
+                  <Text style={styles.info1}>
+                    댓글 수 : {item.commentCount}
+                  </Text>
+
+                  <View style={styles.heartIconBackground} key={item.boardId}>
+                    <TouchableOpacity onPress={() => handleLike(item.boardId)}>
+                      <Image
+                        style={styles.heartIcon}
+                        source={
+                          item.likeCheck
+                            ? require('../../../src/assets/like.png')
+                            : require('../../../src/assets/unlike.png')
+                        }
+                      />
+                    </TouchableOpacity>
+                  </View>
+                  <Text style={styles.info1}>작성일시 {item.boardTime}</Text>
+                </View>
+              ))}
+            </View>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </ScrollView>
+        <Button
+          title={'글쓰기'}
+          onPress={() => {
+            navigation.navigate('CommWrite');
+          }}
+        />
       </SafeAreaView>
     </ScrollView>
   );
 }
 const styles = StyleSheet.create({
+  /*postImg: {
+    width: 156,
+    height: 156,
+  },*/
+  profileContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  profileImg: {
+    width: 30,
+    height: 30,
+    borderRadius: 0,
+  },
+  defaultImg: {
+    width: 30,
+    height: 30,
+    borderRadius: 0,
+  },
+  pImg: {
+    width: 156,
+    height: 156,
+    backgroundColor: 'gray',
+    borderRadius: 0,
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  column1: {
+    marginLeft: 16,
+    marginTop: 29,
+    marginBottom: 16,
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    backgroundColor: '#fff',
+  },
+  column2: {
+    marginRight: 16,
+    marginTop: 29,
+    marginBottom: 16,
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    backgroundColor: '#fff',
+  },
+  item: {
+    width: 156,
+    flex: 0,
+    marginBottom: 16,
+    borderRadius: 8,
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    elevation: 4,
+  },
   container: {
     backgroundColor: '#FFEAD0',
     paddingHorizontal: 30,
