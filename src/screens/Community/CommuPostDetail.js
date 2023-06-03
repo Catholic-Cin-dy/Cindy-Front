@@ -69,11 +69,11 @@ export default function CommuPostDetail({route}) {
       .get(baseUrl + 'boards/comments/' + boardId, {...config})
       .then(response => {
         setCData(response.data.result.contents);
-        // setIsRefreshing(false); // 화면 새로고침 완료
+        setIsRefreshing(false); // 화면 새로고침 완료
       })
       .catch(error => console.error(error));
-  }, [isFocused]);
-  // }, [isFocused, isRefreshing]);
+    // }, [isFocused]);
+  }, [isFocused, isRefreshing]);
 
   function handleLike() {
     setLiked(!liked);
@@ -122,7 +122,7 @@ export default function CommuPostDetail({route}) {
         // setCData(prevData =>
         //   prevData.filter(cdata => cdata.commentId !== commentId),
         // );
-        // setIsRefreshing(true);
+        setIsRefreshing(true);
       })
       .catch(error => console.error(error));
   }
