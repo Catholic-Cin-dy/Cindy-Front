@@ -104,7 +104,11 @@ export default function CommuPostDetail({route}) {
     console.log('boardId : ', boardId);
     console.log('comment : ', comment);
 
-    axios.post(baseUrl + 'boards/comments', commentpayload, {...config});
+    axios
+      .post(baseUrl + 'boards/comments', commentpayload, {...config})
+      .then(response => {
+        setIsRefreshing(true);
+      });
   };
 
   function deleteComment(item) {
