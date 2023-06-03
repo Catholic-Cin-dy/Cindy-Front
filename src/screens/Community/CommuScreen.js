@@ -22,6 +22,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import {useIsFocused} from '@react-navigation/native';
 
 import CommuPostDetail from './CommuPostDetail';
 
@@ -38,8 +39,12 @@ export default function CommuScreen() {
   const [searchText, setSearchText] = useState('');
   const [suggestions, setSuggestions] = useState([]);
 
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
   const [data, setData] = useState([]); //커뮤니티 전체 데이터
   const payload = {latitude: 37.541, longitude: 126.986}; //사용자의 위치 받아온거 여기 들어가야 함.
+
+  const isFocused = useIsFocused(); // isFoucesd Define
   useEffect(() => {
     const params = {
       page: 0,
@@ -49,12 +54,13 @@ export default function CommuScreen() {
       .then(response =>
         // POST 요청이 성공한 경우 실행되는 코드
         setData(response.data.result.contents),
+        setIsRefreshing(false),
       )
       .catch(error => {
         // POST 요청이 실패한 경우 실행되는 코드
         console.error(error);
       });
-  }, []);
+  }, [isFocused, isRefreshing]);
 
   const handleSearchTextChange = text => {
     setSearchText(text);

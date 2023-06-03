@@ -109,6 +109,8 @@ export default function CommuPostDetail({route}) {
       .then(response => {
         setIsRefreshing(true);
       });
+
+    setComment('');
   };
 
   function deleteComment(item) {
@@ -138,12 +140,14 @@ export default function CommuPostDetail({route}) {
 
     axios
       .delete(baseUrl + 'boards/delete/' + boardId, {...config})
-      .then(response => {})
+      .then(response => {
+
+      })
       .catch(error => console.error(error));
   }
 
   function movePost() {
-    navigation.navigate('CommuScreen');
+    navigation.pop();
   }
 
   const AddGoods = props => {
@@ -160,15 +164,21 @@ export default function CommuPostDetail({route}) {
             {data.profileImgUrl ? (
               <Image
                 style={styles.profileImg}
-                source={{uri: data.profileImgUrl}}
+                source={{ uri: data.profileImgUrl }}
               />
             ) : (
               <Image
                 style={styles.defaultImg}
-                source={require('../../assets/user.png')}
+                source={require("../../assets/user.png")}
               />
             )}
             <Text style={styles.info2}>{data.writer}</Text>
+
+            {/*<Text>
+              <TouchableOpacity style={styles.deleteBtn} onPress={() => navigation.pop()}>
+                <Text>이동</Text>
+              </TouchableOpacity>
+            </Text>*/}
 
             <Text style={styles.deleteBtn}>
               {data.my ? (
@@ -180,15 +190,11 @@ export default function CommuPostDetail({route}) {
                   <Text>삭제</Text>
                 </TouchableOpacity>
               ) : (
-                '유효값x pid: ' + data.boardId
+                "유효값x pid: " + data.boardId
               )}
             </Text>
 
-            {/*<Text>
-            <TouchableOpacity style={styles.deleteBtn} onPress={() => navigation.pop()}>
-              <Text>이동</Text>
-            </TouchableOpacity>
-          </Text>*/}
+
           </View>
 
           <View>
@@ -212,7 +218,7 @@ export default function CommuPostDetail({route}) {
               horizontal={true}
               showsHorizontalScrollIndicator={true}
               onMomentumScrollEnd={() => {
-                console.log('Scrolling is End');
+                console.log("Scrolling is End");
               }}>
               {data &&
                 data.imgList &&
@@ -220,7 +226,7 @@ export default function CommuPostDetail({route}) {
                   <TouchableOpacity onPress={showCoordinate}>
                     <Image
                       key={index}
-                      source={{uri: img.imgUrl}}
+                      source={{ uri: img.imgUrl }}
                       style={styles.pImg}
                     />
                     <Text>x,y 좌표</Text>
@@ -243,7 +249,7 @@ export default function CommuPostDetail({route}) {
                 {/*<Text>{data.likeCheck ? data.likeCheck.toString() : "유효값x pid: " + data.boardId}</Text>*/}
 
                 <Text>
-                  {data.my ? data.my.toString() : 'false' + data.boardId}
+                  {data.my ? data.my.toString() : "false" + data.boardId}
                 </Text>
 
                 <TouchableOpacity onPress={handleLike}>
@@ -251,8 +257,8 @@ export default function CommuPostDetail({route}) {
                     style={styles.heartIcon}
                     source={
                       data.likeCheck
-                        ? require('../../assets/like.png')
-                        : require('../../assets/unlike.png')
+                        ? require("../../assets/like.png")
+                        : require("../../assets/unlike.png")
                     }
                   />
                 </TouchableOpacity>
@@ -270,25 +276,27 @@ export default function CommuPostDetail({route}) {
                 {item.profileImgUrl ? (
                   <Image
                     style={styles.profileImg}
-                    source={{uri: item.profileImgUrl}}
+                    source={{ uri: item.profileImgUrl }}
                   />
                 ) : (
                   <Image
                     style={styles.defaultImg}
-                    source={require('../../assets/user.png')}
+                    source={require("../../assets/user.png")}
                   />
                 )}
                 <Text style={styles.info2}>{item.nickName}</Text>
+                <TouchableOpacity
+                  style={styles.cdeleteBtn}
+                  onPress={() => {
+                    deleteComment(item);
+                  }}>
+                  <Text>댓글 삭제</Text>
+                </TouchableOpacity>
               </View>
               <Text style={styles.info2}>{item.comment}</Text>
               <Text style={styles.info1}>작성일시 {item.commentTime}</Text>
               <Text style={styles.info2}>{item.my}</Text>
-              <TouchableOpacity
-                onPress={() => {
-                  deleteComment(item);
-                }}>
-                <Text>댓글 삭제</Text>
-              </TouchableOpacity>
+
             </View>
           ))}
         </View>
@@ -316,8 +324,14 @@ const styles = {
   slide: {
     flex: 1,
   },
+  cdeleteBtn: {
+    marginLeft: 185,
+  },
   deleteBtn: {
     marginLeft: 210,
+  },
+  moveBtn: {
+    marginLeft: 190,
   },
   profileContainer: {
     marginLeft: 15,
