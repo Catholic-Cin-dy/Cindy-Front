@@ -14,12 +14,20 @@ import {Pressable, Platform} from 'react-native';
 import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
 import UploadModeModal from './UploadModeModal';
 import axios from 'axios';
+import {useFocusEffect} from '@react-navigation/native';
 const baseUrl = 'https://www.awesominki.shop';
+const baseUrl2 = 'http://localhost:9000';
+
+const headers = {
+  'Content-Type': 'multipart/form-data',
+  'X-AUTH-TOKEN': `eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWQiOjIsImlhdCI6MTY3OTkyMjIwNSwiZXhwIjoxNzExNDU4MjA1fQ.A45bXqITjpGnywheSkEzfv5St2jD08DefUW2VQEbDpo`,
+};
+
 export default function CommWrite() {
   const [data, setData] = useState([]);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [img, setImageSource] = useState('');
+  const [img, setImage] = useState('');
   const [imgurl, setImgurl] = useState([]);
 
   const onChangeTitle = inputText => {
@@ -38,28 +46,27 @@ export default function CommWrite() {
   };
   let imgUrlsource;
 
-  const onPickImage = async res => {
+  const onPickImage = res => {
     if (res.didCancel || !res) {
       return;
     }
     //console.log(res);
     //console.log(res.uri);
     console.log(res.assets[0].uri);
-
-    imgUrlsource = res.assets[0].uri;
-    const response = await fetch(imgUrlsource);
-    const blob = await response.blob();
-    setImageSource(res.assets[0].uri);
+    //imgUrlsource = res.assets[0].uri;
+    setImage(res.assets[0].uri);
+    // imgurl.type = 'image/jpeg';
+    // imgurl.name = 'image.jpg';
     //submitBtn();
     //submitBtn(); 비로 실행되게 만듦 이유 :imgUrlsource 변수에 값을 할당되기 전 먼저 함수 호출된다 해서 ㅅㅍ
-    const newImgList = [
-      {
-        uri: imgUrlsource,
-        type: 'image/jpeg',
-        name: 'image.jpg',
-      },
-    ];
-    setImgurl(newImgList);
+    const imgUrlsource = {
+      uri: res.assets[0].uri,
+      type: res.assets[0].type,
+      name: res.assets[0].fileName,
+    };
+    console.log(imgUrlsource);
+    //const newImgList = imgUrlsource;
+    setImgurl(imgUrlsource);
   };
 
   // 카메라 촬영
@@ -86,32 +93,14 @@ export default function CommWrite() {
   };
 
   const submitBtn = () => {
-    const formData = new FormData();
-    //const postBoard = new FormData();
-    formData.append('imgUrl', imgurl[0], {
-      type: 'multipart/form-data',
-    });
     const postBoard = {
       title: title,
       content: content,
       latitude: 11.12,
       longitude: 23.45,
       tags: [],
-      imgList: [
-        {
-          imgTags: [
-            {
-              brandId: 3,
-              x: 70,
-              y: 67,
-            },
-            {
-              brandId: 4,
-              x: 125,
-              y: 125,
-            },
-          ],
-        },
+      imgFiles: [],
+      imgTagList: [
         {
           imgTags: [
             {
@@ -128,93 +117,93 @@ export default function CommWrite() {
         },
       ],
     };
-    // const postBoardBlob = new Blob([JSON.stringify(postBoard1)], {
-    //   type: 'application/json',
-    // });
-    //formData.append('postBoard', postBoardBlob);
 
-    formData.append('postBoard', JSON.stringify(postBoard), {
-      type: 'application/json',
-    });
-    // postBoard.append('title', JSON.stringify(postBoard1.title));
-    // postBoard.append('content', JSON.stringify(postBoard1.content));
-    // postBoard.append('latitude', JSON.stringify(postBoard1.latitude));
-    // postBoard.append('longitude', JSON.stringify(postBoard1.longitude));
-    // postBoard.append('tags', JSON.stringify(postBoard1.tags));
-    //
-    // postBoard1.imgList.forEach((imgObj, index) => {
-    //   imgObj.imgTags.forEach(imgTag => {
-    //     postBoard.append(
-    //       `imgList[${index}][imgTags][${index}]brandId`,
-    //       JSON.stringify(imgTag.brandId),
-    //     );
-    //     postBoard.append(
-    //       `imgList[${index}][imgTags][${index}]x`,
-    //       JSON.stringify(imgTag.x),
-    //     );
-    //     postBoard.append(
-    //       `imgList[${index}][imgTags][${index}]y`,
-    //       JSON.stringify(imgTag.y),
-    //     );
-    //   });
-    // });
+    const formData = new FormData();
+    //const imgUrl = imgurl;
+    //console.log('i am', imgUrl);
 
-    //console.log('postBoard:', postBoard);
+    formData.append('title', postBoard.title.toString());
+    formData.append('content', postBoard.content.toString());
+    formData.append('latitude', postBoard.latitude.toString());
+    formData.append('longitude', postBoard.longitude.toString());
+    formData.append('tags', postBoard.tags);
+    formData.append(
+      'imgTagList',
+      JSON.stringify(postBoard.imgTagList).toString(),
+    );
 
-    console.log('imgUrl:', imgurl);
-    //console.log('imgUrl폼:', Object(imgUrl));
-    console.log('postboard폼:', Object(postBoard));
-
-    const authToken =
-      'eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWQiOjIsImlhdCI6MTY3OTkyMjIwNSwiZXhwIjoxNzExNDU4MjA1fQ.A45bXqITjpGnywheSkEzfv5St2jD08DefUW2VQEbDpo';
-    const imgConfig = {
-      method: 'POST',
-      headers: {
-        // multipart/
-        'Content-Type': 'multipart/form-data',
-        'X-AUTH-TOKEN': authToken,
-      },
-      body: formData,
-    };
-    // console.log('바디' + body);
-    // const boardConfig = {
-    //   method: 'POST',
-    //   headers: {
-    //     // multipart/
-    //     'Content-Type': 'application/json',
-    //     'X-AUTH-TOKEN': authToken,
-    //   },
-    //   body: imgUrl,
+    // const form = {
+    //   title: postBoard.title,
+    //   content: postBoard.content,
+    //   latitude: postBoard.latitude,
+    //   longitude: postBoard.longitude,
+    //   tags: postBoard.tags,
+    //   imgList: postBoard.imgList,
     // };
+    //formData.append('postBoard', JSON.stringify(form));
+    formData.append('imgFiles ', imgurl);
+    //console.log('postBoard 는 이거임', form);
+    console.log('imgUrl 은 이거임', imgurl);
+    //console.log(formData.imgList);
 
-    fetch(baseUrl + '/boards/new', imgConfig)
+    //console.log('formData:', formData);
+    const formList = formData._parts;
+    //console.log(formList);
+    //요기
+    const arrayValue = formData._parts;
+    const objectValue = Object.fromEntries(arrayValue);
+
+    /*fetch(baseUrl + '/boards/new', payload, config)
       .then(response => {
-        // Handle the response as needed
-        // For example, check the response status and do appropriate actions
         if (response.ok) {
           console.log('Request successful');
         } else {
           console.log('Request failed');
         }
       })
+      .catch(error => console.error(error));*/
 
-      .catch(error => console.error(error));
+    //const payload = {imgUrl: imgUrl, postBoard: JSON.stringify(objectValue)};
+    // console.log(payload.imgUrl);
+    // console.log(payload.postBoard);
+    // console.log(payload);
+    console.log('formData마지막:', formData);
 
-    //   fetch(baseUrl + '/boards/new', boardConfig)
-    //     .then(response => {
-    //       if (response.ok) {
-    //         console.log('Board creation successful');
-    //       } else {
-    //         console.log('Board creation failed');
-    //       }
-    //     })
-    //     .catch(error => console.error(error));
+    axios
+      .post(baseUrl + '/boards/write', formData, {
+        headers: {
+          ...headers,
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      .then(response => {
+        if (response) {
+          console.log(response.data);
+        }
+      })
+      .catch(error => {
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          console.log('음 1' + error.response.data);
+          console.log('음 2' + error.response.status);
+          console.log('음 3' + error.response.headers);
+        } else if (error.request) {
+          // The request was made but no response was received
+          // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+          // http.ClientRequest in node.js
+          console.log('음 4' + error.request);
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.log('Error', error.message);
+        }
+      });
   };
 
   return (
     <ScrollView>
       <SafeAreaView style={styles.container}>
-        <Text style={styles.text1}>이미지를 선택해주세요</Text>
+        <Text>이미지를 선택해주세요</Text>
         {img ? ( // 이미지가 있으면 라이브러리에서 받아온 이미지로 출력, 없으면 디폴트 이미지 출력!
           <Pressable style={styles.image} onPress={() => modalOpen()}>
             <Image source={{uri: img}} style={{width: 380, height: 400}} />
@@ -231,16 +220,16 @@ export default function CommWrite() {
           onLaunchImageLibrary={ShowPicker}
         />
         {/*모달 띄우기*/}
-        <Text style={styles.text1}>지도</Text>
+        <Text>지도</Text>
         <View style={styles.map} />
-        <Text style={styles.text1}>제목을 작성해주세요</Text>
+        <Text>제목을 작성해주세요</Text>
         <TextInput
-          style={styles.input1}
+          style={styles.input}
           onChangeText={onChangeTitle}
           value={title}
           placeholder="제목을 작성해주세요."
         />
-        <Text style={styles.text1}> 내용을 작성해주세요</Text>
+        <Text> 내용을 작성해주세요</Text>
         <TextInput
           style={styles.input}
           onChangeText={onChangeContent}
@@ -255,12 +244,6 @@ export default function CommWrite() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  text1: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: 'black',
-    marginLeft: 10,
   },
   image: {
     marginLeft: 10,
@@ -278,17 +261,9 @@ const styles = StyleSheet.create({
   input: {
     marginTop: 40,
     marginLeft: 5,
-    marginBottom: 10,
-    width: 400,
-    height: 200,
-    backgroundColor: 'gray',
-  },
-  input1: {
-    marginTop: 40,
-    marginLeft: 5,
     marginBottom: 30,
     width: 400,
-    height: 80,
+    height: 200,
     backgroundColor: 'gray',
   },
 });

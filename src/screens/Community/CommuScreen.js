@@ -10,6 +10,7 @@ import {
   Button,
   SafeAreaView,
   ScrollView,
+  Modal,
 } from 'react-native';
 import CommWrite from './CommWrite';
 import CommuWriteMap from './CommuWriteMap';
@@ -21,6 +22,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import {useIsFocused} from '@react-navigation/native';
 
 import CommuPostDetail from './CommuPostDetail';
 
@@ -31,15 +33,17 @@ const config = {
   },
 };
 export default function CommuScreen() {
-  const navigation = useNavigation();
-
   const [text, setText] = useState('');
 
   const [searchText, setSearchText] = useState('');
   const [suggestions, setSuggestions] = useState([]);
 
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
   const [data, setData] = useState([]); //커뮤니티 전체 데이터
   const payload = {latitude: 37.541, longitude: 126.986}; //사용자의 위치 받아온거 여기 들어가야 함.
+
+  const isFocused = useIsFocused(); // isFoucesd Define
   useEffect(() => {
     const params = {
       page: 0,
@@ -47,15 +51,17 @@ export default function CommuScreen() {
 
     axios
       .post(baseUrl + 'boards', payload, {params, ...config})
-      .then(response =>
-        // POST 요청이 성공한 경우 실행되는 코드
-        setData(response.data.result.contents),
+      .then(
+        response =>
+          // POST 요청이 성공한 경우 실행되는 코드
+          setData(response.data.result.contents),
+        setIsRefreshing(false),
       )
       .catch(error => {
         // POST 요청이 실패한 경우 실행되는 코드
         console.error(error);
       });
-  }, []);
+  }, [isFocused, isRefreshing]);
 
   const handleSearchTextChange = text => {
     setSearchText(text);
@@ -87,10 +93,30 @@ export default function CommuScreen() {
     );
   };
 
+  const navigation = useNavigation();
   const handlePostImgPress = boardId => {
     // 해당 상품 정보를 route.params로 넘겨주고 ProductDetail 화면으로 이동
     // console.log('boardId ID : ' + boardId);
     navigation.navigate('CommuPostDetail', {boardId});
+  };
+
+  const [liked, setLiked] = useState();
+  const handleLike = boardId => {
+    const params = {
+      page: 0,
+    };
+
+    setLiked(!liked);
+
+    axios
+      .patch(baseUrl + 'boards/like/' + boardId, {}, config)
+      .then(response => setLiked(response.data.result))
+      .catch(error => console.error(error));
+
+    axios
+      .post(baseUrl + 'boards', payload, {params, ...config})
+      .then(response => setData(response.data.result.contents))
+      .catch(error => console.error(error));
   };
 
   return (
@@ -118,6 +144,7 @@ export default function CommuScreen() {
             navigation.navigate('CommWrite');
           }}
         />
+
         <Button
           title={'지도'}
           onPress={() => {
@@ -194,11 +221,11 @@ export default function CommuScreen() {
 
             <View style={styles.column2}>
               {data.slice(data.length / 2).map(item => (
-                // 두 번째 열에 해당하는 데이터를 매핑하여 표시
                 <View
                   style={styles.item}
                   key={item.boardId}
-                  onPress={() => handleItemPress(item.boardId)}>
+                  // onPress={() => handleItemPress(item.boardId)}
+                >
                   <View style={styles.profileContainer}>
                     {item.profileImg ? (
                       <Image
@@ -221,11 +248,14 @@ export default function CommuScreen() {
                       console.log('Scrolling is End');
                     }}>
                     {item.boardImg.map((imgUrl, index) => (
-                      <Image
-                        key={index}
-                        source={{uri: imgUrl}}
-                        style={styles.pImg}
-                      />
+                      <TouchableOpacity
+                        onPress={() => handlePostImgPress(item.boardId)}>
+                        <Image
+                          key={index}
+                          source={{uri: imgUrl}}
+                          style={styles.pImg}
+                        />
+                      </TouchableOpacity>
                     ))}
                   </ScrollView>
                   <Text style={styles.info1}>제목 : {item.title}</Text>
@@ -253,14 +283,6 @@ export default function CommuScreen() {
             </View>
           </View>
         </ScrollView>
-      </SafeAreaView>
-    </ScrollView>
-        <Button
-          title={'글쓰기'}
-          onPress={() => {
-            navigation.navigate('CommWrite');
-          }}
-        />
       </SafeAreaView>
     </ScrollView>
   );
@@ -329,6 +351,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFEAD0',
     paddingHorizontal: 30,
     flex: 1,
+    justifyContent: 'center',
   },
   headerText: {
     paddingTop: 50,
@@ -375,11 +398,6 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     // outline: none,
-  },
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    paddingHorizontal: 10,
   },
   input: {
     height: 40,

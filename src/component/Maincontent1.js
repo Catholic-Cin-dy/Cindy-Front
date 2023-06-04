@@ -35,7 +35,7 @@ export default function Maincontent() {
 
     axios
       .get(baseUrl + '/home/recommend', {...config})
-      .then(response => setData(response.data.result.contents))
+      .then(response => setData(response.data.result))
       .catch(error => console.error(error));
   }, []);
 
@@ -63,21 +63,21 @@ export default function Maincontent() {
           }}>
           <View style={styles.content}>
             {data &&
-              data.map(item => (
+              data.map(item1 => (
                 <View style={styles.contentbox}>
                   <View>
                     <Image
-                      key={item.productId}
+                      key={item1.productId}
                       style={styles.box}
-                      source={{uri: item.imgUrl}}
+                      source={{uri: item1.productImgUrl}}
                     />
                   </View>
                   <View style={styles.intext}>
-                    <Text key={item.productId} style={styles.Info1}>
-                      {item.brandName}
+                    <Text key={item1.productId} style={styles.Info1}>
+                      {item1.brand}
                     </Text>
-                    <Text key={item.productId} style={styles.Info2}>
-                      {item.productName}
+                    <Text key={item1.productId} style={styles.Info2}>
+                      {item1.productName}
                     </Text>
                   </View>
                 </View>
@@ -107,6 +107,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: 'black',
+    padding: 20,
   },
   text2: {
     color: 'black',
