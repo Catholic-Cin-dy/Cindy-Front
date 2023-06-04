@@ -10,7 +10,7 @@ import {
   SafeAreaView,
   TextInput,
 } from 'react-native';
-import Modal from 'react-native-simple-modal';
+//import Modal from 'react-native-simple-modal';
 import Swiper from 'react-native-swiper';
 import axios from 'axios';
 import {useState, useEffect} from 'react';
@@ -45,12 +45,19 @@ export default function CommuPostDetail({route}) {
   const [error, setError] = useState(null);
   const [liked, setLiked] = useState();
   const [comment, setComment] = useState('');
+  const [commentEdit, setCommentEdit] = useState('');
   const [isRefreshing, setIsRefreshing] = useState(false);
-
+  const [isEditing, setIsEditing] = useState(false);
+  const [fixId, setfixId] = useState();
+  const [CommentIdBeingEdited, setCommentIdBeingEdited] = useState();
   const navigation = useNavigation();
 
   const onChangeComment = inputText => {
     setComment(inputText);
+  };
+
+  const onChangeComment2 = inputText => {
+    setCommentEdit(inputText);
   };
 
   const isFocused = useIsFocused(); // isFoucesd Define
@@ -109,6 +116,8 @@ export default function CommuPostDetail({route}) {
       .then(response => {
         setIsRefreshing(true);
       });
+
+    setComment('');
   };
 
   function deleteComment(item) {
@@ -131,6 +140,35 @@ export default function CommuPostDetail({route}) {
       .catch(error => console.error(error));
   }
 
+  function fixComment(commentItem) {
+    //setIsEditing(true);
+    console.log('댓글 수정은 ', commentItem);
+    console.log(fixId);
+    const params = {
+      commentId: fixId,
+      comment: commentEdit,
+    };
+    console.log(params);
+    axios
+      .patch(baseUrl + 'boards/comments', params, {...config})
+      .then(response => {
+        console.log(cdata);
+        // setCData(prevData =>
+        //   prevData.filter(cdata => cdata.commentId !== commentId),
+        // );
+        setIsRefreshing(true);
+        setIsEditing(false);
+      })
+      .catch(error => console.error(error));
+  }
+  const editComment = commentItem => {
+    // 댓글 수정 로직을 추가할 수 있습니다.
+    console.log('댓글 수정:', commentItem);
+    console.log(commentItem.commentId);
+    setfixId(commentItem.commentId);
+    setCommentIdBeingEdited(commentItem.commentId);
+    setIsEditing(true);
+  };
   function deletePost() {
     const params = {
       boardId: boardId,
@@ -143,7 +181,7 @@ export default function CommuPostDetail({route}) {
   }
 
   function movePost() {
-    navigation.navigate('CommuScreen');
+    navigation.pop();
   }
 
   const AddGoods = props => {
@@ -170,6 +208,12 @@ export default function CommuPostDetail({route}) {
             )}
             <Text style={styles.info2}>{data.writer}</Text>
 
+            {/*<Text>
+              <TouchableOpacity style={styles.deleteBtn} onPress={() => navigation.pop()}>
+                <Text>이동</Text>
+              </TouchableOpacity>
+            </Text>*/}
+
             <Text style={styles.deleteBtn}>
               {data.my ? (
                 <TouchableOpacity
@@ -183,12 +227,6 @@ export default function CommuPostDetail({route}) {
                 '유효값x pid: ' + data.boardId
               )}
             </Text>
-
-            {/*<Text>
-            <TouchableOpacity style={styles.deleteBtn} onPress={() => navigation.pop()}>
-              <Text>이동</Text>
-            </TouchableOpacity>
-          </Text>*/}
           </View>
 
           <View>
@@ -279,16 +317,55 @@ export default function CommuPostDetail({route}) {
                   />
                 )}
                 <Text style={styles.info2}>{item.nickName}</Text>
+                <TouchableOpacity
+                  style={styles.cdeleteBtn}
+                  onPress={() => {
+                    deleteComment(item);
+                  }}>
+                  <Text>댓글 삭제</Text>
+                </TouchableOpacity>
+                <View>
+                  {isEditing ? (
+                    // <View>
+                    //   <TextInput
+                    //     style={styles.fixinput}
+                    //     onChangeText={onChangeComment}
+                    //     value={comment}
+                    //     placeholder="댓글을 입력해주세요."
+                    //   />
+                    //   <Button title="전송" onPress={writeComment} />
+                    // </View>
+                    ''
+                  ) : (
+                    <TouchableOpacity
+                      style={styles.cdeleteBtn1}
+                      onPress={() => {
+                        editComment(item);
+                        // 댓글 수정 버튼을 눌렀을 때 TextInput으로 포커스 이동하도록 추가합니다.
+                        setCommentEdit(item.comment);
+                      }}>
+                      <Text>댓글 수정</Text>
+                    </TouchableOpacity>
+                  )}
+                </View>
               </View>
-              <Text style={styles.info2}>{item.comment}</Text>
+              {isEditing && CommentIdBeingEdited === item.commentId ? (
+                <View style={{flexDirection: 'row'}}>
+                  <TextInput
+                    style={styles.fixinput1}
+                    onChangeText={onChangeComment2}
+                    value={commentEdit}
+                    placeholder="댓글을 입력해주세요."
+                  />
+                  <TouchableOpacity style={styles.fixBtn} onPress={fixComment}>
+                    <Text style={styles.fixBtnText}>전송</Text>
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                <Text style={styles.info2}>{item.comment}</Text>
+              )}
               <Text style={styles.info1}>작성일시 {item.commentTime}</Text>
               <Text style={styles.info2}>{item.my}</Text>
-              <TouchableOpacity
-                onPress={() => {
-                  deleteComment(item);
-                }}>
-                <Text>댓글 삭제</Text>
-              </TouchableOpacity>
             </View>
           ))}
         </View>
@@ -309,6 +386,14 @@ export default function CommuPostDetail({route}) {
 }
 
 const styles = {
+  fixBtn: {
+    backgroundColor: 'blue',
+    padding: 10,
+    borderRadius: 5,
+    marginHorizontal: 5,
+    height: 50,
+    marginTop: 40,
+  },
   container1: {
     width: '100%',
     height: 519,
@@ -316,8 +401,17 @@ const styles = {
   slide: {
     flex: 1,
   },
+  cdeleteBtn: {
+    marginLeft: 180,
+  },
+  cdeleteBtn1: {
+    marginLeft: 5,
+  },
   deleteBtn: {
     marginLeft: 210,
+  },
+  moveBtn: {
+    marginLeft: 190,
   },
   profileContainer: {
     marginLeft: 15,
@@ -365,6 +459,7 @@ const styles = {
     borderWidth: 1,
     borderColor: 'red',
     flexDirection: 'row',
+    backgroundColor: '#fff',
   },
   contentbox: {
     width: 156,
@@ -397,9 +492,6 @@ const styles = {
   heartIcon2: {
     marginTop: -20,
     marginRight: 6,
-  },
-  content: {
-    backgroundColor: '#fff',
   },
   imgcontainView: {
     // flex: 1,
@@ -462,6 +554,23 @@ const styles = {
     marginLeft: 5,
     marginBottom: 30,
     width: '97%',
+    height: 50,
+    backgroundColor: 'gray',
+  },
+  fixinput: {
+    marginTop: 40,
+    marginLeft: 5,
+    marginBottom: 30,
+    width: '97%',
+    height: 50,
+    backgroundColor: 'gray',
+  },
+  fixinput1: {
+    marginTop: 40,
+    marginLeft: 5,
+    marginRight: 30,
+    marginBottom: 30,
+    width: '75%',
     height: 50,
     backgroundColor: 'gray',
   },
