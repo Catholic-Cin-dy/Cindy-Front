@@ -22,6 +22,8 @@ const bookmarkSelected = require('../assets/btab-bookmark-selected.png');
 const bookmarkUnSelected = require('../assets/btab-bookmark-unselected.png');
 const userSelected = require('../assets/btab-user-selected.png');
 const userUnSelected = require('../assets/btab-user-unselected.png');
+const communitySelected = require('../assets/communitySelected.png');
+const communityUnSelected = require('../assets/communityUnSelected.png');
 
 
 import Detail1 from "./MainDetail/Detail1";
@@ -158,7 +160,7 @@ const MainTabScreen = () => {
                     unmountOnBlur: true,
                     tabBarIcon: ({ focused, color, size }) => (
                       <Image
-                        source={focused ? bookmarkSelected : bookmarkUnSelected} />
+                        source={focused ? communitySelected : communityUnSelected} />
                     ),
                   }}
       />
