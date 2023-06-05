@@ -60,7 +60,6 @@ export default function SearchScreen() {
 
 
 
-
     } else {
       //검색어 없으면 빈칸
       setSuggestions([]);
@@ -73,7 +72,11 @@ export default function SearchScreen() {
   const renderSuggestion = ({item}) => {
     return (
       <TouchableOpacity onPress={() => handleSuggestionPress(item)}>
-        <Text>{item}</Text>
+        <View style={styles.item}>
+          <Image style={styles.pImg} source={{ uri: item.imgUrl }}/>
+          <Text>{item.brandName}</Text>
+          <Text>{item.productName}</Text>
+        </View>
       </TouchableOpacity>
     );
   };
@@ -88,12 +91,14 @@ export default function SearchScreen() {
         onChangeText={handleSearchTextChange}
         value={searchText}
       />
+      <Text>검색어 : {searchText}</Text>
+      <Text/>
       <FlatList
-        data = {suggestions.productName}
+        data = {suggestions}
         renderItem = {renderSuggestion}
         keyExtractor = {item => item.productId.toString()}/>
 
-      <Text>검색어 : {searchText}</Text>
+
     </View>
   );
 }
@@ -115,6 +120,27 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderColor: 'gray',
     borderWidth: 1,
+  },
+  pImg:{
+    width: 156,
+    height: 156,
+    backgroundColor:'gray',
+    borderRadius: 8,
+  },
+  item: {
+    width: 156,
+    flex: 0,
+    marginBottom: 16,
+    borderRadius: 8,
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    elevation: 4,
   },
 
 });
