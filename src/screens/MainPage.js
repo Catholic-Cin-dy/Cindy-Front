@@ -33,6 +33,7 @@ import CommuScreen from "./Community/CommuScreen";
 import CommuPostDetail from "./Community/CommuPostDetail";
 import CommWrite from "./Community/CommWrite";
 import CommuWriteMap from "./Community/CommuWriteMap";
+import MyPage from "./MyPageScreen/MyPage";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -76,14 +77,6 @@ const TestReadScreen = ({ navigation }) => {
     <RecruitPage/>
   );
 };
-const MyPageScreen = ({ navigation }) => {
-  return (
-    <View style={styles.container}>
-      <Text>This is MyPageScreen.</Text>
-    </View>
-  );
-};
-
 
 const HomeStackScreen = () => {
   return (
@@ -109,7 +102,7 @@ const CommunityStackScreen = () => {
 const RecruitProductsStackScreen = () => {
   return (
     <Stack.Navigator>
-      <RecruitStack.Screen name="ProductRecruitAll" component={RecruitPage} options={{ headerShown: false }} />
+      <RecruitStack.Screen name="ProductRecruitAll" component = {RecruitPage} options={{ headerShown: false }} />
       <RecruitStack.Screen name = "ProductDetail" component = {ProductDetail} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
@@ -117,7 +110,7 @@ const RecruitProductsStackScreen = () => {
 const MyPageStackScreen = () => {
   return (
     <Stack.Navigator>
-      <MyPageStack.Screen name="MyPage" component={MyPageScreen} />
+      <MyPageStack.Screen name="MyPage" component = {MyPage} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 };
