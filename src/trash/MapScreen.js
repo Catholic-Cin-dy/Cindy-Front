@@ -69,27 +69,27 @@ const MapScreen = () => {
     getLocation();
   }, []);
 
-  //   return (
-  //     <View style={styles.container}>
-  //       <WebView
-  //         ref={webviewRef}
-  //         style={styles.webview}
-  //         source={{uri: 'https://map.kakao.com'}}
-  //         javaScriptEnabled={true}
-  //       />
-  //       <View style={styles.coordinatesContainer}>
-  //         <Text style={styles.coordinatesText}>
-  //           Latitude: {latitude ? latitude.toFixed(6) : 'Loading...'}
-  //         </Text>
-  //         <Text style={styles.coordinatesText}>
-  //           Longitude: {longitude ? longitude.toFixed(6) : 'Loading...'}
-  //         </Text>
-  //         <Button title="마커 추가" onPress={handleMarkerPress} />
-  //       </View>
-  //     </View>
-  //   );
-  // };
-  return (
+    return (
+      <View style={styles.container}>
+        <WebView
+          ref={webviewRef}
+          style={styles.webview}
+          source={{uri: 'https://map.kakao.com'}}
+          javaScriptEnabled={true}
+        />
+        <View style={styles.coordinatesContainer}>
+          <Text style={styles.coordinatesText}>
+            Latitude: {latitude ? latitude.toFixed(6) : 'Loading...'}
+          </Text>
+          <Text style={styles.coordinatesText}>
+            Longitude: {longitude ? longitude.toFixed(6) : 'Loading...'}
+          </Text>
+          <Button title="마커 추가" onPress={handleMarkerPress} />
+        </View>
+      </View>
+    );
+  };
+  /*return (
     <KakaoMapView
       markerImageName="customImageName" // 옵션1
       // markerImageUrl="https://github.com/jiggag/react-native-kakao-maps/blob/develop/example/custom_image.png?raw=true" // 옵션2
@@ -117,7 +117,7 @@ const MapScreen = () => {
       }}
     />
   );
-};
+};*/
 
 const styles = StyleSheet.create({
   container: {

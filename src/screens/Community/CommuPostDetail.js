@@ -9,11 +9,15 @@ import {
   Image,
   SafeAreaView,
   TextInput,
+  Modal,
+  ImageBackground,
 } from 'react-native';
+//import Modal from 'react-native-simple-modal';
+import { MenuProvider } from 'react-native-popup-menu';
 //import Modal from 'react-native-simple-modal';
 import Swiper from 'react-native-swiper';
 import axios from 'axios';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useRef} from 'react';
 import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
 import {useNavigation} from '@react-navigation/native';
@@ -39,6 +43,10 @@ export default function CommuPostDetail({route}) {
   const {commentId} = route.params;
   //console.log('route 값으로 받은 params : ' + boardId);
 
+  //글자 태그 width 넒이
+  const textRef = useRef(null);
+  const [textWidth, setTextWidth] = useState(0);
+
   const [data, setData] = useState([]);
   const [cdata, setCData] = useState([]);
   //const [loading, setLoading] = useState(false);
@@ -63,6 +71,13 @@ export default function CommuPostDetail({route}) {
   const isFocused = useIsFocused(); // isFoucesd Define
   useEffect(() => {
     console.log('CommuPostDetail - boardId : ' + boardId);
+
+    if (textRef.current) {
+      textRef.current.measure((x, y, width, height) => {
+        setTextWidth(width);
+        console.log('글자길이 : '+textWidth);
+      });
+    }
 
     axios
       .get(baseUrl + 'boards/' + boardId, {...config})
@@ -176,9 +191,24 @@ export default function CommuPostDetail({route}) {
 
     axios
       .delete(baseUrl + 'boards/delete/' + boardId, {...config})
-      .then(response => {})
+      .then(response => {
+
+      })
       .catch(error => console.error(error));
   }
+  function modifyPost() { //수정 api바뀌면 적용 예정
+    const params = {
+      boardId: boardId,
+    };
+
+    /*axios
+      .delete(baseUrl + 'boards/delete/' + boardId, {...config})
+      .then(response => {
+
+      })
+      .catch(error => console.error(error));*/
+  }
+
 
   function movePost() {
     navigation.pop();
@@ -192,18 +222,19 @@ export default function CommuPostDetail({route}) {
   return (
     <View>
       <ScrollView>
+        {/* <Text><CommuDelModiModal/></Text> */}
         <View style={styles.item} key={data.boardId}>
           <Text>boardId : {data.boardId}</Text>
           <View style={styles.profileContainer}>
             {data.profileImgUrl ? (
               <Image
                 style={styles.profileImg}
-                source={{uri: data.profileImgUrl}}
+                source={{ uri: data.profileImgUrl }}
               />
             ) : (
               <Image
                 style={styles.defaultImg}
-                source={require('../../assets/user.png')}
+                source={require("../../assets/user.png")}
               />
             )}
             <Text style={styles.info2}>{data.writer}</Text>
@@ -224,7 +255,21 @@ export default function CommuPostDetail({route}) {
                   <Text>삭제</Text>
                 </TouchableOpacity>
               ) : (
-                '유효값x pid: ' + data.boardId
+                "유효값x pid: " + data.boardId
+              )}
+            </Text>
+
+            <Text style={styles.modifyBtn}>
+              {data.my ? (
+                <TouchableOpacity
+                  onPress={() => {
+                    modifyPost();
+                    navigation.pop();
+                  }}>
+                  <Text>수정</Text>
+                </TouchableOpacity>
+              ) : (
+                "유효값x pid: " + data.boardId
               )}
             </Text>
           </View>
@@ -250,25 +295,46 @@ export default function CommuPostDetail({route}) {
               horizontal={true}
               showsHorizontalScrollIndicator={true}
               onMomentumScrollEnd={() => {
-                console.log('Scrolling is End');
+                console.log("Scrolling is End");
               }}>
               {data &&
                 data.imgList &&
                 data.imgList.map((img, index) => (
-                  <TouchableOpacity onPress={showCoordinate}>
-                    <Image
+                  <TouchableOpacity onPress={showCoordinate} style={styles.postImgWhole}>
+                    <ImageBackground
                       key={index}
-                      source={{uri: img.imgUrl}}
+                      source={{ uri: img.imgUrl }}
                       style={styles.pImg}
-                    />
-                    <Text>x,y 좌표</Text>
-                    <Text>imgId : {`${img.imgId}`}</Text>
-                    {img.imgTags &&
-                      img.imgTags.map((tag, index) => (
-                        <View key={index}>
-                          <Text>{`x: ${tag.x}, y: ${tag.y}, brandName: ${tag.brandName}`}</Text>
-                        </View>
-                      ))}
+                    >
+                      {img.imgTags &&
+                        img.imgTags.map((tag, index) => (
+                          <View
+                            key={index}
+                            style={[styles.imgtagContainer, { width: 360, height: 400, position: "relative" }]}
+                          >
+                            <View style={[styles.imgTagBox, { position: 'absolute', left: tag.x, top: tag.y - index * 400 }]}>
+                              <Text style={[styles.imgTagText, { flexWrap: 'wrap' }]}>
+                                {`${tag.brandName}`}
+                              </Text>
+                            </View>
+                          </View>
+                        ))}
+                    </ImageBackground>
+
+
+                    {/*<View>
+                      <Text>---------------------------------------------------------------------</Text>
+                      <Text>x,y 좌표</Text>
+                      <Text>imgId : {`${img.imgId}`}</Text>
+
+                      {img.imgTags &&
+                        img.imgTags.map((tag, index) => (
+                          <View key={index}>
+                            <Text style={styles.imgtag}>{`x: ${tag.x}, y: ${tag.y}, brandName: ${tag.brandName}`}</Text>
+                          </View>
+                        ))}
+                      <Text>---------------------------------------------------------------------</Text>
+                    </View>*/}
                   </TouchableOpacity>
                 ))}
             </ScrollView>
@@ -281,7 +347,7 @@ export default function CommuPostDetail({route}) {
                 {/*<Text>{data.likeCheck ? data.likeCheck.toString() : "유효값x pid: " + data.boardId}</Text>*/}
 
                 <Text>
-                  {data.my ? data.my.toString() : 'false' + data.boardId}
+                  {data.my ? data.my.toString() : "false" + data.boardId}
                 </Text>
 
                 <TouchableOpacity onPress={handleLike}>
@@ -289,8 +355,8 @@ export default function CommuPostDetail({route}) {
                     style={styles.heartIcon}
                     source={
                       data.likeCheck
-                        ? require('../../assets/like.png')
-                        : require('../../assets/unlike.png')
+                        ? require("../../assets/like.png")
+                        : require("../../assets/unlike.png")
                     }
                   />
                 </TouchableOpacity>
@@ -308,12 +374,12 @@ export default function CommuPostDetail({route}) {
                 {item.profileImgUrl ? (
                   <Image
                     style={styles.profileImg}
-                    source={{uri: item.profileImgUrl}}
+                    source={{ uri: item.profileImgUrl }}
                   />
                 ) : (
                   <Image
                     style={styles.defaultImg}
-                    source={require('../../assets/user.png')}
+                    source={require("../../assets/user.png")}
                   />
                 )}
                 <Text style={styles.info2}>{item.nickName}</Text>
@@ -335,7 +401,7 @@ export default function CommuPostDetail({route}) {
                     //   />
                     //   <Button title="전송" onPress={writeComment} />
                     // </View>
-                    ''
+                    ""
                   ) : (
                     <TouchableOpacity
                       style={styles.cdeleteBtn1}
@@ -350,7 +416,7 @@ export default function CommuPostDetail({route}) {
                 </View>
               </View>
               {isEditing && CommentIdBeingEdited === item.commentId ? (
-                <View style={{flexDirection: 'row'}}>
+                <View style={{ flexDirection: "row" }}>
                   <TextInput
                     style={styles.fixinput1}
                     onChangeText={onChangeComment2}
@@ -366,6 +432,7 @@ export default function CommuPostDetail({route}) {
               )}
               <Text style={styles.info1}>작성일시 {item.commentTime}</Text>
               <Text style={styles.info2}>{item.my}</Text>
+
             </View>
           ))}
         </View>
@@ -386,6 +453,38 @@ export default function CommuPostDetail({route}) {
 }
 
 const styles = {
+  postImgWhole: {
+    /*flexDirection: 'row',*/
+  },
+  imgtagContainer: {
+    position: 'relative',
+    /*
+    borderColor: '#FF1AA0',
+    borderWidth: 1,
+    backgroundColor: 'rgba(255, 26, 160, 0.24)',
+    */
+  },
+  imgTagBox: {
+    borderColor: '#FF1AA0',
+    borderWidth: 1,
+    backgroundColor: 'rgba(255, 26, 160, 0.24)',
+    borderRadius: 6,
+  },
+  imgTagText: {
+    color: 'black',
+    fontWeight: 'bold',
+    fontSize: 13,
+    left: 0,
+    top: 0,
+    marginLeft: 5,
+    marginRight: 5,
+  },
+  imgtag: {
+    color: 'red',
+    fontColor: 'black',
+    fontWeight: 'bold',
+    fontSize: 15,
+  },
   fixBtn: {
     backgroundColor: 'blue',
     padding: 10,
@@ -408,7 +507,10 @@ const styles = {
     marginLeft: 5,
   },
   deleteBtn: {
-    marginLeft: 210,
+    marginLeft: 190,
+  },
+  modifyBtn: {
+    marginLeft: 5,
   },
   moveBtn: {
     marginLeft: 190,
@@ -492,6 +594,9 @@ const styles = {
   heartIcon2: {
     marginTop: -20,
     marginRight: 6,
+  },
+  content: {
+    backgroundColor: '#fff',
   },
   imgcontainView: {
     // flex: 1,

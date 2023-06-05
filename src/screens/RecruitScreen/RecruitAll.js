@@ -250,26 +250,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
   },
-  scrollContainer : {
-
-  },
-  newsContainer : {
-
-  },
-  companyHeader : {
-
-  },
-  companyText : {
-
-  },
-  artImage : {
-
-  },
-  artTitle : {
-
-  },
-  article : {
-
-  }
 
 });
