@@ -15,8 +15,7 @@ import {
 //import Modal from 'react-native-simple-modal';
 import { MenuProvider } from 'react-native-popup-menu';
 //import Modal from 'react-native-simple-modal';
-//import Swiper from 'react-native-web-swiper';
-
+import Swiper from 'react-native-web-swiper';
 import axios from 'axios';
 import {useState, useEffect, useRef} from 'react';
 import 'react-native-gesture-handler';
