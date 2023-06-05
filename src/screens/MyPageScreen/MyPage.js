@@ -31,7 +31,7 @@ const config = {
 };
 
 const backGroundImg = require('../../assets/mypage-background.png');
-
+const defaultImg = require('../../assets/default-main-profile.png');
 export default function MyPage() {
 
 
@@ -44,12 +44,18 @@ export default function MyPage() {
   return (
     <View style={styles.firstView}>
       <ImageBackground
-        style = {styles.secondView, { width: 330, height: 560, marginLeft: 30 }}
+        style = {styles.secondView, { width: 330, height: 540, marginLeft: 30, marginTop: 20 }}
         source = {backGroundImg}
       >
+        <Image
+          style={styles.pfImg}
+          source={defaultImg}
+        />
+        <Text style={styles.name}>내이름</Text>
         <TouchableOpacity style={styles.modiProfileBtn}>
-          <Text style={styles.name}>프로필 수정</Text>
+          <Text style={styles.mBtnText}>프로필 수정</Text>
         </TouchableOpacity>
+
       </ImageBackground>
     </View>
   );
@@ -63,8 +69,22 @@ const styles = StyleSheet.create({
   secondView: {
 
   },
+  pfImg:{
+    width: 220,
+    height: 120,
+    borderRadius: 15,
+    marginTop: 0,
+  },
   name: {
-    color : 'black',
+    color : 'white',
+    marginLeft: 155,
+    marginTop: 40,
+    fontWeight: 'bold',
+    color: '#FF1AA0',
+    fontSize: 23,
+  },
+  mBtnText: {
+    color : 'white',
     marginLeft: 65,
     marginTop: 8,
     fontWeight: 'bold',
@@ -75,7 +95,7 @@ const styles = StyleSheet.create({
     width : 225,
     height: 40,
     backgroundColor: '#FF1AA0',
-    marginTop: 210,
+    marginTop: 10,
     marginLeft: -3,
   },
 
