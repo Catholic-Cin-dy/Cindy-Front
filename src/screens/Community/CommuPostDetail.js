@@ -15,7 +15,8 @@ import {
 //import Modal from 'react-native-simple-modal';
 import { MenuProvider } from 'react-native-popup-menu';
 //import Modal from 'react-native-simple-modal';
-import Swiper from 'react-native-swiper';
+//import Swiper from 'react-native-web-swiper';
+
 import axios from 'axios';
 import {useState, useEffect, useRef} from 'react';
 import 'react-native-gesture-handler';
@@ -274,55 +275,37 @@ export default function CommuPostDetail({route}) {
             </Text>
           </View>
 
-          <View>
-            {/*<Swiper
-            autoplay={true}
-            autoplayTimeout={2.5}
-            showsPagination={false}>
-            {data && data.imgList && data.imgList.map((img, imgId) => (
-              <View key={imgId}>
-                <Image
-                  source={{ uri: img.imgUrl }}
-                  style={styles.pImg}
-                />
-              </View>
-            ))}
-          </Swiper>*/}
-          </View>
 
-          <View>
-            <ScrollView
-              horizontal={true}
-              showsHorizontalScrollIndicator={true}
-              onMomentumScrollEnd={() => {
-                console.log("Scrolling is End");
-              }}>
-              {data &&
-                data.imgList &&
-                data.imgList.map((img, index) => (
-                  <TouchableOpacity onPress={showCoordinate} style={styles.postImgWhole}>
-                    <ImageBackground
-                      key={index}
-                      source={{ uri: img.imgUrl }}
-                      style={styles.pImg}
-                    >
-                      {img.imgTags &&
-                        img.imgTags.map((tag, index) => (
-                          <View
-                            key={index}
-                            style={[styles.imgtagContainer, { width: 360, height: 400, position: "relative" }]}
-                          >
-                            <View style={[styles.imgTagBox, { position: 'absolute', left: tag.x, top: tag.y - index * 400 }]}>
-                              <Text style={[styles.imgTagText, { flexWrap: 'wrap' }]}>
-                                {`${tag.brandName}`}
-                              </Text>
+          <View style={styles.container}>
+            <View style={styles.slideImageView}>
+              <Swiper
+                containerStyle={{width:360, height:400}}>
+                {data &&
+                  data.imgList &&
+                  data.imgList.map((img, index) => (
+                    <TouchableOpacity onPress={showCoordinate} style={styles.postImgWhole}>
+                      <ImageBackground
+                        key={index}
+                        source={{ uri: img.imgUrl }}
+                        style={styles.pImg}
+                      >
+                        {img.imgTags &&
+                          img.imgTags.map((tag, index) => (
+                            <View
+                              key={index}
+                              style={[styles.imgtagContainer, { width: 360, height: 400, position: "relative" }]}
+                            >
+                              <View style={[styles.imgTagBox, { position: 'absolute', left: tag.x, top: tag.y - index * 400 }]}>
+                                <Text style={[styles.imgTagText, { flexWrap: 'wrap' }]}>
+                                  {`${tag.brandName}`}
+                                </Text>
+                              </View>
                             </View>
-                          </View>
-                        ))}
-                    </ImageBackground>
+                          ))}
+                      </ImageBackground>
 
 
-                    {/*<View>
+                      {/*<View>
                       <Text>---------------------------------------------------------------------</Text>
                       <Text>x,y 좌표</Text>
                       <Text>imgId : {`${img.imgId}`}</Text>
@@ -335,10 +318,12 @@ export default function CommuPostDetail({route}) {
                         ))}
                       <Text>---------------------------------------------------------------------</Text>
                     </View>*/}
-                  </TouchableOpacity>
-                ))}
-            </ScrollView>
+                    </TouchableOpacity>
+                  ))}
+              </Swiper>
+            </View>
           </View>
+
 
           <View style={styles.content} key={data.boardId}>
             <View style={styles.contentContainer}>
