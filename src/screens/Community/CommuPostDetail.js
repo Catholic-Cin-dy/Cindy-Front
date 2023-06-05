@@ -9,7 +9,10 @@ import {
   Image,
   SafeAreaView,
   TextInput,
+  Modal,
 } from 'react-native';
+//import Modal from 'react-native-simple-modal';
+import { MenuProvider } from 'react-native-popup-menu';
 //import Modal from 'react-native-simple-modal';
 import Swiper from 'react-native-swiper';
 import axios from 'axios';
@@ -181,6 +184,19 @@ export default function CommuPostDetail({route}) {
       })
       .catch(error => console.error(error));
   }
+  function modifyPost() { //수정 api바뀌면 적용 예정
+    const params = {
+      boardId: boardId,
+    };
+
+    /*axios
+      .delete(baseUrl + 'boards/delete/' + boardId, {...config})
+      .then(response => {
+
+      })
+      .catch(error => console.error(error));*/
+  }
+
 
   function movePost() {
     navigation.pop();
@@ -194,6 +210,7 @@ export default function CommuPostDetail({route}) {
   return (
     <View>
       <ScrollView>
+        {/* <Text><CommuDelModiModal/></Text> */}
         <View style={styles.item} key={data.boardId}>
           <Text>boardId : {data.boardId}</Text>
           <View style={styles.profileContainer}>
@@ -226,11 +243,23 @@ export default function CommuPostDetail({route}) {
                   <Text>삭제</Text>
                 </TouchableOpacity>
               ) : (
-                '유효값x pid: ' + data.boardId
+                "유효값x pid: " + data.boardId
               )}
             </Text>
 
-
+            <Text style={styles.modifyBtn}>
+              {data.my ? (
+                <TouchableOpacity
+                  onPress={() => {
+                    modifyPost();
+                    navigation.pop();
+                  }}>
+                  <Text>수정</Text>
+                </TouchableOpacity>
+              ) : (
+                "유효값x pid: " + data.boardId
+              )}
+            </Text>
           </View>
 
           <View>
@@ -370,17 +399,6 @@ export default function CommuPostDetail({route}) {
               )}
               <Text style={styles.info1}>작성일시 {item.commentTime}</Text>
               <Text style={styles.info2}>{item.my}</Text>
-                <TouchableOpacity
-                  style={styles.cdeleteBtn}
-                  onPress={() => {
-                    deleteComment(item);
-                  }}>
-                  <Text>댓글 삭제</Text>
-                </TouchableOpacity>
-              </View>
-              <Text style={styles.info2}>{item.comment}</Text>
-              <Text style={styles.info1}>작성일시 {item.commentTime}</Text>
-              <Text style={styles.info2}>{item.my}</Text>
 
             </View>
           ))}
@@ -424,7 +442,10 @@ const styles = {
     marginLeft: 5,
   },
   deleteBtn: {
-    marginLeft: 210,
+    marginLeft: 190,
+  },
+  modifyBtn: {
+    marginLeft: 5,
   },
   moveBtn: {
     marginLeft: 190,

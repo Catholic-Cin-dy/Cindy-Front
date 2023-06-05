@@ -47,7 +47,7 @@ export default function CommuScreen() {
   const isFocused = useIsFocused(); // isFoucesd Define
   useEffect(() => {
     const params = {
-      page: 0,
+      page: 3,
     };
 
     axios.post(baseUrl + 'boards', payload, {params, ...config})
