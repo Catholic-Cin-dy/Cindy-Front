@@ -75,6 +75,7 @@ export default function CommuPostDetail({route}) {
     if (textRef.current) {
       textRef.current.measure((x, y, width, height) => {
         setTextWidth(width);
+        console.log('글자길이 : '+textWidth);
       });
     }
 
@@ -311,20 +312,11 @@ export default function CommuPostDetail({route}) {
                             key={index}
                             style={[styles.imgtagContainer, { width: 360, height: 400, position: "relative" }]}
                           >
-                            <View style={[ styles.imgTagBox, { width: 55, height: 20, position: 'absolute', left: tag.x, top: tag.y - index * 400 }, ]} />
-                            <Text
-                              /*ref={textRef}
-                              onLayout={() => {
-                                if (textRef.current) {
-                                  textRef.current.measure((x, y, width, height) => {
-                                    setTextWidth(width);
-                                  });
-                                }
-                              }}*/
-                              style={[styles.imgTagText, { position: 'absolute', left: tag.x, top: tag.y - index * 400 }]}
-                            >
-                              {`${tag.brandName}`}
-                            </Text>
+                            <View style={[styles.imgTagBox, { position: 'absolute', left: tag.x, top: tag.y - index * 400 }]}>
+                              <Text style={[styles.imgTagText, { flexWrap: 'wrap' }]}>
+                                {`${tag.brandName}`}
+                              </Text>
+                            </View>
                           </View>
                         ))}
                     </ImageBackground>
@@ -465,10 +457,12 @@ const styles = {
     /*flexDirection: 'row',*/
   },
   imgtagContainer: {
-    position: 'relative',/*
+    position: 'relative',
+    /*
     borderColor: '#FF1AA0',
     borderWidth: 1,
-    backgroundColor: 'rgba(255, 26, 160, 0.24)',*/
+    backgroundColor: 'rgba(255, 26, 160, 0.24)',
+    */
   },
   imgTagBox: {
     borderColor: '#FF1AA0',
@@ -480,10 +474,10 @@ const styles = {
     color: 'black',
     fontWeight: 'bold',
     fontSize: 13,
-    position: 'absolute',
     left: 0,
     top: 0,
-    marginLeft: 4,
+    marginLeft: 5,
+    marginRight: 5,
   },
   imgtag: {
     color: 'red',
