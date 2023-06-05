@@ -45,18 +45,19 @@ export default function SearchScreen() {
   const handleSearchTextChange = text => {
     setSearchText(text);
     if (text.length > 0) {
-      // TODO: Implement your logic to get suggestions based on the input text
-      //setSuggestions([...Array(5)].map((_, i) => ({ label: `${text} ${i + 1}` })));
       const params = {
         page: 0,
         content: text,
       };
 
-
       axios
-        .get(baseUrl + 'boards/tag', {params, ...config})
-        .then(response => setSuggestions(response.data.result))
+        .get(baseUrl + 'products/search', {params, ...config})
+        .then(response => {
+          setSuggestions(response.data.result.contents);
+          console.log("검색결과 : ", response.data.result.contents);
+        })
         .catch(error => console.error(error));
+
 
 
 
@@ -88,10 +89,9 @@ export default function SearchScreen() {
         value={searchText}
       />
       <FlatList
-        data = {suggestions}
+        data = {suggestions.productName}
         renderItem = {renderSuggestion}
-        keyExtractor = {item => item}>
-      </FlatList>
+        keyExtractor = {item => item.productId.toString()}/>
 
       <Text>검색어 : {searchText}</Text>
     </View>
