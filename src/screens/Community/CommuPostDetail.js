@@ -17,7 +17,7 @@ import { MenuProvider } from 'react-native-popup-menu';
 //import Modal from 'react-native-simple-modal';
 import Swiper from 'react-native-swiper';
 import axios from 'axios';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useRef} from 'react';
 import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
 import {useNavigation} from '@react-navigation/native';
@@ -43,6 +43,10 @@ export default function CommuPostDetail({route}) {
   const {commentId} = route.params;
   //console.log('route 값으로 받은 params : ' + boardId);
 
+  //글자 태그 width 넒이
+  const textRef = useRef(null);
+  const [textWidth, setTextWidth] = useState(0);
+
   const [data, setData] = useState([]);
   const [cdata, setCData] = useState([]);
   //const [loading, setLoading] = useState(false);
@@ -67,6 +71,12 @@ export default function CommuPostDetail({route}) {
   const isFocused = useIsFocused(); // isFoucesd Define
   useEffect(() => {
     console.log('CommuPostDetail - boardId : ' + boardId);
+
+    if (textRef.current) {
+      textRef.current.measure((x, y, width, height) => {
+        setTextWidth(width);
+      });
+    }
 
     axios
       .get(baseUrl + 'boards/' + boardId, {...config})
@@ -297,15 +307,30 @@ export default function CommuPostDetail({route}) {
                     >
                       {img.imgTags &&
                         img.imgTags.map((tag, index) => (
-                          <View key={index} style={[styles.imgtagContainer, { width: 360, height: 400, position: "relative" }]}>
-                            <Text style={[styles.test, { position: "absolute", left: tag.x, top: tag.y-index * 400 }]}>
+                          <View
+                            key={index}
+                            style={[styles.imgtagContainer, { width: 360, height: 400, position: "relative" }]}
+                          >
+                            <View style={[ styles.imgTagBox, { width: 55, height: 20, position: 'absolute', left: tag.x, top: tag.y - index * 400 }, ]} />
+                            <Text
+                              /*ref={textRef}
+                              onLayout={() => {
+                                if (textRef.current) {
+                                  textRef.current.measure((x, y, width, height) => {
+                                    setTextWidth(width);
+                                  });
+                                }
+                              }}*/
+                              style={[styles.imgTagText, { position: 'absolute', left: tag.x, top: tag.y - index * 400 }]}
+                            >
                               {`${tag.brandName}`}
                             </Text>
                           </View>
                         ))}
                     </ImageBackground>
 
-                    <View>
+
+                    {/*<View>
                       <Text>---------------------------------------------------------------------</Text>
                       <Text>x,y 좌표</Text>
                       <Text>imgId : {`${img.imgId}`}</Text>
@@ -317,7 +342,7 @@ export default function CommuPostDetail({route}) {
                           </View>
                         ))}
                       <Text>---------------------------------------------------------------------</Text>
-                    </View>
+                    </View>*/}
                   </TouchableOpacity>
                 ))}
             </ScrollView>
@@ -440,15 +465,25 @@ const styles = {
     /*flexDirection: 'row',*/
   },
   imgtagContainer: {
-    position: 'relative',
+    position: 'relative',/*
+    borderColor: '#FF1AA0',
+    borderWidth: 1,
+    backgroundColor: 'rgba(255, 26, 160, 0.24)',*/
   },
-  test: {
-    color: 'blue',
+  imgTagBox: {
+    borderColor: '#FF1AA0',
+    borderWidth: 1,
+    backgroundColor: 'rgba(255, 26, 160, 0.24)',
+    borderRadius: 6,
+  },
+  imgTagText: {
+    color: 'black',
     fontWeight: 'bold',
-    fontSize: 15,
+    fontSize: 13,
     position: 'absolute',
     left: 0,
     top: 0,
+    marginLeft: 4,
   },
   imgtag: {
     color: 'red',
