@@ -9,6 +9,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import {useIsFocused} from '@react-navigation/native';
 
 import RecruitPage from './RecruitPage';
 const baseUrl = 'https://www.awesominki.shop/'; //api 연결을 위한 baseUrl
@@ -26,21 +27,23 @@ export default function ProductDetail({ route }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [liked, setLiked] = useState();
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const isFocused = useIsFocused(); // isFoucesd Define
 
   useEffect(() => {
     console.log('ProductDetail - productId : '+productId)
 
     axios.get(baseUrl + 'products/' + productId, { ...config })
       .then(response => {
-        setData(response.data.result)
-        setLiked(response.data.result.bookmark) //like가 true or false
+        setData(response.data.result);
+        setLiked(response.data.result.bookmark); // like가 true or false
+        setIsRefreshing(false);
       })
-
-      .catch(error => console.error(error))
-
+      .catch(error => console.error(error));
 
 
-  }, []);
+
+  }, [isFocused, isRefreshing]);
 
   //useState(false)로 하든 useState(data.bookmark)로 하든 api 연결은 문제 없음. 현재 상태 못받아오는게 문젠듯
   //const [liked, setLiked] = useState(false);
@@ -65,12 +68,16 @@ export default function ProductDetail({ route }) {
       })*/
 
     axios.patch(baseUrl + 'products/like/' + productId, {}, config)
-      .then(response => setLiked(response.data.result))
+      .then(response =>
+        setLiked(response.data.result),
+        setIsRefreshing(false),
+        )
       .catch(error => console.error(error));
 
     axios.get(baseUrl + 'products/' + productId, { ...config })
       .then(response => {
-        setData(response.data.result)
+        setData(response.data.result);
+        setIsRefreshing(false);
       })
 
       .catch(error => console.error(error))
@@ -87,6 +94,7 @@ export default function ProductDetail({ route }) {
         try {
           const response = await axios.get(baseUrl + 'products/brand/' + productId, { ...config });
           setData(response.data.result);
+          setIsRefreshing(false);
         } catch (error) {
           console.error(error);
         }
@@ -146,6 +154,7 @@ export default function ProductDetail({ route }) {
         try {
           const response = await axios.get(baseUrl + 'products/other/' + productId, { ...config });
           setData(response.data.result);
+          setIsRefreshing(false);
         } catch (error) {
           console.error(error);
         }
