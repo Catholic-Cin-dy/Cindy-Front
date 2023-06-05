@@ -10,6 +10,7 @@ import {
   SafeAreaView,
   TextInput,
   Modal,
+  ImageBackground,
 } from 'react-native';
 //import Modal from 'react-native-simple-modal';
 import { MenuProvider } from 'react-native-popup-menu';
@@ -283,25 +284,40 @@ export default function CommuPostDetail({route}) {
               horizontal={true}
               showsHorizontalScrollIndicator={true}
               onMomentumScrollEnd={() => {
-                console.log('Scrolling is End');
+                console.log("Scrolling is End");
               }}>
               {data &&
                 data.imgList &&
                 data.imgList.map((img, index) => (
-                  <TouchableOpacity onPress={showCoordinate}>
-                    <Image
+                  <TouchableOpacity onPress={showCoordinate} style={styles.postImgWhole}>
+                    <ImageBackground
                       key={index}
-                      source={{uri: img.imgUrl}}
+                      source={{ uri: img.imgUrl }}
                       style={styles.pImg}
-                    />
-                    <Text>x,y 좌표</Text>
-                    <Text>imgId : {`${img.imgId}`}</Text>
-                    {img.imgTags &&
-                      img.imgTags.map((tag, index) => (
-                        <View key={index}>
-                          <Text>{`x: ${tag.x}, y: ${tag.y}, brandName: ${tag.brandName}`}</Text>
-                        </View>
-                      ))}
+                    >
+                      {img.imgTags &&
+                        img.imgTags.map((tag, index) => (
+                          <View key={index} style={[styles.imgtagContainer, { width: 360, height: 400, position: "relative" }]}>
+                            <Text style={[styles.test, { position: "absolute", left: tag.x, top: tag.y-index * 400 }]}>
+                              {`${tag.brandName}`}
+                            </Text>
+                          </View>
+                        ))}
+                    </ImageBackground>
+
+                    <View>
+                      <Text>---------------------------------------------------------------------</Text>
+                      <Text>x,y 좌표</Text>
+                      <Text>imgId : {`${img.imgId}`}</Text>
+
+                      {img.imgTags &&
+                        img.imgTags.map((tag, index) => (
+                          <View key={index}>
+                            <Text style={styles.imgtag}>{`x: ${tag.x}, y: ${tag.y}, brandName: ${tag.brandName}`}</Text>
+                          </View>
+                        ))}
+                      <Text>---------------------------------------------------------------------</Text>
+                    </View>
                   </TouchableOpacity>
                 ))}
             </ScrollView>
@@ -314,7 +330,7 @@ export default function CommuPostDetail({route}) {
                 {/*<Text>{data.likeCheck ? data.likeCheck.toString() : "유효값x pid: " + data.boardId}</Text>*/}
 
                 <Text>
-                  {data.my ? data.my.toString() : 'false' + data.boardId}
+                  {data.my ? data.my.toString() : "false" + data.boardId}
                 </Text>
 
                 <TouchableOpacity onPress={handleLike}>
@@ -322,8 +338,8 @@ export default function CommuPostDetail({route}) {
                     style={styles.heartIcon}
                     source={
                       data.likeCheck
-                        ? require('../../assets/like.png')
-                        : require('../../assets/unlike.png')
+                        ? require("../../assets/like.png")
+                        : require("../../assets/unlike.png")
                     }
                   />
                 </TouchableOpacity>
@@ -341,12 +357,12 @@ export default function CommuPostDetail({route}) {
                 {item.profileImgUrl ? (
                   <Image
                     style={styles.profileImg}
-                    source={{uri: item.profileImgUrl}}
+                    source={{ uri: item.profileImgUrl }}
                   />
                 ) : (
                   <Image
                     style={styles.defaultImg}
-                    source={require('../../assets/user.png')}
+                    source={require("../../assets/user.png")}
                   />
                 )}
                 <Text style={styles.info2}>{item.nickName}</Text>
@@ -368,7 +384,7 @@ export default function CommuPostDetail({route}) {
                     //   />
                     //   <Button title="전송" onPress={writeComment} />
                     // </View>
-                    ''
+                    ""
                   ) : (
                     <TouchableOpacity
                       style={styles.cdeleteBtn1}
@@ -383,7 +399,7 @@ export default function CommuPostDetail({route}) {
                 </View>
               </View>
               {isEditing && CommentIdBeingEdited === item.commentId ? (
-                <View style={{flexDirection: 'row'}}>
+                <View style={{ flexDirection: "row" }}>
                   <TextInput
                     style={styles.fixinput1}
                     onChangeText={onChangeComment2}
@@ -420,6 +436,26 @@ export default function CommuPostDetail({route}) {
 }
 
 const styles = {
+  postImgWhole: {
+    /*flexDirection: 'row',*/
+  },
+  imgtagContainer: {
+    position: 'relative',
+  },
+  test: {
+    color: 'blue',
+    fontWeight: 'bold',
+    fontSize: 15,
+    position: 'absolute',
+    left: 0,
+    top: 0,
+  },
+  imgtag: {
+    color: 'red',
+    fontColor: 'black',
+    fontWeight: 'bold',
+    fontSize: 15,
+  },
   fixBtn: {
     backgroundColor: 'blue',
     padding: 10,
