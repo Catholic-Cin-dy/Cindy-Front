@@ -9,6 +9,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import {useIsFocused} from '@react-navigation/native';
 
 import RecruitPage from './RecruitPage';
 import ProductDetail from './ProductDetail';
@@ -26,21 +27,22 @@ const RecruitAll = (props) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
+  const isFocused = useIsFocused(); // isFoucesd Define
   useEffect(() => {
-
-
     const params = {
       page: 0,
       filter: tabIndex
     };
 
-    axios.get(baseUrl + 'products', { params, ...config })
+    axios.get(baseUrl + "products", { params, ...config })
       .then(response =>
-        setData(response.data.result.contents)
+          setData(response.data.result.contents),
+          setIsRefreshing(false),
       )
-      .catch(error => console.error(error))
-  }, []);
+      .catch(error => console.error(error));
+  }, [isFocused, isRefreshing]);
 
   // 상품 항목 클릭 시 ProductDetail 화면으로 이동하는 함수
   const navigation = useNavigation();
@@ -65,7 +67,8 @@ const RecruitAll = (props) => {
 
     axios.get(baseUrl + 'products', { params, ...config })
       .then(response =>
-        setData(response.data.result.contents)
+        setData(response.data.result.contents),
+        setIsRefreshing(true),
       )
       .catch(error => console.error(error))
 

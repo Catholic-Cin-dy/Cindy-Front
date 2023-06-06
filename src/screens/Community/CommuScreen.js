@@ -12,6 +12,7 @@ import {
   ScrollView,
   Modal,
 } from 'react-native';
+import Swiper from 'react-native-web-swiper';
 import CommWrite from './CommWrite';
 import CommuWriteMap from './CommuWriteMap';
 import axios from 'axios';
