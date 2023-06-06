@@ -14,6 +14,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   TouchableWithoutFeedback,
+  PanResponder,
 } from 'react-native';
 //import Modal from 'react-native-simple-modal';
 import {MenuProvider} from 'react-native-popup-menu';
@@ -97,6 +98,23 @@ export default function CommuPostDetail({route}) {
       setDraggedTag(null); // 드롭 완료 후 드래그 중인 태그 초기화
     }
   };
+
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderGrant: () => {},
+      onPanResponderMove: (event, gestureState) => {
+        // 드래그 중일 때의 처리 로직을 구현합니다.
+        // gestureState에서 움직인 거리, 속도 등의 정보를 얻을 수 있습니다.
+        // ...
+      },
+      onPanResponderRelease: (event, gestureState) => {
+        // 드롭 시의 처리 로직을 구현합니다.
+        handleTagDrop(gestureState.moveX, gestureState.moveY);
+      },
+    }),
+  ).current;
 
   const handleTagClick = (x, y) => {
     console.log('태그가 클릭되었습니다.');
@@ -348,9 +366,10 @@ export default function CommuPostDetail({route}) {
                                     left: tag.x,
                                     top: tag.y - tagIndex * 400,
                                   },
-                                ]}>
+                                ]}
+                                {...panResponder.panHandlers}>
                                 <TouchableOpacity
-                                  onPress={() => handleTagClick(tag.x, tag.y)}
+                                  // onPress={() => handleTagClick(tag.x, tag.y)}
                                   onLongPress={() => handleTagDragStart(tag)} // 드래그 앤 드롭 시작
                                   onPressOut={() => handleTagDrop(tag.x, tag.y)} // 태그 드롭 시 좌표 업데이트
                                 >
