@@ -1,54 +1,96 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {View, Text, StyleSheet, Button} from 'react-native';
-import {WebView} from 'react-native-webview';
-import Geolocation from '@react-native-community/geolocation';
-import {PermissionsAndroid} from 'react-native';
-import {PERMISSIONS, request} from 'react-native-permissions';
-import {KakaoMapView} from '@jiggag/react-native-kakao-maps';
+import React, {useRef} from 'react';
+import {View} from 'react-native';
+import WebView from 'react-native-webview';
+import KakaoMapHTML from './kakao_map.html';
 
 const MapScreen = () => {
-  const webViewRef = React.useRef(null);
-
-  const addMarkerToMap = () => {
-    webViewRef.current.injectJavaScript(`
-      var map = new kakao.maps.Map(document.getElementById('map'), {
-        center: new kakao.maps.LatLng(37.5665, 126.9780),
-        level: 8
-      });
+  const KakaoMapHTML = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=9e9ee36df97402dc8c47586afe7ed493"></script>
+      <meta charset="utf-8"/>
+      <title>Kakao 지도 시작하기</title>
+    </head>
+    <body>
+      <div id="map" style="width:100%;height:100%;"></div>
+      <script>
+        var container = document.getElementById('map');
+        var options = {
+          center: new kakao.maps.LatLng(33.450701, 126.570667),
+          level: 3
+        };
       
-      var marker = new kakao.maps.Marker({
-        position: new kakao.maps.LatLng(37.5665, 126.9780),
-        draggable: true // 마커를 이동 가능하도록 설정
-      });
-      
-      marker.setMap(map);  // 지도에 마커 추가
-      
-      // 마커 이동 완료 시 위치 정보를 저장 또는 활용하는 로직
-      kakao.maps.event.addListener(marker, 'dragend', function() {
-        var newPosition = marker.getPosition(); // 이동된 마커의 위도와 경도 정보를 가져옴
-        var newLatitude = newPosition.getLat(); // 이동된 마커의 위도
-        var newLongitude = newPosition.getLng(); // 이동된 마커의 경도
-
-        // 이동된 위치 정보를 저장하거나 사용하는 로직을 추가합니다.
-        // console.log('마커 이동 완료');
-        // console.log('이동된 위도:', newLatitude);
-        // console.log('이동된 경도:', newLongitude);
-        // 이동된 위치 정보를 활용하여 상태를 업데이트하거나 원하는 작업을 수행합니다.
-        setCurrentLocation({ latitude: newLatitude, longitude: newLongitude });
-
-      });
-    `);
-  };
+        var map = new kakao.maps.Map(container, options);
+      </script>
+    </body>
+    </html>
+  `;
 
   return (
     <WebView
-      ref={webViewRef}
-      source={{uri: 'https://map.kakao.com'}}
+      source={{html: KakaoMapHTML}}
       style={{flex: 1}}
-      onLoad={addMarkerToMap}
+      javaScriptEnabled={true}
     />
   );
 };
+
+export default MapScreen;
+
+// const addMarkerToMap = () => {
+//   webViewRef.current.injectJavaScript(`
+//     var container = document.getElementById('map');
+//     var options = {
+//       center: new kakao.maps.LatLng(37.5665, 126.9780),
+//       level: 8
+//     };
+//
+//     var map = new kakao.maps.Map(container, options);
+//
+//     var marker = new kakao.maps.Marker({
+//       position: new kakao.maps.LatLng(37.5665, 126.9780),
+//       draggable: true
+//     });
+//
+//     marker.setMap(map);
+//
+//     kakao.maps.event.addListener(marker, 'dragend', function() {
+//       var newPosition = marker.getPosition();
+//       var newLatitude = newPosition.getLat();
+//       var newLongitude = newPosition.getLng();
+//
+//       window.ReactNativeWebView.postMessage(
+//         JSON.stringify({
+//           latitude: newLatitude,
+//           longitude: newLongitude
+//         })
+//       );
+//     });
+//   `);
+// };
+//
+// const onMessageReceived = event => {
+//   const {data} = event.nativeEvent;
+//   if (data) {
+//     const {latitude, longitude} = JSON.parse(data);
+//     console.log('마커 이동 완료');
+//     console.log('이동된 위도:', latitude);
+//     console.log('이동된 경도:', longitude);
+//   }
+// };
+
+//   return (
+//     <WebView
+//       ref={webViewRef}
+//       source={{html: KakaoMapHTML}}
+//       style={{flex: 1}}
+//       // onLoad={addMarkerToMap}
+//       // onMessage={onMessageReceived}
+//       javaScriptEnabled={true}
+//     />
+//   );
+// };
 
 // const MapScreen = () => {
 //   const webviewRef = useRef(null);
@@ -119,6 +161,7 @@ const MapScreen = () => {
 //           ref={webviewRef}
 //           style={styles.webview}
 //           source={{uri: 'https://map.kakao.com'}}
+
 //           javaScriptEnabled={true}
 //         />
 //         <View style={styles.coordinatesContainer}>
@@ -164,22 +207,20 @@ const MapScreen = () => {
   );
 };*/
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  webview: {
-    flex: 1,
-  },
-  coordinatesContainer: {
-    backgroundColor: 'white',
-    padding: 10,
-  },
-  coordinatesText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 5,
-  },
-});
-
-export default MapScreen;
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//   },
+//   webview: {
+//     flex: 1,
+//   },
+//   coordinatesContainer: {
+//     backgroundColor: 'white',
+//     padding: 10,
+//   },
+//   coordinatesText: {
+//     fontSize: 16,
+//     fontWeight: 'bold',
+//     marginBottom: 5,
+//   },
+// });
