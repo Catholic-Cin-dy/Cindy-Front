@@ -62,8 +62,47 @@ export default function CommuPostDetail({route}) {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [fixId, setfixId] = useState();
+  const [draggedTag, setDraggedTag] = useState(null);
   const [CommentIdBeingEdited, setCommentIdBeingEdited] = useState();
   const navigation = useNavigation();
+
+  // 태그를 드래그 앤 드롭할 때 호출되는 함수
+  const handleTagDragStart = tag => {
+    setDraggedTag(tag);
+  };
+
+  // 드롭 위치에 따라 태그의 좌표를 업데이트하는 함수
+  const handleTagDrop = (x, y) => {
+    if (draggedTag) {
+      const updatedTags = data.imgList.map(img => {
+        if (img.imgTags.includes(draggedTag)) {
+          const updatedTag = {
+            ...draggedTag,
+            x,
+            y: y - data.imgList.indexOf(img) * 400,
+          };
+          return {
+            ...img,
+            imgTags: img.imgTags.map(tag =>
+              tag === draggedTag ? updatedTag : tag,
+            ),
+          };
+        }
+        return img;
+      });
+
+      // 업데이트된 태그 정보를 저장하거나 상태를 업데이트하는 등의 작업을 수행합니다.
+      // 예: setData({ ...data, imgList: updatedTags });
+      setData({...data, imgList: updatedTags});
+      setDraggedTag(null); // 드롭 완료 후 드래그 중인 태그 초기화
+    }
+  };
+
+  const handleTagClick = (x, y) => {
+    console.log('태그가 클릭되었습니다.');
+    console.log('클릭한 태그의 좌표:', x, y);
+    // 원하는 동작을 수행합니다.
+  };
 
   const onChangeComment = inputText => {
     setComment(inputText);
@@ -285,15 +324,18 @@ export default function CommuPostDetail({route}) {
                   data.imgList.map((img, index) => (
                     <TouchableOpacity
                       onPress={showCoordinate}
-                      style={styles.postImgWhole}>
+                      style={styles.postImgWhole}
+                      key={index} // 올바른 위치로 key 속성을 추가합니다.
+                    >
                       <ImageBackground
-                        key={index}
                         source={{uri: img.imgUrl}}
-                        style={styles.pImg}>
+                        style={styles.pImg}
+                        key={index} // 올바른 위치로 key 속성을 추가합니다.
+                      >
                         {img.imgTags &&
-                          img.imgTags.map((tag, index) => (
+                          img.imgTags.map((tag, tagIndex) => (
                             <View
-                              key={index}
+                              key={tagIndex}
                               style={[
                                 styles.imgtagContainer,
                                 {width: 360, height: 400, position: 'relative'},
@@ -304,34 +346,26 @@ export default function CommuPostDetail({route}) {
                                   {
                                     position: 'absolute',
                                     left: tag.x,
-                                    top: tag.y - index * 400,
+                                    top: tag.y - tagIndex * 400,
                                   },
                                 ]}>
-                                <Text
-                                  style={[
-                                    styles.imgTagText,
-                                    {flexWrap: 'wrap'},
-                                  ]}>
-                                  {`${tag.brandName}`}
-                                </Text>
+                                <TouchableOpacity
+                                  onPress={() => handleTagClick(tag.x, tag.y)}
+                                  onLongPress={() => handleTagDragStart(tag)} // 드래그 앤 드롭 시작
+                                  onPressOut={() => handleTagDrop(tag.x, tag.y)} // 태그 드롭 시 좌표 업데이트
+                                >
+                                  <Text
+                                    style={[
+                                      styles.imgTagText,
+                                      {flexWrap: 'wrap'},
+                                    ]}>
+                                    {`${tag.brandName}`}
+                                  </Text>
+                                </TouchableOpacity>
                               </View>
                             </View>
                           ))}
                       </ImageBackground>
-
-                      {/*<View>
-                      <Text>---------------------------------------------------------------------</Text>
-                      <Text>x,y 좌표</Text>
-                      <Text>imgId : {`${img.imgId}`}</Text>
-
-                      {img.imgTags &&
-                        img.imgTags.map((tag, index) => (
-                          <View key={index}>
-                            <Text style={styles.imgtag}>{`x: ${tag.x}, y: ${tag.y}, brandName: ${tag.brandName}`}</Text>
-                          </View>
-                        ))}
-                      <Text>---------------------------------------------------------------------</Text>
-                    </View>*/}
                     </TouchableOpacity>
                   ))}
               </Swiper>
@@ -518,6 +552,9 @@ const styles = {
   },
   imgTagBox: {
     borderColor: '#FF1AA0',
+    top: 100,
+    left: 50,
+    padding: 10,
     borderWidth: 1,
     backgroundColor: 'rgba(255, 26, 160, 0.24)',
     borderRadius: 6,
