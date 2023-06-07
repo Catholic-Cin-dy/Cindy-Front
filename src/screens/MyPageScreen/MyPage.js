@@ -33,12 +33,18 @@ const config = {
 const backGroundImg = require('../../assets/mypage-background.png');
 const defaultImg = require('../../assets/default-main-profile.png');
 export default function MyPage() {
-
+  const [data, setData] = useState([]);
 
   useEffect(() => {
 
+    axios.get(baseUrl + 'users/my', { ...config })
+      .then(response => {
+        setData(response.data.result);
+      })
+      .catch(error => console.error(error));
 
-  },);
+
+  },[]);
 
 
   return (
@@ -47,11 +53,20 @@ export default function MyPage() {
         style = {styles.secondView, { width: 330, height: 540, marginLeft: 30, marginTop: 20 }}
         source = {backGroundImg}
       >
-        <Image
-          style={styles.pfImg}
-          source={defaultImg}
-        />
-        <Text style={styles.name}>내이름</Text>
+
+        {data.profileImgUrl ? (
+          <Image
+            style={styles.pfImg}
+            source={{ uri: data.profileImgUrl }}
+          />
+        ) : (
+          <Image
+            style={styles.pfImg}
+            source={defaultImg}
+          />
+        )}
+
+        <Text style={styles.name}>{data.name}</Text>
         <TouchableOpacity style={styles.modiProfileBtn}>
           <Text style={styles.mBtnText}>프로필 수정</Text>
         </TouchableOpacity>
