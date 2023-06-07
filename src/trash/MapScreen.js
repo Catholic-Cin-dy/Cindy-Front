@@ -1,40 +1,46 @@
-import React, {useRef} from 'react';
+import React, {Component} from 'react';
 import {View} from 'react-native';
 import WebView from 'react-native-webview';
-import KakaoMapHTML from './kakao_map.html';
 
-const MapScreen = () => {
-  const KakaoMapHTML = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=9e9ee36df97402dc8c47586afe7ed493"></script>
-      <meta charset="utf-8"/>
-      <title>Kakao 지도 시작하기</title>
-    </head>
-    <body>
-      <div id="map" style="width:100%;height:100%;"></div>
-      <script>
-        var container = document.getElementById('map');
-        var options = {
-          center: new kakao.maps.LatLng(33.450701, 126.570667),
-          level: 3
-        };
-      
-        var map = new kakao.maps.Map(container, options);
-      </script>
-    </body>
-    </html>
-  `;
+class MapScreen extends Component {
+  render() {
+    const token =
+      'eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWQiOjIsImlhdCI6MTY3OTkyMjIwNSwiZXhwIjoxNzExNDU4MjA1fQ.A45bXqITjpGnywheSkEzfv5St2jD08DefUW2VQEbDpo';
+    const headers = {'X-AUTH-TOKEN': token};
 
-  return (
-    <WebView
-      source={{html: KakaoMapHTML}}
-      style={{flex: 1}}
-      javaScriptEnabled={true}
-    />
-  );
-};
+    const htmlSource = `
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Kakao 지도 시작하기</title>
+</head>
+<body>
+
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=9e9ee36df97402dc8c47586afe7ed493&libraries=services"></script>
+<script>
+  var container = document.getElementById('map');
+  var options = {
+    center: new kakao.maps.LatLng(33.450701, 126.570667),
+    level: 3
+  };
+
+  var map = new kakao.maps.Map(container, options);
+</script>
+</body>
+</html>`;
+
+    return (
+      <View style={{flex: 1}}>
+        <WebView
+          header={headers}
+          originWhitelist={['*']}
+          source={{html: htmlSource}}
+          javaScriptEnabled={true}
+        />
+      </View>
+    );
+  }
+}
 
 export default MapScreen;
 

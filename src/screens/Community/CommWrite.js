@@ -15,7 +15,6 @@ import ImageResizer from 'react-native-image-resizer';
 import ImagePicker from 'react-native-image-crop-picker';
 import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
 import axios from 'axios';
-import CameraRoll from '@react-native-community/cameraroll';
 import RNFS from 'react-native-fs';
 const baseUrl = 'https://www.awesominki.shop';
 const baseUrl2 = 'http://localhost:9000';
@@ -36,41 +35,6 @@ export default function CommWrite() {
   //스크롤 될 때마다 사진을 불러올 경우 현재의 갤러리를 어디까지 불러왔는지에 대한 저장 값
   const [galleryCursor, setGalleryCursor] = useState(null);
   const [galleryList, setGalleryList] = useState([]);
-
-  const getGalleryPhotos = async () => {
-    const params = {
-      first: 50,
-      assetType: 'Photos',
-      ...(galleryCursor && {after: galleryCursor}),
-    };
-    try {
-      const {edges, page_info} = await CameraRoll.getPhotos(params);
-
-      if (page_info.has_next_page === false) {
-        setGalleryCursor(null);
-      } else {
-        setGalleryCursor(page_info.end_cursor);
-      }
-
-      console.log('edges', edges);
-      setGalleryList([...galleryList, ...edges]);
-    } catch (error) {
-      console.log('[takeStore getPhotos error occurred]', error);
-    }
-  };
-
-  const phPathToFilePath = async uri => {
-    let fileURI = encodeURI(uri);
-
-    if (uri.startsWith('ph://')) {
-      const copyPath = `${
-        RNFS.DocumentDirectoryPath
-      }/${new Date().toISOString()}.jpg`.replace(/:/g, '-');
-      fileURI = await RNFS.copyAssetsFileIOS(uri, copyPath, 360, 360);
-    }
-
-    return fileURI;
-  };
 
   const onChangeFile = useCallback(() => {
     // 갤러리 사진 사용하기
