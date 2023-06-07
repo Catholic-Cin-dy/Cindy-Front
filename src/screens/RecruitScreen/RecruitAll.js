@@ -1,82 +1,111 @@
 import React from 'react';
-import { View, StyleSheet, Text, Button, ScrollView, TouchableOpacity, Image} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Text,
+  Button,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+} from 'react-native';
 import axios from 'axios';
-import { useState, useEffect } from 'react';
+import {useState, useEffect} from 'react';
 import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {useIsFocused} from '@react-navigation/native';
 
 import RecruitPage from './RecruitPage';
 import ProductDetail from './ProductDetail';
 const baseUrl = 'https://www.awesominki.shop/'; //api 연결을 위한 baseUrl
 const config = {
-  headers: { 'X-AUTH-TOKEN': `eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWQiOjIsImlhdCI6MTY3OTkyMjIwNSwiZXhwIjoxNzExNDU4MjA1fQ.A45bXqITjpGnywheSkEzfv5St2jD08DefUW2VQEbDpo` }
+  headers: {
+    'X-AUTH-TOKEN': `eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWQiOjIsImlhdCI6MTY3OTkyMjIwNSwiZXhwIjoxNzExNDU4MjA1fQ.A45bXqITjpGnywheSkEzfv5St2jD08DefUW2VQEbDpo`,
+  },
 };
-const RecruitAll = (props) => {
+const RecruitAll = props => {
   // props에서 tabIndex 값을 받아옴
-  const { tabIndex } = props;
+  const {tabIndex} = props;
 
   // tabIndex 값을 사용하여 원하는 로직을 구현
   const [data, setData] = useState([]);
   const [users, setUsers] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
-  const [isRefreshing, setIsRefreshing] = useState(false);
-
-  const isFocused = useIsFocused(); // isFoucesd Define
+  const [pageList, setPageList] = useState([]);
+  const [selectedPage, setSelectedPage] = useState(0);
+  const [pageData, setPageData] = useState(null);
+  const [totalPages, setTotalPages] = useState(0);
+  const handlePagePress = page => {
+    setSelectedPage(page);
+  };
+  //상품을 가져오는거
   useEffect(() => {
+    let count = 0;
     const params = {
-      page: 0,
-      filter: tabIndex
+      page: selectedPage,
+      filter: tabIndex,
     };
-
-    axios.get(baseUrl + "products", { params, ...config })
-      .then(response =>
-          setData(response.data.result.contents),
-          setIsRefreshing(false),
-      )
-      .catch(error => console.error(error));
-  }, [isFocused, isRefreshing]);
+    // 페이지 목록을 가져오는 API 호출
+    const fetchPageList = async () => {
+      try {
+        const response = await axios.get(baseUrl + 'products', {
+          params,
+          ...config,
+        });
+        setData(response.data.result.contents);
+        setPageList(response.data.result.contents);
+        const contents = response.data.result.contents;
+        // let isLast = response.data.result.isLast;
+        // if (contents !== null) {
+        //   count = count + 1;
+        // }
+        // console.log(count);
+        // if (isLast === false) {
+        //   count += 1;
+        // } else {
+        //   // count 값을 저장하기 위해 변수에 할당
+        //   let savedCount = count;
+        //   console.log('Saved count value:', savedCount);
+        // }
+      } catch (error) {
+        console.error('Error fetching page list:', error);
+      }
+    };
+    fetchPageList();
+  }, [selectedPage, tabIndex]);
 
   // 상품 항목 클릭 시 ProductDetail 화면으로 이동하는 함수
   const navigation = useNavigation();
-  const handleItemPress = (productId) => {
+  const handleItemPress = productId => {
     // 해당 상품 정보를 route.params로 넘겨주고 ProductDetail 화면으로 이동
     console.log('product ID : ' + productId);
-    navigation.navigate('ProductDetail', { productId });
+    navigation.navigate('ProductDetail', {productId});
   };
 
   const [liked, setLiked] = useState();
-  const handleLike = (productId) => {
-
+  const handleLike = productId => {
     const params = {
-      page: 0,
-      filter: tabIndex
+      page: selectedPage,
+      filter: tabIndex,
     };
 
     setLiked(!liked);
-    axios.patch(baseUrl + 'products/like/' + productId, {}, config)
+    axios
+      .patch(baseUrl + 'products/like/' + productId, {}, config)
       .then(response => setLiked(response.data.result))
       .catch(error => console.error(error));
 
-    axios.get(baseUrl + 'products', { params, ...config })
-      .then(response =>
-        setData(response.data.result.contents),
-        setIsRefreshing(true),
-      )
-      .catch(error => console.error(error))
+    axios
+      .get(baseUrl + 'products', {params, ...config})
+      .then(response => setData(response.data.result.contents))
+      .catch(error => console.error(error));
 
-
-    if(liked)
-      console.log(productId + "번 상품 좋아요 취소 버튼 누름");
-    else
-      console.log(productId + "번 상품 좋아요 버튼 누름");
+    if (liked) console.log(productId + '번 상품 좋아요 취소 버튼 누름');
+    else console.log(productId + '번 상품 좋아요 버튼 누름');
   };
 
   return (
@@ -85,16 +114,23 @@ const RecruitAll = (props) => {
         <View style={styles.column1}>
           {data.slice(0, data.length / 2).map(item => (
             // 첫 번째 열에 해당하는 데이터를 매핑하여 표시
+            //왼쪽인것같음
             <TouchableOpacity
               style={styles.item}
               key={item.productId}
-              onPress={() => handleItemPress(item.productId)}
-            >
+              onPress={() => handleItemPress(item.productId)}>
               {/* 이미지와 하트 아이콘, 상품 정보 등을 표시 */}
-              <Image style={styles.pImg} source={{ uri: item.imgUrl }}/>
+              <Image style={styles.pImg} source={{uri: item.imgUrl}} />
               <View style={styles.heartIconBackground} key={item.productId}>
                 <TouchableOpacity onPress={() => handleLike(item.productId)}>
-                  <Image style={styles.heartIcon} source={item.bookmark ? require("../../assets/like.png") : require("../../assets/unlike.png")} />
+                  <Image
+                    style={styles.heartIcon}
+                    source={
+                      item.bookmark
+                        ? require('../../assets/like.png')
+                        : require('../../assets/unlike.png')
+                    }
+                  />
                 </TouchableOpacity>
               </View>
               <Text style={styles.info1}>{item.brandName}</Text>
@@ -106,16 +142,23 @@ const RecruitAll = (props) => {
         <View style={styles.column2}>
           {data.slice(data.length / 2).map(item => (
             // 두 번째 열에 해당하는 데이터를 매핑하여 표시
+            //오른쪽인것같음
             <TouchableOpacity
               style={styles.item}
               key={item.productId}
-              onPress={() => handleItemPress(item.productId)}
-            >
+              onPress={() => handleItemPress(item.productId)}>
               {/* 이미지와 하트 아이콘, 상품 정보 등을 표시 */}
-              <Image style={styles.pImg} source={{ uri: item.imgUrl }}/>
+              <Image style={styles.pImg} source={{uri: item.imgUrl}} />
               <View style={styles.heartIconBackground} key={item.productId}>
                 <TouchableOpacity onPress={() => handleLike(item.productId)}>
-                  <Image style={styles.heartIcon} source={item.bookmark ? require("../../assets/like.png") : require("../../assets/unlike.png")} />
+                  <Image
+                    style={styles.heartIcon}
+                    source={
+                      item.bookmark
+                        ? require('../../assets/like.png')
+                        : require('../../assets/unlike.png')
+                    }
+                  />
                 </TouchableOpacity>
               </View>
               <Text style={styles.info1}>{item.brandName}</Text>
@@ -124,9 +167,14 @@ const RecruitAll = (props) => {
           ))}
         </View>
       </View>
+      <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+        {Array.from({length: 10}, (_, index) => index + 1).map(page => (
+          <TouchableOpacity key={page} onPress={() => handlePagePress(page)}>
+            <Text style={{margin: 10}}>{page}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
     </ScrollView>
-
-
   );
 };
 
@@ -136,23 +184,23 @@ const styles = StyleSheet.create({
   scrollView: {
     backgroundColor: '#fff',
   },
-  contentbox:{
+  contentbox: {
     width: 167,
-    height:240,
-    borderWidth:1,
-    borderColor:'white',
+    height: 240,
+    borderWidth: 1,
+    borderColor: 'white',
   },
-  pImg:{
-    width: 156,
+  pImg: {
+    width: 175,
     height: 156,
-    backgroundColor:'gray',
+    backgroundColor: 'gray',
     borderRadius: 8,
   },
-  intext:{
-    padding:10,
-    height:43,
+  intext: {
+    padding: 10,
+    height: 43,
     width: 150,
-    marginLeft:5,
+    marginLeft: 5,
   },
   heartIconBackground: {
     flex: 1,
@@ -164,15 +212,15 @@ const styles = StyleSheet.create({
     marginTop: -26,
     marginRight: 6,
   },
-  info:{
-    padding:10,
-    height:43,
+  info: {
+    padding: 10,
+    height: 43,
     width: 150,
-    marginLeft:5,
+    marginLeft: 5,
   },
-  info1:{
+  info1: {
     color: 'black',
-    fontColor : 'black',
+    fontColor: 'black',
     fontWeight: 'bold',
     fontSize: 13,
     marginLeft: 4,
@@ -180,8 +228,8 @@ const styles = StyleSheet.create({
     marginTop: 8,
     flexShrink: 1,
   },
-  info2:{
-    fontWeight:'bold',
+  info2: {
+    fontWeight: 'bold',
     fontColor: 'gray',
     fontSize: 12,
     marginTop: 8,
@@ -196,9 +244,9 @@ const styles = StyleSheet.create({
   },
   content: {
     width: '100%',
-    height:250,
-    borderWidth:1,
-    borderColor:'red',
+    height: 250,
+    borderWidth: 1,
+    borderColor: 'red',
     flexDirection: 'row',
   },
   container: {
@@ -216,7 +264,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     flexDirection: 'column',
     justifyContent: 'space-between',
-    backgroundColor: '#fff',
+    //backgroundColor: '#fff',
   },
   column2: {
     marginRight: 16,
@@ -224,10 +272,10 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     flexDirection: 'column',
     justifyContent: 'space-between',
-    backgroundColor: '#fff',
+    //backgroundColor: '#fff',
   },
   item: {
-    width: 156,
+    width: 175,
     flex: 0,
     marginBottom: 16,
     borderRadius: 8,
@@ -253,5 +301,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
   },
-
+  scrollContainer: {},
+  newsContainer: {},
+  companyHeader: {},
+  companyText: {},
+  artImage: {},
+  artTitle: {},
+  article: {},
 });

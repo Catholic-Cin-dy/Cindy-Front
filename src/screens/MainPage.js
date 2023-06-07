@@ -58,6 +58,12 @@ const HomeScreen = () => {
           <MainStack.Screen name="Main1" component={Main1} options={{ headerShown: false }}/>
           <MainStack.Screen name="Detail1" component={Detail1} />
           <MainStack.Screen name="Detail2" component={Detail2} />
+        <MainStack.Screen
+          name="ProductDetail"
+          component={ProductDetail}
+          options={{headerShown: false}}
+        />
+
       </Stack.Navigator>
   );
 };
