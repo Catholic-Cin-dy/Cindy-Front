@@ -1,8 +1,13 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {View, StyleSheet, Button} from 'react-native';
 import {WebView} from 'react-native-webview';
 
 const MapScreen = () => {
+  const [markerPosition, setMarkerPosition] = useState({
+    latitude: 0,
+    longitude: 0,
+  });
+
   const htmlContent = `
      <!DOCTYPE html>
   <html>
@@ -35,10 +40,43 @@ const MapScreen = () => {
           level: 3
         };
         const map = new kakao.maps.Map(container, options);
+        // 마커를 추가하는 함수
+        const addMarker = (latitude, longitude) => {
+        const markerPosition = new kakao.maps.LatLng(latitude, longitude);
+        const marker = new kakao.maps.Marker({ position: markerPosition, draggable: true });
+        marker.setMap(map);
+        
+        kakao.maps.event.addListener(map, 'click', function (mouseEvent) {
+          console.log('지도에서 클릭한 위치의 좌표는 ' + mouseEvent.latLng.toString() + ' 입니다.');
+          });
+
+        
+        // 마커 클릭 시 위치 정보를 React Native로 전달
+        kakao.maps.event.addListener(marker, 'click', function () {
+          const position = marker.getPosition();
+          const latitude = position.getLat();
+          const longitude = position.getLng();
+          window.ReactNativeWebView.postMessage(JSON.stringify({ latitude, longitude }));
+            });
+        // 마커 드래그 종료 시 위치 정보를 React Native로 전달
+        kakao.maps.event.addListener(marker, 'dragend', function () {
+          const position = marker.getPosition();
+          const latitude = position.getLat();
+          const longitude = position.getLng();
+          window.ReactNativeWebView.postMessage(JSON.stringify({ latitude, longitude }));
+            });
+        };
+        // 초기 마커 추가
+        addMarker(33.450701, 126.570667);
       </script>
     </body>
   </html>
 `;
+  const handleWebViewMessage = event => {
+    // React Native에서 마커 위치 정보를 수신한 후 처리하는 함수
+    const {latitude, longitude} = JSON.parse(event.nativeEvent.data);
+    setMarkerPosition({latitude, longitude});
+  };
 
   return (
     <View style={styles.container}>
@@ -46,7 +84,14 @@ const MapScreen = () => {
         originWhitelist={['*']}
         source={{html: htmlContent}}
         style={styles.map}
+        onMessage={handleWebViewMessage}
       />
+      <View style={styles.markerPosition}>
+        <Button
+          title="Save Marker Position"
+          onPress={() => console.log(markerPosition)}
+        />
+      </View>
     </View>
   );
 };
@@ -57,6 +102,11 @@ const styles = StyleSheet.create({
   },
   map: {
     flex: 1,
+  },
+  markerPosition: {
+    position: 'absolute',
+    bottom: 16,
+    alignSelf: 'center',
   },
 });
 

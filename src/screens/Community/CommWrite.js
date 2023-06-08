@@ -181,12 +181,12 @@ export default function CommWrite() {
       <SafeAreaView style={styles.container}>
         <View>
           <Button title="이미지 선택" onPress={openPicker} />
-          <View>
+          <View style={{flexDirection: 'row'}}>
             {selectedImages.map((image, index) => (
               <View key={index}>
                 <Image
                   source={{uri: image.uri}}
-                  style={{width: 100, height: 100}}
+                  style={{width: 60, height: 80}}
                 />
                 <Draggable
                   x={image.x}
@@ -207,7 +207,7 @@ export default function CommWrite() {
             ))}
           </View>
         </View>
-        <Button title="태그 생성" />
+        <Button title="사진 태그하기" />
 
         <Text>제목을 작성해주세요</Text>
         <TextInput

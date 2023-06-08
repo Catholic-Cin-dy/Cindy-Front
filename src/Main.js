@@ -21,9 +21,9 @@ export default function Main({navigation}) {
 
     if (accessToken) {
       // accesstoken이 있다면 MainPage로
-      // navigation.navigate('MapScreen');
+      navigation.navigate('MapScreen');
       // navigation.navigate('MainPage');
-      navigation.navigate('CommuWriteTag');
+      // navigation.navigate('CommuWriteTag');
     } else {
       //accesstoken이 없으면 그냥 그대로 진행
       const token: KakaoOAuthToken = await login();
