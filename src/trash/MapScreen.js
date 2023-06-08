@@ -1,6 +1,7 @@
-import React, {useRef, useState} from 'react';
-import {View, StyleSheet, Button} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {View, StyleSheet, Button, TextInput} from 'react-native';
 import {WebView} from 'react-native-webview';
+import Geolocation from '@react-native-community/geolocation';
 
 const MapScreen = () => {
   const [markerPosition, setMarkerPosition] = useState({
@@ -8,7 +9,29 @@ const MapScreen = () => {
     longitude: 0,
   });
   const webViewRef = useRef(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
+  useEffect(() => {
+    getCurrentLocation();
+  }, []);
+
+  const getCurrentLocation = () => {
+    Geolocation.getCurrentPosition(
+      position => {
+        const {latitude, longitude} = position.coords;
+        setMarkerPosition({latitude, longitude});
+        console.log('현재 좌표', markerPosition);
+        // 지도 중심을 현재 위치로 설정하는 함수
+        webViewRef.current.injectJavaScript(`
+          const center = new kakao.maps.LatLng(${latitude}, ${longitude});
+          map.setCenter(center);
+        `);
+      },
+      error => {
+        console.log('Error getting current location:', error);
+      },
+    );
+  };
   const htmlContent = `
      <!DOCTYPE html>
   <html>
@@ -31,7 +54,6 @@ const MapScreen = () => {
 
     </head>
     <body>
-    <h1>안녕하세요<h1>
       <!-- HTML 콘텐츠를 여기에 작성하세요 -->
       <div id="map"></div>
       <script>
@@ -58,7 +80,6 @@ const MapScreen = () => {
         function sendMarkerPositionToReactNative(latitude, longitude) {        
         window.ReactNativeWebView.postMessage(JSON.stringify({ latitude, longitude }));
         }
-        addMarker(33.450701, 126.570667);
         
         function searchLocation(query) {
         const geocoder = new kakao.maps.services.Geocoder();
@@ -73,11 +94,10 @@ const MapScreen = () => {
       function moveMapToLocation(latitude, longitude) {
         const moveLatLng = new kakao.maps.LatLng(latitude, longitude);
         map.setCenter(moveLatLng);
-        marker.setPosition(moveLatLng);
-        sendMarkerPositionToReactNative(latitude, longitude);
         }
-        
-        window.searchLocation = searchLocation;
+        function sendSearchResultToReactNative(result) {
+        window.ReactNativeWebView.postMessage(JSON.stringify(result));
+        }
       </script>
     </body>
   </html>
@@ -89,9 +109,10 @@ const MapScreen = () => {
   };
 
   const handleSearchLocation = () => {
-    // 검색어를 카카오맵으로 전달하는 함수
-    const query = '검색할 지명 또는 주소';
-    webViewRef.current.injectJavaScript(`searchLocation('${query}')`);
+    if (webViewRef.current) {
+      // 검색어를 카카오맵으로 전달하는 함수
+      webViewRef.current.injectJavaScript(`searchLocation('${searchQuery}')`);
+    }
   };
 
   return (
@@ -110,7 +131,16 @@ const MapScreen = () => {
         />
       </View>
       <View style={styles.searchLocation}>
+        <TextInput
+          style={styles.input}
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          placeholder="검색할 지명 또는 주소 입력"
+        />
         <Button title="Search Location" onPress={handleSearchLocation} />
+      </View>
+      <View>
+        <Button title="Get Current Location" onPress={getCurrentLocation} />
       </View>
     </View>
   );
@@ -132,6 +162,16 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 16,
     alignSelf: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  input: {
+    flex: 1,
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginRight: 8,
+    paddingHorizontal: 8,
   },
 });
 
