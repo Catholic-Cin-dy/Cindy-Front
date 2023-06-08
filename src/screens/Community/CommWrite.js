@@ -10,12 +10,11 @@ import {
   TextInput,
   Image,
 } from 'react-native';
-import {Pressable, Platform} from 'react-native';
+import {Pressable, Platform, CameraRoll} from 'react-native';
 import ImageResizer from 'react-native-image-resizer';
 import ImagePicker from 'react-native-image-crop-picker';
 import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
 import axios from 'axios';
-import RNFS from 'react-native-fs';
 const baseUrl = 'https://www.awesominki.shop';
 const baseUrl2 = 'http://localhost:9000';
 
@@ -35,46 +34,63 @@ export default function CommWrite() {
   //스크롤 될 때마다 사진을 불러올 경우 현재의 갤러리를 어디까지 불러왔는지에 대한 저장 값
   const [galleryCursor, setGalleryCursor] = useState(null);
   const [galleryList, setGalleryList] = useState([]);
+  const [photos, setPhotos] = useState([]);
+  const [chosenPhoto, setChosenPhoto] = useState(null);
 
-  const onChangeFile = useCallback(() => {
-    // 갤러리 사진 사용하기
-    return ImagePicker.openPicker({
-      includeExif: true,
-      includeBase64: true,
-      mediaType: 'photo',
+  const test = () => {
+    CameraRoll.getPhotos({
+      first: 20, // 가져올 사진 수
+      assetType: 'Photos', // 가져올 미디어 유형 (사진, 동영상 등)
     })
-      .then(onResponse)
-      .catch(console.log);
-  }, [onResponse]);
-
-  const onResponse = useCallback(async response => {
-    console.log(response.width, response.height, response.exif);
-    // mime 은 JPG/PNG 와 같은 타입을 말한다.
-    // base64 는 Image 를 Text 로 변환시킬 때 사용된다.
-    //   -> 이미지 데이터의 2진수를 글자로 매칭시켜서 표현하는 것이다.
-    // exif 는 휴대폰을 어떤 방향으로 들고 사진을 찍었는지에 대한 정보를 말한다.
-    setPreview({uri: `data:${response.mime};base64,${response.data}`});
-    console.log('프리뷰는', preview);
-
-    // 이미지를 정사각형에 맞게 줄여준다.
-    return ImageResizer.createResizedImage(
-      response.path,
-      600,
-      600,
-      response.mime.includes('jpeg') ? 'JPEG' : 'PNG',
-      100, // 퀄리티를 줄일수록 용량도 줄어든다.
-      0,
-    ).then(r => {
-      console.log(r.uri, r.name);
-
-      setImage({
-        uri: r.uri,
-        name: r.name,
-        type: response.mime,
+      .then(res => {
+        const photos = res.edges;
+        console.log('이것은', photos);
+        // 사진 가져오기 성공
+      })
+      .catch(error => {
+        // 사진 가져오기 실패
       });
-      console.log('이미지는', img);
-    });
-  }, []);
+  };
+
+  // const onChangeFile = useCallback(() => {
+  //   // 갤러리 사진 사용하기
+  //   return ImagePicker.openPicker({
+  //     includeExif: true,
+  //     includeBase64: true,
+  //     mediaType: 'photo',
+  //   })
+  //     .then(onResponse)
+  //     .catch(console.log);
+  // }, [onResponse]);
+  //
+  // const onResponse = useCallback(async response => {
+  //   console.log(response.width, response.height, response.exif);
+  //   // mime 은 JPG/PNG 와 같은 타입을 말한다.
+  //   // base64 는 Image 를 Text 로 변환시킬 때 사용된다.
+  //   //   -> 이미지 데이터의 2진수를 글자로 매칭시켜서 표현하는 것이다.
+  //   // exif 는 휴대폰을 어떤 방향으로 들고 사진을 찍었는지에 대한 정보를 말한다.
+  //   setPreview({uri: `data:${response.mime};base64,${response.data}`});
+  //   console.log('프리뷰는', preview);
+  //
+  //   // 이미지를 정사각형에 맞게 줄여준다.
+  //   return ImageResizer.createResizedImage(
+  //     response.path,
+  //     600,
+  //     600,
+  //     response.mime.includes('jpeg') ? 'JPEG' : 'PNG',
+  //     100, // 퀄리티를 줄일수록 용량도 줄어든다.
+  //     0,
+  //   ).then(r => {
+  //     console.log(r.uri, r.name);
+  //
+  //     setImage({
+  //       uri: r.uri,
+  //       name: r.name,
+  //       type: response.mime,
+  //     });
+  //     console.log('이미지는', img);
+  //   });
+  // }, []);
 
   const onChangeTitle = inputText => {
     setTitle(inputText);
@@ -219,53 +235,8 @@ export default function CommWrite() {
     <ScrollView>
       <SafeAreaView style={styles.container}>
         <View>
-          <FlatList
-            key="gallery_item"
-            data={[...galleryList]}
-            keyExtractor={(item, index) => index.toString()}
-            style={{
-              width: SCREEN_WIDTH,
-            }}
-            getItemLayout={(data, index) => ({
-              length: SCREEN_WIDTH / 3,
-              offset: (SCREEN_WIDTH / 3) * (index + 2),
-              index,
-            })}
-            onEndReachedThreshold={0.7}
-            numColumns={3}
-            nestedScrollEnabled
-            howsHorizontalScrollIndicator
-            onEndReached={() => {
-              //화면의 맨 끝에 도달했을 때 getPhotos 함수 호출
-            }}
-          />
+          <Button title="이미지 선택" onPress={test} />
         </View>
-
-        <View>
-          <Button title="불러오기" onPress={onChangeFile} />
-          {img && (
-            <Image source={{uri: img.uri}} style={{width: 600, height: 600}} />
-          )}
-        </View>
-        {/*<Text>이미지를 선택해주세요</Text>*/}
-        {/*{img ? ( // 이미지가 있으면 라이브러리에서 받아온 이미지로 출력, 없으면 디폴트 이미지 출력!*/}
-        {/*  <Pressable style={styles.image} onPress={() => modalOpen()}>*/}
-        {/*    <Image source={{uri: img}} style={{width: 380, height: 400}} />*/}
-        {/*  </Pressable>*/}
-        {/*) : (*/}
-        {/*  <Pressable style={styles.image} onPress={() => modalOpen()}>*/}
-        {/*    <View style={styles.image} />*/}
-        {/*  </Pressable>*/}
-        {/*)}*/}
-        {/*<UploadModeModal*/}
-        {/*  visible={modalVisible}*/}
-        {/*  onClose={() => setModalVisible(false)}*/}
-        {/*  onLaunchCamera={onLaunchCamera}*/}
-        {/*  onLaunchImageLibrary={ShowPicker}*/}
-        {/*/>*/}
-        {/*/!*모달 띄우기*!/*/}
-        {/*<Text>지도</Text>*/}
-        {/*<View style={styles.map} />*/}
         <Text>제목을 작성해주세요</Text>
         <TextInput
           style={styles.input}
