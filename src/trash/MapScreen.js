@@ -47,8 +47,8 @@ const MapScreen = () => {
           padding: 0;
         }
         #map {
-          width: 500px;
-          height: 400px;
+          width: '100%';
+          height: 800px;
         }
       </style>
 
@@ -98,6 +98,7 @@ const MapScreen = () => {
         function sendSearchResultToReactNative(result) {
         window.ReactNativeWebView.postMessage(JSON.stringify(result));
         }
+        addMarker(33.450701, 126.570667)
       </script>
     </body>
   </html>
