@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {View, StyleSheet, Button} from 'react-native';
 import {WebView} from 'react-native-webview';
 
@@ -7,6 +7,7 @@ const MapScreen = () => {
     latitude: 0,
     longitude: 0,
   });
+  const webViewRef = useRef(null);
 
   const htmlContent = `
      <!DOCTYPE html>
@@ -40,34 +41,43 @@ const MapScreen = () => {
           level: 3
         };
         const map = new kakao.maps.Map(container, options);
-        // 마커를 추가하는 함수
+        let marker;
+        
         const addMarker = (latitude, longitude) => {
         const markerPosition = new kakao.maps.LatLng(latitude, longitude);
-        const marker = new kakao.maps.Marker({ position: markerPosition, draggable: true });
+        marker = new kakao.maps.Marker({ position: markerPosition, draggable: true });
         marker.setMap(map);
         
-        kakao.maps.event.addListener(map, 'click', function (mouseEvent) {
-          console.log('지도에서 클릭한 위치의 좌표는 ' + mouseEvent.latLng.toString() + ' 입니다.');
-          });
-
-        
-        // 마커 클릭 시 위치 정보를 React Native로 전달
-        kakao.maps.event.addListener(marker, 'click', function () {
-          const position = marker.getPosition();
-          const latitude = position.getLat();
-          const longitude = position.getLng();
-          window.ReactNativeWebView.postMessage(JSON.stringify({ latitude, longitude }));
-            });
-        // 마커 드래그 종료 시 위치 정보를 React Native로 전달
         kakao.maps.event.addListener(marker, 'dragend', function () {
           const position = marker.getPosition();
           const latitude = position.getLat();
           const longitude = position.getLng();
           window.ReactNativeWebView.postMessage(JSON.stringify({ latitude, longitude }));
-            });
+          });
         };
-        // 초기 마커 추가
+        function sendMarkerPositionToReactNative(latitude, longitude) {        
+        window.ReactNativeWebView.postMessage(JSON.stringify({ latitude, longitude }));
+        }
         addMarker(33.450701, 126.570667);
+        
+        function searchLocation(query) {
+        const geocoder = new kakao.maps.services.Geocoder();
+        
+        geocoder.addressSearch(query, function (result, status) {
+          if (status === kakao.maps.services.Status.OK) {
+            const { x: longitude, y: latitude } = result[0].x;
+            moveMapToLocation(latitude, longitude);
+            }
+          });
+      }
+      function moveMapToLocation(latitude, longitude) {
+        const moveLatLng = new kakao.maps.LatLng(latitude, longitude);
+        map.setCenter(moveLatLng);
+        marker.setPosition(moveLatLng);
+        sendMarkerPositionToReactNative(latitude, longitude);
+        }
+        
+        window.searchLocation = searchLocation;
       </script>
     </body>
   </html>
@@ -78,6 +88,12 @@ const MapScreen = () => {
     setMarkerPosition({latitude, longitude});
   };
 
+  const handleSearchLocation = () => {
+    // 검색어를 카카오맵으로 전달하는 함수
+    const query = '검색할 지명 또는 주소';
+    webViewRef.current.injectJavaScript(`searchLocation('${query}')`);
+  };
+
   return (
     <View style={styles.container}>
       <WebView
@@ -85,12 +101,16 @@ const MapScreen = () => {
         source={{html: htmlContent}}
         style={styles.map}
         onMessage={handleWebViewMessage}
+        ref={webViewRef}
       />
       <View style={styles.markerPosition}>
         <Button
           title="Save Marker Position"
           onPress={() => console.log(markerPosition)}
         />
+      </View>
+      <View style={styles.searchLocation}>
+        <Button title="Search Location" onPress={handleSearchLocation} />
       </View>
     </View>
   );
@@ -106,6 +126,11 @@ const styles = StyleSheet.create({
   markerPosition: {
     position: 'absolute',
     bottom: 16,
+    alignSelf: 'center',
+  },
+  searchLocation: {
+    position: 'absolute',
+    top: 16,
     alignSelf: 'center',
   },
 });
