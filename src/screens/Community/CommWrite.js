@@ -37,18 +37,17 @@ export default function CommWrite() {
   const [photos, setPhotos] = useState([]);
   const [chosenPhoto, setChosenPhoto] = useState(null);
 
-  const test = () => {
-    CameraRoll.getPhotos({
-      first: 20, // 가져올 사진 수
-      assetType: 'Photos', // 가져올 미디어 유형 (사진, 동영상 등)
+  const openPicker = () => {
+    ImagePicker.openPicker({
+      multiple: true,
+      mediaType: 'photo',
     })
-      .then(res => {
-        const photos = res.edges;
-        console.log('이것은', photos);
-        // 사진 가져오기 성공
+      .then(images => {
+        // 선택한 이미지들을 처리합니다.
+        console.log('이미지지지', images);
       })
       .catch(error => {
-        // 사진 가져오기 실패
+        console.log(error);
       });
   };
 
@@ -235,7 +234,7 @@ export default function CommWrite() {
     <ScrollView>
       <SafeAreaView style={styles.container}>
         <View>
-          <Button title="이미지 선택" onPress={test} />
+          <Button title="이미지 선택" onPress={openPicker} />
         </View>
         <Text>제목을 작성해주세요</Text>
         <TextInput
