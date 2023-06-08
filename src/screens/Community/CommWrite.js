@@ -10,11 +10,9 @@ import {
   TextInput,
   Image,
 } from 'react-native';
-import {Pressable, Platform, CameraRoll} from 'react-native';
-import ImageResizer from 'react-native-image-resizer';
 import ImagePicker from 'react-native-image-crop-picker';
-import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
 import axios from 'axios';
+import Draggable from 'react-native-draggable';
 const baseUrl = 'https://www.awesominki.shop';
 const baseUrl2 = 'http://localhost:9000';
 
@@ -37,6 +35,25 @@ export default function CommWrite() {
   const [photos, setPhotos] = useState([]);
   const [chosenPhoto, setChosenPhoto] = useState(null);
   const [result, setResult] = useState([]);
+  const [selectedImages, setSelectedImages] = useState([]);
+
+  const handleDrag = (index, event, gestureState) => {
+    const {x, y} = gestureState;
+    setSelectedImages(prevImages => {
+      const updatedImages = [...prevImages];
+      updatedImages[index].x = x;
+      updatedImages[index].y = y;
+      return updatedImages;
+    });
+  };
+
+  const handleTextChange = (index, text) => {
+    setSelectedImages(prevImages => {
+      const updatedImages = [...prevImages];
+      updatedImages[index].text = text;
+      return updatedImages;
+    });
+  };
 
   const openPicker = async () => {
     try {
@@ -55,11 +72,11 @@ export default function CommWrite() {
           height: 1000,
         });
 
-        selectedImages.push(croppedImage.path);
+        selectedImages.push({path: croppedImage.path, x: 0, y: 0, text: ''});
       }
 
-      setResult(prevResult => [...prevResult, ...selectedImages]);
-      console.log('이것은', result);
+      setSelectedImages(selectedImages);
+      console.log('이것은', selectedImages);
     } catch (error) {
       console.log(error);
     }
@@ -161,12 +178,28 @@ export default function CommWrite() {
         <View>
           <Button title="이미지 선택" onPress={openPicker} />
           <View>
-            {result.map((path, index) => (
-              <Image
-                key={index}
-                source={{uri: path}}
-                style={{width: 100, height: 100}}
-              />
+            {selectedImages.map((image, index) => (
+              <View key={index}>
+                <Image
+                  source={{uri: image.path}}
+                  style={{width: 100, height: 100}}
+                />
+                <Draggable
+                  x={image.x}
+                  y={image.y}
+                  onDrag={(event, gestureState) =>
+                    handleDrag(index, event, gestureState)
+                  }>
+                  <View style={styles.draggable}>
+                    <TextInput
+                      style={styles.textInput}
+                      value={image.text}
+                      onChangeText={text => handleTextChange(index, text)}
+                      placeholder="텍스트 입력"
+                    />
+                  </View>
+                </Draggable>
+              </View>
             ))}
           </View>
         </View>
