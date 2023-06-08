@@ -9,6 +9,8 @@ const MapScreen = () => {
     <head>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=90760c027b8ec61ee28e5dc800ffa261&libraries=services,clusterer"></script>
+
       <style>
         /* CSS 스타일을 여기에 작성하세요 */
         body {
@@ -16,11 +18,10 @@ const MapScreen = () => {
           padding: 0;
         }
         #map {
-          width: 100%;
-          height: 100%;
+          width: 500px;
+          height: 400px;
         }
       </style>
-<script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=9e9ee36df97402dc8c47586afe7ed493&libraries=services,clusterer"></script>
 
     </head>
     <body>
