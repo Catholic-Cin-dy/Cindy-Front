@@ -6792,10 +6792,10 @@
   dependencies:
     "prop-types" "^15.6.2"
 
-"react-native-webview@^12.1.0":
-  "integrity" "sha512-fuMyF4PBSIHHxv/3GgWO0LQbd7hRkLLDvZZIZw7gplSvH1YTahzw2wxnAt2K4Ua9UmsZ3w2MKgDamQCrdk4tdw=="
-  "resolved" "https://registry.npmjs.org/react-native-webview/-/react-native-webview-12.1.0.tgz"
-  "version" "12.1.0"
+"react-native-webview@^12.2.0":
+  "integrity" "sha512-F+g1vWz7wpr7FBohejw6J6J1aWjPqs9WwYSdptT0YYvACWuT5spLvRPJg38RBGU7RG64wui/F7eMvuIZq/7G5Q=="
+  "resolved" "https://registry.npmjs.org/react-native-webview/-/react-native-webview-12.2.0.tgz"
+  "version" "12.2.0"
   dependencies:
     "escape-string-regexp" "2.0.0"
     "invariant" "2.2.4"

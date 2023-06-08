@@ -21,6 +21,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useIsFocused} from '@react-navigation/native';
 
 import RecruitPage from './RecruitPage';
+import WebViewScreen from './WebViewScreen';
 
 const baseUrl = 'https://www.awesominki.shop/'; //api 연결을 위한 baseUrl
 const config = {
@@ -38,8 +39,10 @@ export default function ProductDetail({ route }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [liked, setLiked] = useState();
+  const [link, setLink] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const isFocused = useIsFocused(); // isFoucesd Define
+  const navigation = useNavigation();
 
   useEffect(() => {
     console.log('ProductDetail - productId : '+productId)
@@ -80,6 +83,12 @@ export default function ProductDetail({ route }) {
       .catch(error => console.error(error))
 
   }
+
+  const handleWebView = (url) => {
+    // 웹뷰로 이동하는 로직을 구현합니다
+    console.log('URL:', url);
+    navigation.navigate('WebViewScreen',{ url: url });
+  };
 
   const ProductDetailBrand = () => {
     const [data, setData] = useState([]);
@@ -235,7 +244,7 @@ export default function ProductDetail({ route }) {
 
         <View style={{ flexDirection: "row" }}>
           <Image source={tagIcon} style={{ marginLeft: 20, marginTop: 20, marginRight: 2 }} />
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => handleWebView(data.productUrl)}>
             <Text numberOfLines={1} ellipsizeMode="tail" style={styles.info3}>{data.productUrl}</Text>
           </TouchableOpacity>
         </View>

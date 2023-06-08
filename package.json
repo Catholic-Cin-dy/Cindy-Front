@@ -51,7 +51,7 @@
     "react-native-tab-view": "^3.5.1",
     "react-native-vector-icons": "^9.2.0",
     "react-native-web-swiper": "^2.2.4",
-    "react-native-webview": "^12.1.0",
+    "react-native-webview": "^12.2.0",
     "swiper": "^9.3.2"
   },
   "devDependencies": {

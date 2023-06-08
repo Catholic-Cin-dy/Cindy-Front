@@ -43,6 +43,7 @@ import CommWrite from "./Community/CommWrite";
 import CommuWriteMap from "./Community/CommuWriteMap";
 import MyPage from "./MyPageScreen/MyPage";
 import SearchScreen from "./SearchScreen";
+import WebViewScreen from "./RecruitScreen/WebViewScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -115,6 +116,7 @@ const RecruitProductsStackScreen = () => {
       <RecruitStack.Screen name="ProductRecruitAll" component = {RecruitPage} options={{ headerShown: false }} />
       <RecruitStack.Screen name = "ProductDetail" component = {ProductDetail} options={{ headerShown: false }} />
       <RecruitStack.Screen name = "SearchScreen" component = {SearchScreen} options={{ headerShown: false }} />
+      <RecruitStack.Screen name = "WebViewScreen" component = {WebViewScreen} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 };
