@@ -62,8 +62,6 @@ export default function CommWrite() {
         compressImageQuality: 0.5,
       });
 
-      const selectedImages = [];
-
       for (const image of images) {
         const croppedImage = await ImagePicker.openCropper({
           mediaType: 'photo',
@@ -71,12 +69,18 @@ export default function CommWrite() {
           width: 1000,
           height: 1000,
         });
+        const imageUrl = {
+          uri: croppedImage.path,
+          type: croppedImage.mime,
+          name: croppedImage.path.split('/').pop(),
+        };
 
-        selectedImages.push({path: croppedImage.path, x: 0, y: 0, text: ''});
+        selectedImages.push(imageUrl);
       }
 
-      setSelectedImages(selectedImages);
+      setImgurl(prevImages => [...prevImages, ...selectedImages]);
       console.log('이것은', selectedImages);
+      console.log('이것은222', imgurl);
     } catch (error) {
       console.log(error);
     }
@@ -129,7 +133,7 @@ export default function CommWrite() {
       'imgTagList',
       JSON.stringify(postBoard.imgTagList).toString(),
     );
-
+    // imgurl 대신에 selectedImages 넣어야 할 수도
     formData.append('imgFiles ', imgurl);
 
     console.log('imgUrl 은 이거임', imgurl);
@@ -181,7 +185,7 @@ export default function CommWrite() {
             {selectedImages.map((image, index) => (
               <View key={index}>
                 <Image
-                  source={{uri: image.path}}
+                  source={{uri: image.uri}}
                   style={{width: 100, height: 100}}
                 />
                 <Draggable
