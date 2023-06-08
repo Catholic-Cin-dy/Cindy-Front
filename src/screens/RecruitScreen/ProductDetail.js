@@ -21,11 +21,13 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useIsFocused} from '@react-navigation/native';
 
 import RecruitPage from './RecruitPage';
+
 const baseUrl = 'https://www.awesominki.shop/'; //api 연결을 위한 baseUrl
 const config = {
   headers: { 'X-AUTH-TOKEN': `eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWQiOjIsImlhdCI6MTY3OTkyMjIwNSwiZXhwIjoxNzExNDU4MjA1fQ.A45bXqITjpGnywheSkEzfv5St2jD08DefUW2VQEbDpo` }
 };
 
+const tagIcon = require('../../assets/tag2.png');
 export default function ProductDetail({ route }) {
   // route.params에서 전달받은 item 파라미터 추출
   const { productId } = route.params; // route.params에서 productId 추출
@@ -112,18 +114,17 @@ export default function ProductDetail({ route }) {
         <TouchableOpacity
           style={styles.contentbox}
           onPress={() => handleSuggestionPress(item)}>
-          <View style={styles.item}>
+          <View style={styles.item, {marginLeft: 0,}}>
             <Image style={styles.sImg} source={{ uri: item.imgUrl }} />
-            <View style={styles.heartIconBackground2} key={item.productId}>
-              <TouchableOpacity onPress={() => handleLike(item.productId)}>
-                <Image
-                  style={styles.heartIcon2}
-                  source={item.bookmark ? require("../../assets/like.png") : require("../../assets/unlike.png")}
-                />
-              </TouchableOpacity>
+            <Text style={styles.sProductName}>{item.productName}</Text>
+            <View style={{marginTop: 4}, {flexDirection: "row"}} key={item.productId}>
+              <Image
+                style={styles.heartIcon2}
+                source={item.bookmark ? require("../../assets/like.png") : ""}
+              />
+              <Text style={{fontSize: 10, marginLeft: 3.5, fontColor: "#EB4B4B"}}>
+                {item.bookmark ? "찜한 상품" : ""}</Text>
             </View>
-            <Text>{item.brandName}</Text>
-            <Text>{item.productName}</Text>
           </View>
         </TouchableOpacity>
       );
@@ -134,6 +135,7 @@ export default function ProductDetail({ route }) {
       <FlatList
         data = {data}
         horizontal = {true}
+        showsHorizontalScrollIndicator={false}
         renderItem = {renderSuggestion}
         keyExtractor = {item => item.productId.toString()}/>
       </View>
@@ -174,17 +176,21 @@ export default function ProductDetail({ route }) {
           style={styles.contentbox}
           onPress={() => handleItemPress(item.productId)}
         >
-          <Image style={styles.sImg} source={{ uri: item.imgUrl }} />
-          <View style={styles.heartIconBackground2} key={item.productId}>
-            <TouchableOpacity onPress={() => handleLike(item.productId)}>
+          <View style={styles.item, {marginLeft: 0,}}>
+            <Image style={styles.sImg} source={{ uri: item.imgUrl }} />
+            <View style={styles.oBrandBorder}>
+              <Text style={styles.oBrandName}>{item.brandName}      </Text>
+            </View>
+            <Text style={styles.oProductName}>{item.productName}</Text>
+            <View style={{ marginTop: 4 }, {flexDirection: "row"}} key={item.productId}>
               <Image
                 style={styles.heartIcon2}
-                source={item.bookmark ? require("../../assets/like.png") : require("../../assets/unlike.png")}
+                source={item.bookmark ? require("../../assets/like.png") : ""}
               />
-            </TouchableOpacity>
+              <Text style={{ fontSize: 10, marginLeft: 3.5, fontColor: "#EB4B4B" }}>
+                {item.bookmark ? "찜한 상품" : ""}</Text>
+            </View>
           </View>
-          <Text style={styles.info1_s}>{item.brandName}</Text>
-          <Text style={styles.info2_s}>{item.productName}</Text>
         </TouchableOpacity>
       );
     };
@@ -194,6 +200,7 @@ export default function ProductDetail({ route }) {
         <FlatList
           data = {data}
           horizontal = {true}
+          showsHorizontalScrollIndicator={false}
           renderItem = {renderSuggestion2}
           keyExtractor = {item => item.productId.toString()}/>
       </View>
@@ -201,17 +208,8 @@ export default function ProductDetail({ route }) {
   };
 
 
-
   return (
     <ScrollView>
-      <View style={styles.heartIconBackground} key={data.productId}>
-        <Text>{data.bookmark ? data.bookmark.toString() : "유효값x pid: " + data.productId}</Text>
-        <TouchableOpacity onPress={handleLike}>
-          {/*<Image source={liked ? require('../../assets/like.png') : require('../../assets/unlike.png')} />*/}
-          <Image style={styles.heartIcon}
-                 source={data.bookmark ? require("../../assets/like.png") : require("../../assets/unlike.png")} />
-        </TouchableOpacity>
-      </View>
       <View
         style={styles.content}
         key={data.productId}
@@ -219,27 +217,45 @@ export default function ProductDetail({ route }) {
         <View style={styles.imgcontainView}>
           <Image style={styles.image} source={{ uri: data.imgUrl }} />
         </View>
-        <Text style={styles.info1}>{data.brandName}</Text>
+
+        <View style={{ flexDirection: "row" }}>
+          <View style={styles.underlineContainer}>
+            <Text style={styles.info1}>{data.brandName}</Text>
+          </View>
+          <View style={styles.heartIconBackground} key={data.productId}>
+            {/*<Text>{data.bookmark ? data.bookmark.toString() : "유효값x pid: " + data.productId}</Text>*/}
+            <TouchableOpacity onPress={handleLike}>
+              {/*<Image source={liked ? require('../../assets/like.png') : require('../../assets/unlike.png')} />*/}
+              <Image style={styles.heartIcon}
+                     source={data.bookmark ? require("../../assets/like.png") : require("../../assets/unlike.png")} />
+            </TouchableOpacity>
+          </View>
+        </View>
         <Text style={styles.info2}>{data.productName}</Text>
-        <Text />
-        <Text />
-        <Text style={styles.info3}>{data.productUrl}</Text>
-        <Text />
-        <Text />
+
+        <View style={{ flexDirection: "row" }}>
+          <Image source={tagIcon} style={{ marginLeft: 20, marginTop: 20, marginRight: 2 }} />
+          <TouchableOpacity>
+            <Text numberOfLines={1} ellipsizeMode="tail" style={styles.info3}>{data.productUrl}</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.horizontalLine1} />
+        <Text style={styles.sBrandName}>{data.brandName}의 다른 상품</Text>
+        {/*<Text>{data.productId}</Text>*/}
+        <ProductDetailBrand />
 
 
-        <Text>같은 브랜드 상품 조회</Text>
-        <Text>{data.productId}</Text>
-        <ProductDetailBrand/>
-        <Text />
-        <Text />
+        <View style={styles.horizontalLine2} />
 
 
-        <Text>다른 사람이 본 상품 리스트</Text>
-        <Text>{data.productId}</Text>
-        <ProductDetailOther/>
-        <Text />
-        <Text />
+        <View style={styles.horizontalLine3} />
+       <Text style={styles.sBrandName}>다른 사용자가 본 상품</Text>
+        <ProductDetailOther />
+
+
+        <View style={styles.horizontalLine2} />
+
       </View>
     </ScrollView>
   );
@@ -250,10 +266,6 @@ export default function ProductDetail({ route }) {
 
 
 const styles = {
-  hscroll: {
-    backgroundColor: 'pink',
-    flex: 1,
-  },
   sImg: {
     width: 156,
     height: 168,
@@ -262,16 +274,13 @@ const styles = {
   },
   content: {
     width: '100%',
-    height:250,
-    borderWidth:1,
-    borderColor:'red',
+    height: 250,
     flexDirection: 'row',
   },
   contentbox:{
     width: 156,
     flex: 0,
-    borderWidth:1,
-    borderColor:'red',
+    marginLeft: 10,
   },
   container: {
     flex: 1,
@@ -282,13 +291,9 @@ const styles = {
     flex: 1,
     justifyContent: 'flex-end', // 수평 방향의 정렬을 오른쪽으로 설정
     alignItems: 'flex-end', // 수직 방향의 정렬을 아래로 설정
-    backgroundColor: '#fff',
+    marginRight: 15,
   },
   heartIconBackground2: {
-    flex: 1,
-    justifyContent: 'flex-end', // 수평 방향의 정렬을 오른쪽으로 설정
-    alignItems: 'flex-end', // 수직 방향의 정렬을 아래로 설정
-    backgroundColor: 'red',
   },
   heartIcon: {
     marginRight: 15,
@@ -296,8 +301,7 @@ const styles = {
     marginTop: 5,
   },
   heartIcon2: {
-    marginTop: -20,
-    marginRight: 6,
+
   },
   content: {
     backgroundColor: '#fff',
@@ -308,33 +312,71 @@ const styles = {
     alignItems: 'center', // 수직 방향의 정렬을 가운데로 설정
   },
   image: {
-    width: '95%',
-    height: 360,
-    marginBottom: 16,
+    width: '100%',
+    height: 375,
+    marginBottom: 0,
+    marginTop: 0,
   },
   brandName: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 8,
   },
+  sBrandName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    fontColor: 'black',
+    marginLeft: 15,
+    marginTop: 10,
+    marginBottom: 3,
+  },
+  oBrandName: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    fontColor: 'black',
+    marginTop: 4,
+  },
+  oBrandBorder: {
+    borderBottomColor: 'black',
+    borderBottomWidth: 1.5,
+    alignSelf: 'flex-start',
+    marginBottom: 10,
+  },
   productName: {
     fontSize: 16,
     marginBottom: 16,
   },
-
+  sProductName: {
+    fontSize: 12,
+    fontColor: 'black',
+    marginTop: 4,
+    fontWeight:'bold',
+  },
+  oProductName: {
+    fontSize: 12,
+    fontColor: 'gray',
+    fontWeight: 'bold',
+  },
+  underlineContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderBottomColor: 'black',
+    borderBottomWidth: 2,
+    alignSelf: 'flex-start',
+    marginLeft: 20,
+    marginTop: 21,
+  },
   info1:{
     color:'black',
     fontColor : 'black',
     fontWeight:'bold',
-    fontSize: 15,
-    marginLeft: 20,
-    marginTop: 8,
+    fontSize: 22,
   },
   info2:{
-    fontSize: 20,
-    fontWeight:'bold',
-    fontColor: 'gray',
-    marginLeft: 12,
+    fontSize: 16,
+    fontColor : 'black',
+    marginTop: 10,
+    marginLeft: 20,
   },
   info1_s:{
     color:'gray',
@@ -352,10 +394,33 @@ const styles = {
     marginRight: 12,
   },
   info3:{
-    fontSize: 10,
-    marginTop: 8,
-    fontWeight:'bold',
-    fontColor: 'gray',
-    marginLeft: 4,
+    fontSize: 16,
+    marginTop: 15,
+    fontColor: '#B3B3B3',
+    width: 280,
+  },
+  horizontalLine1: {
+    width: 78,
+    height: 1.5,
+    backgroundColor: '#B3B3B3',
+    marginLeft: 15,
+    marginRight: 15,
+    marginTop: 40,
+  },
+  horizontalLine2: {
+    width: '90%',
+    height: 2,
+    backgroundColor: '#EBEBEB',
+    marginLeft: 15,
+    marginRight: 15,
+    marginTop: 20,
+  },
+  horizontalLine3: {
+    width: 78,
+    height: 1.5,
+    backgroundColor: '#B3B3B3',
+    marginLeft: 15,
+    marginRight: 15,
+    marginTop: 77,
   },
 }
