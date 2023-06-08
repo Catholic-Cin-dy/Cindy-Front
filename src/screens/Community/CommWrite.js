@@ -9,8 +9,6 @@ import {
   ScrollView,
   TextInput,
   Image,
-  TouchableOpacity,
-  Modal,
 } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
 import axios from 'axios';
@@ -37,66 +35,51 @@ export default function CommWrite() {
   const [photos, setPhotos] = useState([]);
   const [chosenPhoto, setChosenPhoto] = useState(null);
   const [result, setResult] = useState([]);
-  const [text, setText] = useState('');
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [currentImageIndex, setCurrentImageIndex] = useState(null);
-  const [currentImageX, setCurrentImageX] = useState(0);
-  const [currentImageY, setCurrentImageY] = useState(0);
-  const [textPositions, setTextPositions] = useState([]);
+  const [selectedImages, setSelectedImages] = useState([]);
+
+  const handleDrag = (index, event, gestureState) => {
+    const {x, y} = gestureState;
+    setSelectedImages(prevImages => {
+      const updatedImages = [...prevImages];
+      updatedImages[index].x = x;
+      updatedImages[index].y = y;
+      return updatedImages;
+    });
+  };
+
+  const handleTextChange = (index, text) => {
+    setSelectedImages(prevImages => {
+      const updatedImages = [...prevImages];
+      updatedImages[index].text = text;
+      return updatedImages;
+    });
+  };
 
   const openPicker = async () => {
     try {
-      const image = await ImagePicker.openPicker({
-        mediaType: 'photo',
+      const images = await ImagePicker.openPicker({
+        multiple: true,
+        compressImageQuality: 0.5,
       });
 
-      setSelectedImage({uri: image.path});
+      const selectedImages = [];
+
+      for (const image of images) {
+        const croppedImage = await ImagePicker.openCropper({
+          mediaType: 'photo',
+          path: image.path,
+          width: 1000,
+          height: 1000,
+        });
+
+        selectedImages.push({path: croppedImage.path, x: 0, y: 0, text: ''});
+      }
+
+      setSelectedImages(selectedImages);
+      console.log('이것은', selectedImages);
     } catch (error) {
       console.log(error);
     }
-  };
-
-  const handleTextChange = text => {
-    setText(text);
-  };
-  const handleAddText = () => {
-    setModalVisible(true);
-  };
-  const handleSaveText = () => {
-    if (text.trim() !== '') {
-      const position = {x: 0, y: 0}; // 입력한 텍스트의 위치 정보
-      setTextPositions(prevPositions => [...prevPositions, position]);
-      setText('');
-    }
-  };
-  const renderTexts = () => {
-    return textPositions.map((position, index) => (
-      <Draggable
-        key={index}
-        x={position.x}
-        y={position.y}
-        onDrag={(event, gestureState) => {
-          const {dx, dy} = gestureState;
-          setTextPositions(prevPositions => {
-            const updatedPositions = [...prevPositions];
-            updatedPositions[index].x += dx;
-            updatedPositions[index].y += dy;
-            return updatedPositions;
-          });
-        }}>
-        <TouchableOpacity
-          style={styles.textContainer}
-          onPress={() => {
-            navi;
-            // setCurrentImageIndex(index);
-            // 다른 화면으로 이동하는 로직
-            // ...
-          }}>
-          <Text style={styles.text}>{text}</Text>
-        </TouchableOpacity>
-      </Draggable>
-    ));
   };
 
   const onChangeTitle = inputText => {
@@ -194,11 +177,30 @@ export default function CommWrite() {
       <SafeAreaView style={styles.container}>
         <View>
           <Button title="이미지 선택" onPress={openPicker} />
-          <View style={styles.imageContainer}>
-            {selectedImage && (
-              <Image source={selectedImage} style={styles.image} />
-            )}
-            {renderTexts()}
+          <View>
+            {selectedImages.map((image, index) => (
+              <View key={index}>
+                <Image
+                  source={{uri: image.path}}
+                  style={{width: 100, height: 100}}
+                />
+                <Draggable
+                  x={image.x}
+                  y={image.y}
+                  onDrag={(event, gestureState) =>
+                    handleDrag(index, event, gestureState)
+                  }>
+                  <View style={styles.draggable}>
+                    <TextInput
+                      style={styles.textInput}
+                      value={image.text}
+                      onChangeText={text => handleTextChange(index, text)}
+                      placeholder="텍스트 입력"
+                    />
+                  </View>
+                </Draggable>
+              </View>
+            ))}
           </View>
         </View>
         <Text>제목을 작성해주세요</Text>
@@ -244,36 +246,5 @@ const styles = StyleSheet.create({
     width: 400,
     height: 200,
     backgroundColor: 'gray',
-  },
-  imageContainer: {
-    position: 'relative',
-  },
-  textContainer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-  },
-  text: {
-    fontSize: 20,
-    color: 'white',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    padding: 10,
-  },
-  modalContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
-  },
-  textInput: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 10,
   },
 });
