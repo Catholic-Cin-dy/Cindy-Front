@@ -1,5 +1,14 @@
 import React from 'react';
-import { View, StyleSheet, Text, Button, ScrollView, TouchableOpacity, Image} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Text,
+  Button,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+  FlatList,
+} from 'react-native';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import 'react-native-gesture-handler';
@@ -53,20 +62,6 @@ export default function ProductDetail({ route }) {
 
     setLiked(!liked);
 
-    /*axios.get(baseUrl + 'products/'+productId, { ...config })
-      .then((response)=>{
-        if(response.data.result.bookmark == true){ //이미 좋아요가 눌려있는 상태
-          //showToastMessage("좋아요 삭제");
-          //비워진 하트로 바뀌게
-          // 토스트 메시지 띄우기
-          setLiked(false);
-        }else {
-          //showToastMessage("좋아요");
-          //채워진 하트로 바뀌게
-          setLiked(true);
-        }
-      })*/
-
     axios.patch(baseUrl + 'products/like/' + productId, {}, config)
       .then(response =>
         setLiked(response.data.result),
@@ -112,35 +107,36 @@ export default function ProductDetail({ route }) {
       navigation.navigate('ProductDetail', { productId });
     };*/
 
+    const renderSuggestion = ({item}) => {
+      return (
+        <TouchableOpacity
+          style={styles.contentbox}
+          onPress={() => handleSuggestionPress(item)}>
+          <View style={styles.item}>
+            <Image style={styles.sImg} source={{ uri: item.imgUrl }} />
+            <View style={styles.heartIconBackground2} key={item.productId}>
+              <TouchableOpacity onPress={() => handleLike(item.productId)}>
+                <Image
+                  style={styles.heartIcon2}
+                  source={item.bookmark ? require("../../assets/like.png") : require("../../assets/unlike.png")}
+                />
+              </TouchableOpacity>
+            </View>
+            <Text>{item.brandName}</Text>
+            <Text>{item.productName}</Text>
+          </View>
+        </TouchableOpacity>
+      );
+    };
+
     return (
-      <ScrollView
-        horizontal // 가로 스크롤 가능하도록 설정
-        contentContainerStyle={{ flexDirection: 'row' }} // 가로 방향으로 컨텐츠 배치
-        style={styles.hscroll}
-      >
-        {/*<Text>{productId}</Text>*/}
-        <View style={styles.content}>
-          {data.map(item => (
-            <TouchableOpacity
-              style={styles.contentbox}
-              key={item.productId}
-              onPress={() => handleItemPress(item.productId)}
-            >
-              <Image style={styles.sImg} source={{ uri: item.imgUrl }} />
-              <View style={styles.heartIconBackground2} key={item.productId}>
-                <TouchableOpacity onPress={() => handleLike(item.productId)}>
-                  <Image
-                    style={styles.heartIcon2}
-                    source={item.bookmark ? require("../../assets/like.png") : require("../../assets/unlike.png")}
-                  />
-                </TouchableOpacity>
-              </View>
-              <Text style={styles.info1_s}>{item.brandName}</Text>
-              <Text style={styles.info2_s}>{item.productName}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      </ScrollView>
+      <View>
+      <FlatList
+        data = {data}
+        horizontal = {true}
+        renderItem = {renderSuggestion}
+        keyExtractor = {item => item.productId.toString()}/>
+      </View>
     );
   };
 
@@ -172,35 +168,35 @@ export default function ProductDetail({ route }) {
       navigation.navigate('ProductDetail', { productId });
     };*/
 
-    return (
-      <ScrollView
-        horizontal={true} // 가로 스크롤 가능하도록 설정
-        contentContainerStyle={{ flexDirection: 'row' }} // 가로 방향으로 컨텐츠 배치
-        style={styles.hscroll}
-      >
-        {/*<Text>{productId}</Text>*/}
-        <View style={styles.content}>
-          {data.map(item => (
-            <TouchableOpacity
-              style={styles.contentbox}
-              key={item.productId}
-              onPress={() => handleItemPress(item.productId)}
-            >
-              <Image style={styles.sImg} source={{ uri: item.imgUrl }} />
-              <View style={styles.heartIconBackground2} key={item.productId}>
-                <TouchableOpacity onPress={() => handleLike(item.productId)}>
-                  <Image
-                    style={styles.heartIcon2}
-                    source={item.bookmark ? require("../../assets/like.png") : require("../../assets/unlike.png")}
-                  />
-                </TouchableOpacity>
-              </View>
-              <Text style={styles.info1_s}>{item.brandName}</Text>
-              <Text style={styles.info2_s}>{item.productName}</Text>
+    const renderSuggestion2 = ({item}) => {
+      return (
+        <TouchableOpacity
+          style={styles.contentbox}
+          onPress={() => handleItemPress(item.productId)}
+        >
+          <Image style={styles.sImg} source={{ uri: item.imgUrl }} />
+          <View style={styles.heartIconBackground2} key={item.productId}>
+            <TouchableOpacity onPress={() => handleLike(item.productId)}>
+              <Image
+                style={styles.heartIcon2}
+                source={item.bookmark ? require("../../assets/like.png") : require("../../assets/unlike.png")}
+              />
             </TouchableOpacity>
-          ))}
-        </View>
-      </ScrollView>
+          </View>
+          <Text style={styles.info1_s}>{item.brandName}</Text>
+          <Text style={styles.info2_s}>{item.productName}</Text>
+        </TouchableOpacity>
+      );
+    };
+
+    return (
+      <View>
+        <FlatList
+          data = {data}
+          horizontal = {true}
+          renderItem = {renderSuggestion2}
+          keyExtractor = {item => item.productId.toString()}/>
+      </View>
     );
   };
 
@@ -228,11 +224,6 @@ export default function ProductDetail({ route }) {
         <Text />
         <Text />
         <Text style={styles.info3}>{data.productUrl}</Text>
-        <Text />
-        <Text />
-
-
-        <Text>다른 사람들이 입은 스타일</Text>
         <Text />
         <Text />
 
@@ -265,7 +256,7 @@ const styles = {
   },
   sImg: {
     width: 156,
-    height:168,
+    height: 168,
     backgroundColor:'gray',
     borderRadius: 8,
   },
@@ -318,7 +309,7 @@ const styles = {
   },
   image: {
     width: '95%',
-    height: 400,
+    height: 360,
     marginBottom: 16,
   },
   brandName: {
