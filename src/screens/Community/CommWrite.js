@@ -64,54 +64,6 @@ export default function CommWrite() {
       console.log(error);
     }
   };
-  //     .then(images => {
-  //       // 선택한 이미지들을 처리합니다.
-  //       console.log('이미지지지', images);
-  //     })
-  //     .catch(error => {
-  //       console.log(error);
-  //     });
-  // };
-
-  // const onChangeFile = useCallback(() => {
-  //   // 갤러리 사진 사용하기
-  //   return ImagePicker.openPicker({
-  //     includeExif: true,
-  //     includeBase64: true,
-  //     mediaType: 'photo',
-  //   })
-  //     .then(onResponse)
-  //     .catch(console.log);
-  // }, [onResponse]);
-  //
-  // const onResponse = useCallback(async response => {
-  //   console.log(response.width, response.height, response.exif);
-  //   // mime 은 JPG/PNG 와 같은 타입을 말한다.
-  //   // base64 는 Image 를 Text 로 변환시킬 때 사용된다.
-  //   //   -> 이미지 데이터의 2진수를 글자로 매칭시켜서 표현하는 것이다.
-  //   // exif 는 휴대폰을 어떤 방향으로 들고 사진을 찍었는지에 대한 정보를 말한다.
-  //   setPreview({uri: `data:${response.mime};base64,${response.data}`});
-  //   console.log('프리뷰는', preview);
-  //
-  //   // 이미지를 정사각형에 맞게 줄여준다.
-  //   return ImageResizer.createResizedImage(
-  //     response.path,
-  //     600,
-  //     600,
-  //     response.mime.includes('jpeg') ? 'JPEG' : 'PNG',
-  //     100, // 퀄리티를 줄일수록 용량도 줄어든다.
-  //     0,
-  //   ).then(r => {
-  //     console.log(r.uri, r.name);
-  //
-  //     setImage({
-  //       uri: r.uri,
-  //       name: r.name,
-  //       type: response.mime,
-  //     });
-  //     console.log('이미지는', img);
-  //   });
-  // }, []);
 
   const onChangeTitle = inputText => {
     setTitle(inputText);
@@ -119,55 +71,6 @@ export default function CommWrite() {
 
   const onChangeContent = inputText => {
     setContent(inputText);
-  };
-
-  const imagePickerOption = {
-    mediaType: 'photo',
-    maxWidth: 300,
-    maxHeight: 300,
-    includeBase64: Platform.OS === 'android',
-  };
-  let imgUrlsource;
-
-  const onPickImage = res => {
-    if (res.didCancel || !res) {
-      return;
-    }
-
-    console.log(res.assets[0].uri);
-
-    setImage(res.assets[0].uri);
-
-    const imgUrlsource = {
-      uri: res.assets[0].uri,
-      type: res.assets[0].type,
-      name: res.assets[0].fileName,
-    };
-    console.log(imgUrlsource);
-    setImgurl(imgUrlsource);
-  };
-
-  // 카메라 촬영
-  const onLaunchCamera = () => {
-    launchCamera(imagePickerOption, onPickImage);
-  };
-
-  // 갤러리에서 사진 선택
-  const ShowPicker = () => {
-    launchImageLibrary(imagePickerOption, onPickImage);
-  };
-
-  // 안드로이드를 위한 모달 visible 상태값
-  const [modalVisible, setModalVisible] = useState(false);
-
-  // 선택 모달 오픈
-  const modalOpen = () => {
-    if (Platform.OS === 'android') {
-      // 안드로이드
-      setModalVisible(true); // visible = true
-    } else {
-      // iOS
-    }
   };
 
   const submitBtn = () => {
