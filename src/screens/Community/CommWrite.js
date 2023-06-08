@@ -36,20 +36,42 @@ export default function CommWrite() {
   const [galleryList, setGalleryList] = useState([]);
   const [photos, setPhotos] = useState([]);
   const [chosenPhoto, setChosenPhoto] = useState(null);
+  const [result, setResult] = useState([]);
 
-  const openPicker = () => {
-    ImagePicker.openPicker({
-      multiple: true,
-      mediaType: 'photo',
-    })
-      .then(images => {
-        // 선택한 이미지들을 처리합니다.
-        console.log('이미지지지', images);
-      })
-      .catch(error => {
-        console.log(error);
+  const openPicker = async () => {
+    try {
+      const images = await ImagePicker.openPicker({
+        multiple: true,
+        compressImageQuality: 0.5,
       });
+
+      const selectedImages = [];
+
+      for (const image of images) {
+        const croppedImage = await ImagePicker.openCropper({
+          mediaType: 'photo',
+          path: image.path,
+          width: 1000,
+          height: 1000,
+        });
+
+        selectedImages.push(croppedImage.path);
+      }
+
+      setResult(prevResult => [...prevResult, ...selectedImages]);
+      console.log('이것은', result);
+    } catch (error) {
+      console.log(error);
+    }
   };
+  //     .then(images => {
+  //       // 선택한 이미지들을 처리합니다.
+  //       console.log('이미지지지', images);
+  //     })
+  //     .catch(error => {
+  //       console.log(error);
+  //     });
+  // };
 
   // const onChangeFile = useCallback(() => {
   //   // 갤러리 사진 사용하기
@@ -235,6 +257,15 @@ export default function CommWrite() {
       <SafeAreaView style={styles.container}>
         <View>
           <Button title="이미지 선택" onPress={openPicker} />
+          <View>
+            {result.map((path, index) => (
+              <Image
+                key={index}
+                source={{uri: path}}
+                style={{width: 100, height: 100}}
+              />
+            ))}
+          </View>
         </View>
         <Text>제목을 작성해주세요</Text>
         <TextInput
