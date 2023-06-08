@@ -35,51 +35,23 @@ export default function CommWrite() {
   const [photos, setPhotos] = useState([]);
   const [chosenPhoto, setChosenPhoto] = useState(null);
   const [result, setResult] = useState([]);
-  const [selectedImages, setSelectedImages] = useState([]);
-
-  const handleDrag = (index, event, gestureState) => {
-    const {x, y} = gestureState;
-    setSelectedImages(prevImages => {
-      const updatedImages = [...prevImages];
-      updatedImages[index].x = x;
-      updatedImages[index].y = y;
-      return updatedImages;
-    });
-  };
-
-  const handleTextChange = (index, text) => {
-    setSelectedImages(prevImages => {
-      const updatedImages = [...prevImages];
-      updatedImages[index].text = text;
-      return updatedImages;
-    });
-  };
+  const [text, setText] = useState('');
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const openPicker = async () => {
     try {
-      const images = await ImagePicker.openPicker({
-        multiple: true,
-        compressImageQuality: 0.5,
+      const image = await ImagePicker.openPicker({
+        mediaType: 'photo',
       });
 
-      const selectedImages = [];
-
-      for (const image of images) {
-        const croppedImage = await ImagePicker.openCropper({
-          mediaType: 'photo',
-          path: image.path,
-          width: 1000,
-          height: 1000,
-        });
-
-        selectedImages.push({path: croppedImage.path, x: 0, y: 0, text: ''});
-      }
-
-      setSelectedImages(selectedImages);
-      console.log('이것은', selectedImages);
+      setSelectedImage({uri: image.path});
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleTextChange = text => {
+    setText(text);
   };
 
   const onChangeTitle = inputText => {
@@ -177,30 +149,22 @@ export default function CommWrite() {
       <SafeAreaView style={styles.container}>
         <View>
           <Button title="이미지 선택" onPress={openPicker} />
-          <View>
-            {selectedImages.map((image, index) => (
-              <View key={index}>
-                <Image
-                  source={{uri: image.path}}
-                  style={{width: 100, height: 100}}
-                />
-                <Draggable
-                  x={image.x}
-                  y={image.y}
-                  onDrag={(event, gestureState) =>
-                    handleDrag(index, event, gestureState)
-                  }>
-                  <View style={styles.draggable}>
-                    <TextInput
-                      style={styles.textInput}
-                      value={image.text}
-                      onChangeText={text => handleTextChange(index, text)}
-                      placeholder="텍스트 입력"
-                    />
-                  </View>
-                </Draggable>
-              </View>
-            ))}
+          <View style={styles.imageContainer}>
+            {selectedImage && (
+              <Image source={selectedImage} style={styles.image} />
+            )}
+            {selectedImage && (
+              <Draggable>
+                <View style={styles.textContainer}>
+                  <TextInput
+                    style={styles.textInput}
+                    value={text}
+                    onChangeText={handleTextChange}
+                    placeholder="텍스트 입력"
+                  />
+                </View>
+              </Draggable>
+            )}
           </View>
         </View>
         <Text>제목을 작성해주세요</Text>
