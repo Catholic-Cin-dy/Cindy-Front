@@ -203,6 +203,8 @@ export default function CommWrite() {
             ))}
           </View>
         </View>
+        <Button title="태그 생성" />
+
         <Text>제목을 작성해주세요</Text>
         <TextInput
           style={styles.input}
