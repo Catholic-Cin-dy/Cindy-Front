@@ -30,6 +30,12 @@ export default function CommWrite() {
     const [content, setContent] = useState('');
     const [img, setImage] = useState('');
     const [imgurl, setImgurl] = useState([]);
+    const [suggestions, setSuggestions] = useState([]);
+    const [searchText, setSearchText] = useState('');
+    const hashTagRef = useRef(null);
+    const [hashTag, setHashTag] = useState([]);
+    const [tagName, setTagName] = useState('');
+
 
     const [suggestions, setSuggestions] = useState([]);
     const [searchText, setSearchText] = useState('');
@@ -144,7 +150,10 @@ export default function CommWrite() {
           </TouchableOpacity>
         );
     };
+<<<<<<< HEAD
 
+=======
+>>>>>>> 9906f2fa2fec65e32c74f138542e08386d4eb3c8
 
     const submitBtn = () => {
         const postBoard = {
@@ -181,6 +190,10 @@ export default function CommWrite() {
         formData.append('latitude', postBoard.latitude.toString());
         formData.append('longitude', postBoard.longitude.toString());
         formData.append('tags', postBoard.tags.toString());
+<<<<<<< HEAD
+=======
+
+>>>>>>> 9906f2fa2fec65e32c74f138542e08386d4eb3c8
         formData.append(
           'imgTagList',
           JSON.stringify(postBoard.imgTagList).toString(),
@@ -276,6 +289,10 @@ export default function CommWrite() {
               {/*모달 띄우기*/}
               <Text>지도</Text>
               <View style={styles.map} />
+<<<<<<< HEAD
+=======
+
+>>>>>>> 9906f2fa2fec65e32c74f138542e08386d4eb3c8
               <TextInput
                 style={styles.input1}
                 placeholder="검색어를 입력하세요."
