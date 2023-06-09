@@ -24,6 +24,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {useIsFocused} from '@react-navigation/native';
+import CommuWriteTag from './CommuWriteTag';
 
 import CommuPostDetail from './CommuPostDetail';
 
@@ -34,7 +35,6 @@ const config = {
   },
 };
 export default function CommuScreen() {
-
   const [text, setText] = useState('');
 
   const [searchText, setSearchText] = useState('');
@@ -51,10 +51,12 @@ export default function CommuScreen() {
       page: 3,
     };
 
-    axios.post(baseUrl + 'boards', payload, {params, ...config})
-      .then(response =>
-        // POST 요청이 성공한 경우 실행되는 코드
-        setData(response.data.result.contents),
+    axios
+      .post(baseUrl + 'boards', payload, {params, ...config})
+      .then(
+        response =>
+          // POST 요청이 성공한 경우 실행되는 코드
+          setData(response.data.result.contents),
         setIsRefreshing(false),
       )
       .catch(error => {
@@ -101,22 +103,22 @@ export default function CommuScreen() {
   };
 
   const [liked, setLiked] = useState();
-  const handleLike = (boardId) => {
+  const handleLike = boardId => {
     const params = {
       page: 0,
     };
 
     setLiked(!liked);
 
-    axios.patch(baseUrl + 'boards/like/' + boardId, {}, config)
+    axios
+      .patch(baseUrl + 'boards/like/' + boardId, {}, config)
       .then(response => setLiked(response.data.result))
       .catch(error => console.error(error));
 
-    axios.post(baseUrl + "boards", payload, { params, ...config })
-      .then(response => setData(response.data.result.contents),
-      )
+    axios
+      .post(baseUrl + 'boards', payload, {params, ...config})
+      .then(response => setData(response.data.result.contents))
       .catch(error => console.error(error));
-
   };
 
   return (

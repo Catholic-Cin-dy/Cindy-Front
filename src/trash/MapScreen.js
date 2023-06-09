@@ -1,139 +1,183 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {View, Text, StyleSheet, Button} from 'react-native';
+import {View, StyleSheet, Button, TextInput} from 'react-native';
 import {WebView} from 'react-native-webview';
 import Geolocation from '@react-native-community/geolocation';
-import {PermissionsAndroid} from 'react-native';
-import {PERMISSIONS, request} from 'react-native-permissions';
-import {KakaoMapView} from '@jiggag/react-native-kakao-maps';
 
 const MapScreen = () => {
-  const webviewRef = useRef(null);
-  const [markerLatitude, setMarkerLatitude] = useState(null);
-  const [markerLongitude, setMarkerLongitude] = useState(null);
-  const handleMarkerPress = () => {
-    setMarkerLatitude(latitude);
-    setMarkerLongitude(longitude);
-  };
+  const [markerPosition, setMarkerPosition] = useState({
+    latitude: 0,
+    longitude: 0,
+  });
+  const webViewRef = useRef(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    const markerScript = `
-      const markerLatitude = ${markerLatitude};
-      const markerLongitude = ${markerLongitude};
-      
-      const marker = new kakao.maps.Marker({
-        position: new Takao.maps.LatLng(markerLatitude, markerLongitude),
-      });
-      marker.setMap(map);
-    `;
-
-    // WebView 리로드하여 마커 스크립트를 적용
-    const webViewReload = () => {
-      const webViewRef = webviewRef.current;
-      if (webViewRef) {
-        webViewRef.injectJavaScript(markerScript);
-      }
-    };
-
-    webViewReload();
-  }, [markerLatitude, markerLongitude]);
-
-  const [latitude, setLatitude] = useState(null);
-  const [longitude, setLongitude] = useState(null);
-
-  useEffect(() => {
-    // 위치 정보를 가져오는 비동기 함수
-    const getLocation = async () => {
-      try {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-        );
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          // 권한이 허용된 경우
-          Geolocation.getCurrentPosition(
-            position => {
-              setLatitude(position.coords.latitude);
-              setLongitude(position.coords.longitude);
-            },
-            error => console.log(error.message),
-            {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
-          );
-        } else {
-          // 권한이 거부된 경우
-          console.log('위치 권한이 거부되었습니다.');
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    getLocation();
+    getCurrentLocation();
   }, []);
 
-    return (
-      <View style={styles.container}>
-        <WebView
-          ref={webviewRef}
-          style={styles.webview}
-          source={{uri: 'https://map.kakao.com'}}
-          javaScriptEnabled={true}
-        />
-        <View style={styles.coordinatesContainer}>
-          <Text style={styles.coordinatesText}>
-            Latitude: {latitude ? latitude.toFixed(6) : 'Loading...'}
-          </Text>
-          <Text style={styles.coordinatesText}>
-            Longitude: {longitude ? longitude.toFixed(6) : 'Loading...'}
-          </Text>
-          <Button title="마커 추가" onPress={handleMarkerPress} />
-        </View>
-      </View>
+  const getCurrentLocation = () => {
+    Geolocation.getCurrentPosition(
+      position => {
+        const {latitude, longitude} = position.coords;
+        setMarkerPosition({latitude, longitude});
+        console.log('현재 좌표', markerPosition);
+        // 지도 중심을 현재 위치로 설정하는 함수
+        webViewRef.current.injectJavaScript(`
+          const center = new kakao.maps.LatLng(${latitude}, ${longitude});
+          map.setCenter(center);
+        `);
+      },
+      error => {
+        console.log('Error getting current location:', error);
+      },
     );
   };
-  /*return (
-    <KakaoMapView
-      markerImageName="customImageName" // 옵션1
-      // markerImageUrl="https://github.com/jiggag/react-native-kakao-maps/blob/develop/example/custom_image.png?raw=true" // 옵션2
-      markerImageUrl="https://github.com/jiggag/react-native-kakao-maps/blob/develop/example/custom_image.png?raw=true" // 옵션2
-      markerList={[
-        {
-          lat: 37.59523,
-          lng: 127.086,
-          markerName: 'marker',
-        },
-        {
-          lat: 37.59523,
-          lng: 127.08705,
-          markerName: 'marker2',
-        },
-      ]}
-      width={300}
-      height={500}
-      centerPoint={{
-        lat: 37.59523,
-        lng: 127.086,
-      }}
-      onChange={event => {
-        // event.nativeEvent
-      }}
-    />
+  const htmlContent = `
+     <!DOCTYPE html>
+  <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=90760c027b8ec61ee28e5dc800ffa261&libraries=services,clusterer"></script>
+
+      <style>
+        /* CSS 스타일을 여기에 작성하세요 */
+        body {
+          margin: 0;
+          padding: 0;
+        }
+        #map {
+          width: '100%';
+          height: 800px;
+        }
+      </style>
+
+    </head>
+    <body>
+      <!-- HTML 콘텐츠를 여기에 작성하세요 -->
+      <div id="map"></div>
+      <script>
+        const container = document.getElementById('map');
+        const options = {
+          center: new kakao.maps.LatLng(37.486597, 126.801947),
+          level: 3
+        };
+        const map = new kakao.maps.Map(container, options);
+        let marker;
+        
+        const addMarker = (latitude, longitude) => {
+        const markerPosition = new kakao.maps.LatLng(latitude, longitude);
+        marker = new kakao.maps.Marker({ position: markerPosition, draggable: true });
+        marker.setMap(map);
+        
+        kakao.maps.event.addListener(marker, 'dragend', function () {
+          const position = marker.getPosition();
+          const latitude = position.getLat();
+          const longitude = position.getLng();
+          window.ReactNativeWebView.postMessage(JSON.stringify({ latitude, longitude }));
+          });
+        };
+        function sendMarkerPositionToReactNative(latitude, longitude) {        
+        window.ReactNativeWebView.postMessage(JSON.stringify({ latitude, longitude }));
+        }
+        
+        function searchLocation(query) {
+        const geocoder = new kakao.maps.services.Geocoder();
+        
+        geocoder.addressSearch(query, function (result, status) {
+          if (status === kakao.maps.services.Status.OK) {
+            const { x: longitude, y: latitude } = result[0].x;
+            moveMapToLocation(latitude, longitude);
+            }
+          });
+      }
+      function moveMapToLocation(latitude, longitude) {
+        const moveLatLng = new kakao.maps.LatLng(latitude, longitude);
+        map.setCenter(moveLatLng);
+        }
+        function sendSearchResultToReactNative(result) {
+        window.ReactNativeWebView.postMessage(JSON.stringify(result));
+        }
+        addMarker(37.486597, 126.801947)
+      </script>
+    </body>
+  </html>
+`;
+  const handleWebViewMessage = event => {
+    // React Native에서 마커 위치 정보를 수신한 후 처리하는 함수
+    const {latitude, longitude} = JSON.parse(event.nativeEvent.data);
+    setMarkerPosition({latitude, longitude});
+  };
+
+  const handleSearchLocation = () => {
+    if (webViewRef.current) {
+      // 검색어를 카카오맵으로 전달하는 함수
+      webViewRef.current.injectJavaScript(`searchLocation('${searchQuery}')`);
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      <WebView
+        originWhitelist={['*']}
+        source={{html: htmlContent}}
+        style={styles.map}
+        onMessage={handleWebViewMessage}
+        ref={webViewRef}
+      />
+      <View style={styles.searchLocation}>
+        <TextInput
+          style={styles.input}
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          placeholder="검색할 지명 또는 주소 입력"
+        />
+      </View>
+      <View>
+        <Button
+          style={styles.submitBtn}
+          title="위치 선택"
+          onPress={getCurrentLocation}
+        />
+      </View>
+    </View>
   );
-};*/
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  webview: {
+  map: {
     flex: 1,
   },
-  coordinatesContainer: {
-    backgroundColor: 'white',
-    padding: 10,
+  markerPosition: {
+    position: 'absolute',
+    bottom: 16,
+    alignSelf: 'center',
   },
-  coordinatesText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 5,
+  searchLocation: {
+    position: 'absolute',
+    top: 16,
+    alignSelf: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  input: {
+    flex: 1,
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginRight: 8,
+    paddingHorizontal: 8,
+  },
+  submitBtn: {
+    width: 327,
+    height: 37,
+    left: 15,
+    top: 1212,
+    backgroundColor: '#6B7AFF',
+    borderRadius: 8,
   },
 });
 

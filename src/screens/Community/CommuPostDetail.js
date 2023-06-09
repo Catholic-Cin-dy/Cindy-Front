@@ -11,9 +11,13 @@ import {
   TextInput,
   Modal,
   ImageBackground,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
+  PanResponder,
 } from 'react-native';
 //import Modal from 'react-native-simple-modal';
-import { MenuProvider } from 'react-native-popup-menu';
+import {MenuProvider} from 'react-native-popup-menu';
 //import Modal from 'react-native-simple-modal';
 import Swiper from 'react-native-web-swiper';
 import axios from 'axios';
@@ -28,6 +32,8 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useIsFocused} from '@react-navigation/native';
 
 import CommuScreen from './CommuScreen';
+import {Keyboard} from 'swiper';
+// import {Keyboard} from 'swiper';
 
 const baseUrl = 'https://www.awesominki.shop/'; //api 연결을 위한 baseUrl
 const config = {
@@ -57,8 +63,64 @@ export default function CommuPostDetail({route}) {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [fixId, setfixId] = useState();
+  const [draggedTag, setDraggedTag] = useState(null);
   const [CommentIdBeingEdited, setCommentIdBeingEdited] = useState();
   const navigation = useNavigation();
+
+  // 태그를 드래그 앤 드롭할 때 호출되는 함수
+  const handleTagDragStart = tag => {
+    setDraggedTag(tag);
+  };
+
+  // 드롭 위치에 따라 태그의 좌표를 업데이트하는 함수
+  const handleTagDrop = (x, y) => {
+    if (draggedTag) {
+      const updatedTags = data.imgList.map(img => {
+        if (img.imgTags.includes(draggedTag)) {
+          const updatedTag = {
+            ...draggedTag,
+            x,
+            y: y - data.imgList.indexOf(img) * 400,
+          };
+          return {
+            ...img,
+            imgTags: img.imgTags.map(tag =>
+              tag === draggedTag ? updatedTag : tag,
+            ),
+          };
+        }
+        return img;
+      });
+
+      // 업데이트된 태그 정보를 저장하거나 상태를 업데이트하는 등의 작업을 수행합니다.
+      // 예: setData({ ...data, imgList: updatedTags });
+      setData({...data, imgList: updatedTags});
+      setDraggedTag(null); // 드롭 완료 후 드래그 중인 태그 초기화
+    }
+  };
+
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderGrant: () => {},
+      onPanResponderMove: (event, gestureState) => {
+        // 드래그 중일 때의 처리 로직을 구현합니다.
+        // gestureState에서 움직인 거리, 속도 등의 정보를 얻을 수 있습니다.
+        // ...
+      },
+      onPanResponderRelease: (event, gestureState) => {
+        // 드롭 시의 처리 로직을 구현합니다.
+        handleTagDrop(gestureState.moveX, gestureState.moveY);
+      },
+    }),
+  ).current;
+
+  const handleTagClick = (x, y) => {
+    console.log('태그가 클릭되었습니다.');
+    console.log('클릭한 태그의 좌표:', x, y);
+    // 원하는 동작을 수행합니다.
+  };
 
   const onChangeComment = inputText => {
     setComment(inputText);
@@ -75,7 +137,7 @@ export default function CommuPostDetail({route}) {
     if (textRef.current) {
       textRef.current.measure((x, y, width, height) => {
         setTextWidth(width);
-        console.log('글자길이 : '+textWidth);
+        console.log('글자길이 : ' + textWidth);
       });
     }
 
@@ -191,12 +253,11 @@ export default function CommuPostDetail({route}) {
 
     axios
       .delete(baseUrl + 'boards/delete/' + boardId, {...config})
-      .then(response => {
-
-      })
+      .then(response => {})
       .catch(error => console.error(error));
   }
-  function modifyPost() { //수정 api바뀌면 적용 예정
+  function modifyPost() {
+    //수정 api바뀌면 적용 예정
     const params = {
       boardId: boardId,
     };
@@ -208,7 +269,6 @@ export default function CommuPostDetail({route}) {
       })
       .catch(error => console.error(error));*/
   }
-
 
   function movePost() {
     navigation.pop();
@@ -229,12 +289,12 @@ export default function CommuPostDetail({route}) {
             {data.profileImgUrl ? (
               <Image
                 style={styles.profileImg}
-                source={{ uri: data.profileImgUrl }}
+                source={{uri: data.profileImgUrl}}
               />
             ) : (
               <Image
                 style={styles.defaultImg}
-                source={require("../../assets/user.png")}
+                source={require('../../assets/user.png')}
               />
             )}
             <Text style={styles.info2}>{data.writer}</Text>
@@ -255,7 +315,7 @@ export default function CommuPostDetail({route}) {
                   <Text>삭제</Text>
                 </TouchableOpacity>
               ) : (
-                "유효값x pid: " + data.boardId
+                '유효값x pid: ' + data.boardId
               )}
             </Text>
 
@@ -269,60 +329,67 @@ export default function CommuPostDetail({route}) {
                   <Text>수정</Text>
                 </TouchableOpacity>
               ) : (
-                "유효값x pid: " + data.boardId
+                '유효값x pid: ' + data.boardId
               )}
             </Text>
           </View>
 
-
           <View style={styles.container}>
             <View style={styles.slideImageView}>
-              <Swiper
-                containerStyle={{width:360, height:400}}>
+              <Swiper containerStyle={{width: 360, height: 400}}>
                 {data &&
                   data.imgList &&
                   data.imgList.map((img, index) => (
-                    <TouchableOpacity onPress={showCoordinate} style={styles.postImgWhole}>
+                    <TouchableOpacity
+                      onPress={showCoordinate}
+                      style={styles.postImgWhole}
+                      key={index} // 올바른 위치로 key 속성을 추가합니다.
+                    >
                       <ImageBackground
-                        key={index}
-                        source={{ uri: img.imgUrl }}
+                        source={{uri: img.imgUrl}}
                         style={styles.pImg}
+                        key={index} // 올바른 위치로 key 속성을 추가합니다.
                       >
                         {img.imgTags &&
-                          img.imgTags.map((tag, index) => (
+                          img.imgTags.map((tag, tagIndex) => (
                             <View
-                              key={index}
-                              style={[styles.imgtagContainer, { width: 360, height: 400, position: "relative" }]}
-                            >
-                              <View style={[styles.imgTagBox, { position: 'absolute', left: tag.x, top: tag.y - index * 400 }]}>
-                                <Text style={[styles.imgTagText, { flexWrap: 'wrap' }]}>
-                                  {`${tag.brandName}`}
-                                </Text>
+                              key={tagIndex}
+                              style={[
+                                styles.imgtagContainer,
+                                {width: 360, height: 400, position: 'relative'},
+                              ]}>
+                              <View
+                                style={[
+                                  styles.imgTagBox,
+                                  {
+                                    position: 'absolute',
+                                    left: tag.x,
+                                    top: tag.y - tagIndex * 400,
+                                  },
+                                ]}
+                                {...panResponder.panHandlers}>
+                                <TouchableOpacity
+                                  // onPress={() => handleTagClick(tag.x, tag.y)}
+                                  onLongPress={() => handleTagDragStart(tag)} // 드래그 앤 드롭 시작
+                                  onPressOut={() => handleTagDrop(tag.x, tag.y)} // 태그 드롭 시 좌표 업데이트
+                                >
+                                  <Text
+                                    style={[
+                                      styles.imgTagText,
+                                      {flexWrap: 'wrap'},
+                                    ]}>
+                                    {`${tag.brandName}`}
+                                  </Text>
+                                </TouchableOpacity>
                               </View>
                             </View>
                           ))}
                       </ImageBackground>
-
-
-                      {/*<View>
-                      <Text>---------------------------------------------------------------------</Text>
-                      <Text>x,y 좌표</Text>
-                      <Text>imgId : {`${img.imgId}`}</Text>
-
-                      {img.imgTags &&
-                        img.imgTags.map((tag, index) => (
-                          <View key={index}>
-                            <Text style={styles.imgtag}>{`x: ${tag.x}, y: ${tag.y}, brandName: ${tag.brandName}`}</Text>
-                          </View>
-                        ))}
-                      <Text>---------------------------------------------------------------------</Text>
-                    </View>*/}
                     </TouchableOpacity>
                   ))}
               </Swiper>
             </View>
           </View>
-
 
           <View style={styles.content} key={data.boardId}>
             <View style={styles.contentContainer}>
@@ -331,7 +398,7 @@ export default function CommuPostDetail({route}) {
                 {/*<Text>{data.likeCheck ? data.likeCheck.toString() : "유효값x pid: " + data.boardId}</Text>*/}
 
                 <Text>
-                  {data.my ? data.my.toString() : "false" + data.boardId}
+                  {data.my ? data.my.toString() : 'false' + data.boardId}
                 </Text>
 
                 <TouchableOpacity onPress={handleLike}>
@@ -339,8 +406,8 @@ export default function CommuPostDetail({route}) {
                     style={styles.heartIcon}
                     source={
                       data.likeCheck
-                        ? require("../../assets/like.png")
-                        : require("../../assets/unlike.png")
+                        ? require('../../assets/like.png')
+                        : require('../../assets/unlike.png')
                     }
                   />
                 </TouchableOpacity>
@@ -358,12 +425,12 @@ export default function CommuPostDetail({route}) {
                 {item.profileImgUrl ? (
                   <Image
                     style={styles.profileImg}
-                    source={{ uri: item.profileImgUrl }}
+                    source={{uri: item.profileImgUrl}}
                   />
                 ) : (
                   <Image
                     style={styles.defaultImg}
-                    source={require("../../assets/user.png")}
+                    source={require('../../assets/user.png')}
                   />
                 )}
                 <Text style={styles.info2}>{item.nickName}</Text>
@@ -385,7 +452,7 @@ export default function CommuPostDetail({route}) {
                     //   />
                     //   <Button title="전송" onPress={writeComment} />
                     // </View>
-                    ""
+                    ''
                   ) : (
                     <TouchableOpacity
                       style={styles.cdeleteBtn1}
@@ -400,7 +467,7 @@ export default function CommuPostDetail({route}) {
                 </View>
               </View>
               {isEditing && CommentIdBeingEdited === item.commentId ? (
-                <View style={{ flexDirection: "row" }}>
+                <View style={{flexDirection: 'row'}}>
                   <TextInput
                     style={styles.fixinput1}
                     onChangeText={onChangeComment2}
@@ -416,7 +483,6 @@ export default function CommuPostDetail({route}) {
               )}
               <Text style={styles.info1}>작성일시 {item.commentTime}</Text>
               <Text style={styles.info2}>{item.my}</Text>
-
             </View>
           ))}
         </View>
@@ -424,19 +490,74 @@ export default function CommuPostDetail({route}) {
         <Text />
         <Text />
         <Text />
-        <TextInput
-          style={styles.input}
-          onChangeText={onChangeComment}
-          value={comment}
-          placeholder="댓글을 입력해주세요."
-        />
-        <Button title="전송" onPress={writeComment} />
+
+        <KeyboardAvoidingView
+          style={{flex: 1}}
+          enabled
+          behavior={Platform.OS === 'ios' ? 'padding' : null}>
+          {/*이부분 수정 필요*/}
+          {/*<View style={styles.Contiainer}>*/}
+          {/*  <TouchableWithoutFeedback*/}
+          {/*    onPress={Keyboard.dismiss}*/}
+          {/*    style={{height: '100%'}}*/}
+          {/*  />*/}
+          {/*</View>*/}
+          <View style={styles.EditorContainer}>
+            <Image
+              style={{
+                height: 30,
+                width: 30,
+                borderRadius: 15,
+                marginRight: 10,
+                marginLeft: 10,
+                padding: 10,
+              }}
+              source={require('../../assets/user.png')}
+            />
+            <TextInput
+              style={{flex: 1}}
+              multiline
+              onChangeText={onChangeComment}
+              value={comment}
+              placeholder="댓글을 입력해주세요."
+              autoFocus={true}
+            />
+            <TouchableOpacity style={{width: 50}} onPress={writeComment}>
+              <Text style={styles.blueColor}>전송</Text>
+            </TouchableOpacity>
+          </View>
+        </KeyboardAvoidingView>
+
+        {/*<TextInput*/}
+        {/*  style={styles.input}*/}
+        {/*  onChangeText={onChangeComment}*/}
+        {/*  value={comment}*/}
+        {/*  placeholder="댓글을 입력해주세요."*/}
+        {/*/>*/}
+        {/*<Button title="전송" onPress={writeComment} />*/}
       </ScrollView>
     </View>
   );
 }
 
 const styles = {
+  blueColor: {
+    color: 'blue',
+  },
+  Contiainer: {
+    backgroundColor: 'transparent',
+    flex: 1,
+  },
+  EditorContainer: {
+    padding: 5,
+    minHeight: 65,
+    borderTopColor: 'grey',
+    borderTopWidth: 0.25,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'white',
+  },
+
   postImgWhole: {
     /*flexDirection: 'row',*/
   },
@@ -450,6 +571,9 @@ const styles = {
   },
   imgTagBox: {
     borderColor: '#FF1AA0',
+    top: 100,
+    left: 50,
+    padding: 10,
     borderWidth: 1,
     backgroundColor: 'rgba(255, 26, 160, 0.24)',
     borderRadius: 6,

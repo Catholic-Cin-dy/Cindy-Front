@@ -17,6 +17,8 @@ import LogoTitle from './screens/LogoTitle';
 import MainPage from './screens/MainPage';
 import Maincontent from './component/Maincontent1';
 import Detail1 from './screens/MainDetail/Detail1';
+import CommuWriteTag from './screens/Community/CommuWriteTag';
+import MapScreen2 from './trash/MapScreen2';
 
 const Stack = createStackNavigator();
 
@@ -29,6 +31,8 @@ export default function App() {
         <Stack.Screen name="SignInGender" component={SignInGender} />
         <Stack.Screen name="SignInFin" component={SignInFin} />
         <Stack.Screen name="MapScreen" component={MapScreen} />
+        <Stack.Screen name="MapScreen2" component={MapScreen2} />
+        <Stack.Screen name="CommuWriteTag" component={CommuWriteTag} />
         <Stack.Screen
           name="MainPage"
           component={MainPage}

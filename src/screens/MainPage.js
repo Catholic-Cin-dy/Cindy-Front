@@ -43,7 +43,10 @@ import CommWrite from "./Community/CommWrite";
 import CommuWriteMap from "./Community/CommuWriteMap";
 import MyPage from "./MyPageScreen/MyPage";
 import SearchScreen from "./SearchScreen";
+import CommuWriteTag from './Community/CommuWriteTag';
+import MapScreen from '../trash/MapScreen';
 import WebViewScreen from "./RecruitScreen/WebViewScreen";
+
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -51,7 +54,7 @@ const MyPageStack = createStackNavigator();
 const HomeStack = createStackNavigator();
 const RecruitStack = createStackNavigator();
 const BookMarkStack = createStackNavigator();
-const MainStack =createStackNavigator();
+const MainStack = createStackNavigator();
 
 const HomeScreen = () => {
   return (
@@ -69,7 +72,7 @@ const HomeScreen = () => {
   );
 };
 
-const SearchResultScreen = ({ navigation }) => {
+const SearchResultScreen = ({navigation}) => {
   return (
     <View style={styles.container}>
       <Text>This is SearchResultScreen.</Text>
@@ -106,6 +109,8 @@ const CommunityStackScreen = () => {
       <RecruitStack.Screen name = "CommuPostDetail" component = {CommuPostDetail} options = {{ headerShown : false }}/>
       <RecruitStack.Screen name="CommWrite" component={CommWrite} />
       <RecruitStack.Screen name="CommuWriteMap" component={CommuWriteMap} />
+      <RecruitStack.Screen name="CommuWriteTag" component={CommuWriteTag} />
+      <RecruitStack.Screen name="MapScreen" component={MapScreen} />
     </Stack.Navigator>
   );
 };
