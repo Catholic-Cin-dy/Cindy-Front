@@ -32,6 +32,7 @@ const config = {
   },
 };
 export default function CommuScreen() {
+  const [slicedData, setSlicedData] = useState([]);
   const [text, setText] = useState('');
 
   const [searchText, setSearchText] = useState('');
@@ -53,6 +54,11 @@ export default function CommuScreen() {
     setSelectedPage(page);
   };
 
+  const handleValueChange = itemValue => {
+    setValue(itemValue);
+    console.log(value);
+  };
+
   const isFocused = useIsFocused(); // isFoucesd Define
   useEffect(() => {
     const params = {
@@ -64,13 +70,13 @@ export default function CommuScreen() {
 
     axios
       .post(baseUrl + 'boards', payload, {params, ...config})
-      .then(
-        response =>
-          // POST 요청이 성공한 경우 실행되는 코드
-          setData(response.data.result.contents),
-        //setPageList(response.data.result.contents),
-        setIsRefreshing(false),
-      )
+      .then(response => {
+        // POST 요청이 성공한 경우 실행되는 코드
+        const responseData = response.data.result.contents; // 데이터 추출
+        setData(responseData);
+        console.log('변경이 완료');
+        setIsRefreshing(false);
+      })
       .catch(error => {
         // POST 요청이 실패한 경우 실행되는 코드
         console.error(error);
@@ -165,7 +171,7 @@ export default function CommuScreen() {
           value={value}
           items={items}
           setOpen={setOpen}
-          setValue={setValue}
+          setValue={handleValueChange}
           setItems={setItems}
           placeholder="카테고리"
           listMode="MODAL"
