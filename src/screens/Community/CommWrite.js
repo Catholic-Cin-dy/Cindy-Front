@@ -29,6 +29,12 @@ export default function CommWrite() {
     const [content, setContent] = useState('');
     const [img, setImage] = useState('');
     const [imgurl, setImgurl] = useState([]);
+    const [suggestions, setSuggestions] = useState([]);
+    const [searchText, setSearchText] = useState('');
+    const hashTagRef = useRef(null);
+    const [hashTag, setHashTag] = useState([]);
+    const [tagName, setTagName] = useState('');
+
 
     const onChangeTitle = inputText => {
         setTitle(inputText);
@@ -91,6 +97,52 @@ export default function CommWrite() {
             // iOS
         }
     };
+    const handleSearchTextChange = text => {
+        setSearchText(text);
+        if (text.length > 0) {
+            const params = {
+                content: text,
+            };
+            const config = {
+                headers: {
+                    'X-AUTH-TOKEN': `eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWQiOjIsImlhdCI6MTY3OTkyMjIwNSwiZXhwIjoxNzExNDU4MjA1fQ.A45bXqITjpGnywheSkEzfv5St2jD08DefUW2VQEbDpo`,
+                },
+            };
+
+            axios
+              .get(baseUrl + '/boards/tag', {params, ...config})
+              .then(response => {
+                  setSuggestions(response.data.result);
+                  console.log(response.data.result); // 추가된 console.log
+              })
+              .catch(error => console.error(error));
+        } else {
+            setSuggestions([]);
+        }
+    };
+
+    //누른 item값을 태그의 배열에 추가하기
+    const handleSuggestionPress = item => {
+        setSearchText(item);
+        setHashTag(prevTags => {
+            if (prevTags.includes(item)) {
+                // 이미 존재하는 태그인 경우, 이전 상태 그대로 반환
+                return prevTags;
+            } else {
+                // 새로운 태그인 경우, 새로운 배열 생성하여 반환
+                return [...prevTags, item];
+            }
+        });
+        console.log(item);
+    };
+
+    const renderSuggestion = ({item}) => {
+        return (
+          <TouchableOpacity onPress={() => handleSuggestionPress(item)}>
+              <Text>{item}</Text>
+          </TouchableOpacity>
+        );
+    };
 
     const submitBtn = () => {
         const postBoard = {
@@ -98,7 +150,7 @@ export default function CommWrite() {
             content: content,
             latitude: 11.12,
             longitude: 23.45,
-            tags: [],
+            tags: hashTag,
             imgFiles: [],
             imgTagList: [
                 {
@@ -126,7 +178,8 @@ export default function CommWrite() {
         formData.append('content', postBoard.content.toString());
         formData.append('latitude', postBoard.latitude.toString());
         formData.append('longitude', postBoard.longitude.toString());
-        formData.append('tags', postBoard.tags);
+        formData.append('tags', postBoard.tags.toString());
+
         formData.append(
           'imgTagList',
           JSON.stringify(postBoard.imgTagList).toString(),
@@ -222,6 +275,20 @@ export default function CommWrite() {
               {/*모달 띄우기*/}
               <Text>지도</Text>
               <View style={styles.map} />
+
+              <TextInput
+                style={styles.input1}
+                placeholder="검색어를 입력하세요."
+                onChangeText={handleSearchTextChange}
+                value={searchText}
+              />
+              <FlatList
+                data={suggestions}
+                renderItem={renderSuggestion}
+                keyExtractor={item => item}
+              />
+
+              <Text>검색어 : {searchText}</Text>
               <Text>제목을 작성해주세요</Text>
               <TextInput
                 style={styles.input}
