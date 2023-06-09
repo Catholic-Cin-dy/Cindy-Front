@@ -121,23 +121,28 @@ export default function CommuScreen() {
   };
 
   const [liked, setLiked] = useState();
-  //여기부터 클릭 off했을때 likecount를 빼는 로직이 없음
   const handleLike = boardId => {
     const params = {
       page: selectedPage,
     };
 
     setLiked(!liked);
+    //liked에 좋아요 성공 , 좋아요 취소 성공이 저장됨
+    console.log('test', liked);
 
     axios
       .patch(baseUrl + 'boards/like/' + boardId, {}, config)
       .then(response => setLiked(response.data.result))
       .catch(error => console.error(error));
+    console.log('1번 테스트', liked);
+    //같은 값 반환
 
     axios
       .post(baseUrl + 'boards', payload, {params, ...config})
       .then(response => setData(response.data.result.contents))
       .catch(error => console.error(error));
+    console.log('2번 테스트', liked);
+    //같은 값 반환
   };
 
   return (
