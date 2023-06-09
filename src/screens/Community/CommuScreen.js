@@ -121,6 +121,7 @@ export default function CommuScreen() {
   };
 
   const [liked, setLiked] = useState();
+  //여기부터 클릭 off했을때 likecount를 빼는 로직이 없음
   const handleLike = boardId => {
     const params = {
       page: selectedPage,
