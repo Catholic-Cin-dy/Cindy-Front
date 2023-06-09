@@ -43,6 +43,7 @@ import CommuWriteMap from './Community/CommuWriteMap';
 import MyPage from './MyPageScreen/MyPage';
 import SearchScreen from './SearchScreen';
 import CommuWriteTag from './Community/CommuWriteTag';
+import MapScreen from '../trash/MapScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -114,6 +115,7 @@ const CommunityStackScreen = () => {
       <RecruitStack.Screen name="CommWrite" component={CommWrite} />
       <RecruitStack.Screen name="CommuWriteMap" component={CommuWriteMap} />
       <RecruitStack.Screen name="CommuWriteTag" component={CommuWriteTag} />
+      <RecruitStack.Screen name="MapScreen" component={MapScreen} />
     </Stack.Navigator>
   );
 };

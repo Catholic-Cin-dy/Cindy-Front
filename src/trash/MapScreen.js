@@ -59,7 +59,7 @@ const MapScreen = () => {
       <script>
         const container = document.getElementById('map');
         const options = {
-          center: new kakao.maps.LatLng(33.450701, 126.570667),
+          center: new kakao.maps.LatLng(37.486597, 126.801947),
           level: 3
         };
         const map = new kakao.maps.Map(container, options);
@@ -98,7 +98,7 @@ const MapScreen = () => {
         function sendSearchResultToReactNative(result) {
         window.ReactNativeWebView.postMessage(JSON.stringify(result));
         }
-        addMarker(33.450701, 126.570667)
+        addMarker(37.486597, 126.801947)
       </script>
     </body>
   </html>
@@ -125,12 +125,6 @@ const MapScreen = () => {
         onMessage={handleWebViewMessage}
         ref={webViewRef}
       />
-      <View style={styles.markerPosition}>
-        <Button
-          title="Save Marker Position"
-          onPress={() => console.log(markerPosition)}
-        />
-      </View>
       <View style={styles.searchLocation}>
         <TextInput
           style={styles.input}
@@ -138,10 +132,13 @@ const MapScreen = () => {
           onChangeText={setSearchQuery}
           placeholder="검색할 지명 또는 주소 입력"
         />
-        <Button title="Search Location" onPress={handleSearchLocation} />
       </View>
       <View>
-        <Button title="Get Current Location" onPress={getCurrentLocation} />
+        <Button
+          style={styles.submitBtn}
+          title="위치 선택"
+          onPress={getCurrentLocation}
+        />
       </View>
     </View>
   );
@@ -173,6 +170,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginRight: 8,
     paddingHorizontal: 8,
+  },
+  submitBtn: {
+    width: 327,
+    height: 37,
+    left: 15,
+    top: 1212,
+    backgroundColor: '#6B7AFF',
+    borderRadius: 8,
   },
 });
 

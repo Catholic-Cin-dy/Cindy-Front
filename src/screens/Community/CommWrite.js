@@ -9,10 +9,13 @@ import {
   ScrollView,
   TextInput,
   Image,
+  TouchableOpacity,
 } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
 import axios from 'axios';
 import Draggable from 'react-native-draggable';
+import {useNavigation} from '@react-navigation/native';
+import MapScreen from '../../trash/MapScreen';
 const baseUrl = 'https://www.awesominki.shop';
 const baseUrl2 = 'http://localhost:9000';
 
@@ -36,6 +39,11 @@ export default function CommWrite() {
   const [chosenPhoto, setChosenPhoto] = useState(null);
   const [result, setResult] = useState([]);
   const [selectedImages, setSelectedImages] = useState([]);
+  const navigation = useNavigation(); // useNavigation 훅 사용
+
+  const goToMap = () => {
+    navigation.navigate(MapScreen);
+  };
 
   const handleDrag = (index, event, gestureState) => {
     const {x, y} = gestureState;
@@ -188,42 +196,29 @@ export default function CommWrite() {
                   source={{uri: image.uri}}
                   style={{width: 60, height: 80}}
                 />
-                <Draggable
-                  x={image.x}
-                  y={image.y}
-                  onDrag={(event, gestureState) =>
-                    handleDrag(index, event, gestureState)
-                  }>
-                  <View style={styles.draggable}>
-                    <TextInput
-                      style={styles.textInput}
-                      value={image.text}
-                      onChangeText={text => handleTextChange(index, text)}
-                      placeholder="텍스트 입력"
-                    />
-                  </View>
-                </Draggable>
               </View>
             ))}
           </View>
         </View>
         <Button title="사진 태그하기" />
-
-        <Text>제목을 작성해주세요</Text>
+        <TouchableOpacity style={styles.touchable} onPress={goToMap}>
+          <Text style={styles.label2}>위치 선택</Text>
+        </TouchableOpacity>
+        <Text style={styles.label}>제목</Text>
         <TextInput
           style={styles.input}
           onChangeText={onChangeTitle}
           value={title}
           placeholder="제목을 작성해주세요."
         />
-        <Text> 내용을 작성해주세요</Text>
+        <Text style={styles.label}>글 작성</Text>
         <TextInput
           style={styles.input}
           onChangeText={onChangeContent}
           value={content}
           placeholder="글을 작성해주세요."
         />
-        <Button title="제출" onPress={submitBtn} />
+        <Button title="제출" style={styles.submitBtn} onPress={submitBtn} />
       </SafeAreaView>
     </ScrollView>
   );
@@ -246,11 +241,49 @@ const styles = StyleSheet.create({
     backgroundColor: 'gray',
   },
   input: {
-    marginTop: 40,
-    marginLeft: 5,
-    marginBottom: 30,
-    width: 400,
-    height: 200,
-    backgroundColor: 'gray',
+    position: 'absolute',
+    width: 327,
+    height: 48,
+    left: 18,
+    top: 892,
+    backgroundColor: '#E8E8E8',
+    borderRadius: 8,
+  },
+  submitBtn: {
+    width: 327,
+    height: 37,
+    left: 15,
+    top: 1212,
+    backgroundColor: '#6B7AFF',
+    borderRadius: 8,
+  },
+  label: {
+    width: 28,
+    height: 22,
+    left: 677.08,
+    top: 2647,
+    fontFamily: 'Pretendard',
+    fontStyle: 'normal',
+    fontWeight: '500',
+    fontSize: 16,
+    lineHeight: '140%',
+    color: '#000000',
+    transform: [{rotate: '0.2deg'}],
+  },
+  label2: {
+    width: 28,
+    height: 22,
+    left: 677.08,
+    top: 2647,
+    fontFamily: 'Pretendard',
+    fontStyle: 'normal',
+    fontWeight: '500',
+    fontSize: 16,
+    lineHeight: '140%',
+    color: '#000000',
+  },
+  touchable: {
+    marginTop: 8,
+    marginBottom: 8,
   },
 });
