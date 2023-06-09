@@ -30,88 +30,195 @@ const config = {
   },
 };
 
-const backGroundImg = require('../../assets/mypage-background.png');
-const defaultImg = require('../../assets/default-main-profile.png');
+//const backGroundImg = require('../../assets/mypage-background.png');
+const defaultImg = require('../../assets/profile.png');
+const setting = require('../../assets/setting.png');
+const arrow = require('../../assets/arrow.png');
+const icon1 = require('../../assets/icon1.png');
+const icon2 = require('../../assets/icon2.png');
+const icon3 = require('../../assets/icon3.png');
 export default function MyPage() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-
-    axios.get(baseUrl + 'users/my', { ...config })
+    axios
+      .get(baseUrl + 'users/my', {...config})
       .then(response => {
         setData(response.data.result);
       })
       .catch(error => console.error(error));
-
-
-  },[]);
-
-
+  }, []);
+  console.log(data);
   return (
-    <View style={styles.firstView}>
-      <ImageBackground
-        style = {styles.secondView, { width: 330, height: 540, marginLeft: 30, marginTop: 20 }}
-        source = {backGroundImg}
-      >
-
-        {data.profileImgUrl ? (
-          <Image
-            style={styles.pfImg}
-            source={{ uri: data.profileImgUrl }}
-          />
-        ) : (
-          <Image
-            style={styles.pfImg}
-            source={defaultImg}
-          />
-        )}
-
-        <Text style={styles.name}>{data.name}</Text>
-        <TouchableOpacity style={styles.modiProfileBtn}>
-          <Text style={styles.mBtnText}>프로필 수정</Text>
-        </TouchableOpacity>
-
-      </ImageBackground>
-    </View>
+    <ScrollView style={styles.white}>
+      <SafeAreaView style={styles.firstView}>
+        {/*<TouchableOpacity style={styles.modiProfileBtn}>*/}
+        {/*  <Text style={styles.mBtnText}>프로필 수정</Text>*/}
+        {/*</TouchableOpacity>*/}
+        <View style={styles.header}>
+          <Text style={styles.text1}>MY PROFILE</Text>
+          <Image style={styles.setting} source={setting} />
+        </View>
+        <View style={styles.content}>
+          {data.profileImgUrl ? (
+            <View style={styles.pfImgContainer}>
+              <Image style={styles.pfImg} source={{uri: data.profileImgUrl}} />
+            </View>
+          ) : (
+            <View style={styles.pfImgContainer}>
+              <Image style={styles.pfImg} source={defaultImg} />
+            </View>
+          )}
+          <Text style={styles.name}>
+            {data.name} {'님'}
+          </Text>
+          <Text style={styles.email}>cindy@naver.com</Text>
+        </View>
+        <View style={styles.tap}>
+          <TouchableOpacity style={styles.component}>
+            <Image style={styles.icon} source={icon1} />
+            <Text style={styles.iconname}>관심 목록</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.component}>
+            <Image style={styles.icon} source={icon2} />
+            <Text style={styles.iconname2}>내 커뮤니티</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.component}>
+            <Image style={styles.icon3} source={icon3} />
+            <Text style={styles.iconname1}>공지 사항</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.border}>
+          <TouchableOpacity style={styles.line}>
+            <Text style={styles.text2}>관심 브랜드</Text>
+            <Image style={styles.arrow} source={arrow} />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.line}>
+            <Text style={styles.text2}>내가 남긴 댓글</Text>
+            <Image style={styles.arrow} source={arrow} />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.line}>
+            <Text style={styles.text2}>내가 찜한 상품</Text>
+            <Image style={styles.arrow} source={arrow} />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.line}>
+            <Text style={styles.text2}>로그아웃</Text>
+            <Image style={styles.arrow} source={arrow} />
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    </ScrollView>
   );
 }
 const styles = StyleSheet.create({
+  white: {
+    backgroundColor: 'white',
+  },
+  border: {
+    marginBottom: 34,
+  },
+  icon: {
+    // width: 60,
+    // height: 50,
+  },
+  iconname: {
+    color: 'rgba(30, 30, 30, 0.88)',
+    fontWeight: 'normal',
+    fontSize: 16,
+    marginTop: 20,
+  },
+  iconname1: {
+    color: 'rgba(30, 30, 30, 0.88)',
+    fontWeight: 'normal',
+    fontSize: 16,
+    marginTop: 14,
+  },
+  iconname2: {
+    color: 'rgba(30, 30, 30, 0.88)',
+    fontWeight: 'normal',
+    fontSize: 16,
+    marginTop: 17.5,
+  },
+  component: {
+    alignItems: 'center',
+    width: '32%',
+  },
   firstView: {
-    backgroundColor: 'black',
-    height: 630,
-    width: 360,
+    backgroundColor: 'white',
+    fontFamily: 'Pretendard',
+    marginLeft: 16,
+    marginRight: 16,
   },
-  secondView: {
-
+  header: {
+    marginTop: 30,
+    flexDirection: 'row',
+    //flex: 1,
+    justifyContent: 'space-between',
+    marginBottom: 47,
   },
-  pfImg:{
-    width: 220,
-    height: 120,
-    borderRadius: 15,
-    marginTop: 0,
+  setting: {
+    width: 24,
+    height: 24,
+  },
+  text1: {
+    color: '#000',
+    fontWeight: 'bold',
+    fontSize: 20,
+  },
+  pfImgContainer: {
+    borderRadius: 100,
+    overflow: 'hidden', // 이미지를 컨테이너에 맞게 자르기 위해 overflow 속성 추가
+    width: 80,
+    height: 80,
+  },
+  pfImg: {
+    width: '100%',
+    height: '100%',
+  },
+  content: {
+    alignItems: 'center',
+    marginBottom: 56,
   },
   name: {
-    color : 'white',
-    marginLeft: 155,
-    marginTop: 40,
+    color: '#000',
+    //color: 'white',
+    marginTop: 28,
     fontWeight: 'bold',
-    color: '#FF1AA0',
-    fontSize: 23,
+    fontSize: 22,
   },
-  mBtnText: {
-    color : 'white',
-    marginLeft: 65,
-    marginTop: 8,
-    fontWeight: 'bold',
-    fontSize: 17,
+  email: {
+    color: '#9E9C9C',
+    marginTop: 16,
+    fontWeight: 'normal',
+    fontSize: 16,
   },
+  tap: {
+    marginBottom: 30,
+    height: 85,
+    flexDirection: 'row', // 가로로 정렬
+    justifyContent: 'space-between',
+  },
+  line: {
+    height: 54,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderTopWidth: 1, // 윗부분 보더 주기
+    borderTopColor: 'rgba(193, 196, 204, 0.2)',
+  },
+  text2: {
+    color: 'rgba(30, 30, 30, 0.88)',
+    fontWeight: 'normal',
+    fontSize: 14,
+    marginTop: 18,
+    marginBottom: 19,
+  },
+  arrow: {marginTop: 18},
   modiProfileBtn: {
     borderRadius: 13,
-    width : 225,
+    width: 225,
     height: 40,
     backgroundColor: '#FF1AA0',
     marginTop: 10,
     marginLeft: -3,
   },
-
 });

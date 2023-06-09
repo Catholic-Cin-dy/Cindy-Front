@@ -85,7 +85,6 @@ export default function ProductDetail({ route }) {
   }
 
   const handleWebView = (url) => {
-    // 웹뷰로 이동하는 로직을 구현합니다
     console.log('URL:', url);
     navigation.navigate('WebViewScreen',{ url: url });
   };
@@ -112,11 +111,11 @@ export default function ProductDetail({ route }) {
 
     // 상품 항목 클릭 시 ProductDetail 화면으로 이동하는 함수
     const navigation = useNavigation();
-    /*const handleItemPress = (productId) => {
+    const handleItemPress = (productId) => {
       // 해당 상품 정보를 route.params로 넘겨주고 ProductDetail 화면으로 이동
       console.log('product ID : ' + productId);
       navigation.navigate('ProductDetail', { productId });
-    };*/
+    };
 
     const renderSuggestion = ({item}) => {
       return (
@@ -173,11 +172,11 @@ export default function ProductDetail({ route }) {
 
     // 상품 항목 클릭 시 ProductDetail 화면으로 이동하는 함수
     const navigation = useNavigation();
-    /*const handleItemPress = (productId) => {
+    const handleItemPress = (productId) => {
       // 해당 상품 정보를 route.params로 넘겨주고 ProductDetail 화면으로 이동
       console.log('product ID : ' + productId);
       navigation.navigate('ProductDetail', { productId });
-    };*/
+    };
 
     const renderSuggestion2 = ({item}) => {
       return (
