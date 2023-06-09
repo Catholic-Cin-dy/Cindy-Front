@@ -48,6 +48,52 @@ export default function CommWrite() {
     const [tagName, setTagName] = useState('');
 
 
+  const handleSearchTextChange = text => {
+    setSearchText(text);
+    if (text.length > 0) {
+      const params = {
+        content: text,
+      };
+      const config = {
+        headers: {
+          'X-AUTH-TOKEN': `eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWQiOjIsImlhdCI6MTY3OTkyMjIwNSwiZXhwIjoxNzExNDU4MjA1fQ.A45bXqITjpGnywheSkEzfv5St2jD08DefUW2VQEbDpo`,
+        },
+      };
+
+      axios
+        .get(baseUrl + '/boards/tag', {params, ...config})
+        .then(response => {
+          setSuggestions(response.data.result);
+          console.log(response.data.result); // 추가된 console.log
+        })
+        .catch(error => console.error(error));
+    } else {
+      setSuggestions([]);
+    }
+  };
+
+  //누른 item값을 태그의 배열에 추가하기
+  const handleSuggestionPress = item => {
+    setSearchText(item);
+    setHashTag(prevTags => {
+      if (prevTags.includes(item)) {
+        // 이미 존재하는 태그인 경우, 이전 상태 그대로 반환
+        return prevTags;
+      } else {
+        // 새로운 태그인 경우, 새로운 배열 생성하여 반환
+        return [...prevTags, item];
+      }
+    });
+    console.log(item);
+  };
+
+  const renderSuggestion = ({item}) => {
+    return (
+      <TouchableOpacity onPress={() => handleSuggestionPress(item)}>
+        <Text>{item}</Text>
+      </TouchableOpacity>
+    );
+  };
 
     const onChangeTitle = inputText => {
         setTitle(inputText);
@@ -191,52 +237,7 @@ export default function CommWrite() {
             ],
         };
 
-        const handleSearchTextChange = text => {
-            setSearchText(text);
-            if (text.length > 0) {
-                const params = {
-                    content: text,
-                };
-                const config = {
-                    headers: {
-                        'X-AUTH-TOKEN': `eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWQiOjIsImlhdCI6MTY3OTkyMjIwNSwiZXhwIjoxNzExNDU4MjA1fQ.A45bXqITjpGnywheSkEzfv5St2jD08DefUW2VQEbDpo`,
-                    },
-                };
 
-                axios
-                  .get(baseUrl + '/boards/tag', {params, ...config})
-                  .then(response => {
-                      setSuggestions(response.data.result);
-                      console.log(response.data.result); // 추가된 console.log
-                  })
-                  .catch(error => console.error(error));
-            } else {
-                setSuggestions([]);
-            }
-        };
-
-        //누른 item값을 태그의 배열에 추가하기
-        const handleSuggestionPress = item => {
-            setSearchText(item);
-            setHashTag(prevTags => {
-                if (prevTags.includes(item)) {
-                    // 이미 존재하는 태그인 경우, 이전 상태 그대로 반환
-                    return prevTags;
-                } else {
-                    // 새로운 태그인 경우, 새로운 배열 생성하여 반환
-                    return [...prevTags, item];
-                }
-            });
-            console.log(item);
-        };
-
-        const renderSuggestion = ({item}) => {
-            return (
-              <TouchableOpacity onPress={() => handleSuggestionPress(item)}>
-                  <Text>{item}</Text>
-              </TouchableOpacity>
-            );
-        };
 
         const formData = new FormData();
         //const imgUrl = imgurl;
@@ -373,7 +374,7 @@ export default function CommWrite() {
     );
 }
 const styles = StyleSheet.create({
-  container: {
+  /*container: {
     flex: 1,
   },
   image: {
@@ -434,5 +435,5 @@ const styles = StyleSheet.create({
   touchable: {
     marginTop: 8,
     marginBottom: 8,
-  },
+  },*/
 });
