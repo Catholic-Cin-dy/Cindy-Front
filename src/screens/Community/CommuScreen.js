@@ -12,9 +12,7 @@ import {
   ScrollView,
   Modal,
 } from 'react-native';
-import Swiper from 'react-native-web-swiper';
 import CommWrite from './CommWrite';
-import CommuWriteMap from './CommuWriteMap';
 import axios from 'axios';
 import {useNavigation} from '@react-navigation/native';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
@@ -24,8 +22,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {useIsFocused} from '@react-navigation/native';
-import CommuWriteTag from './CommuWriteTag';
-
+import DropDownPicker from 'react-native-dropdown-picker';
 import CommuPostDetail from './CommuPostDetail';
 
 const baseUrl = 'https://www.awesominki.shop/'; //api 연결을 위한 baseUrl
@@ -39,17 +36,31 @@ export default function CommuScreen() {
 
   const [searchText, setSearchText] = useState('');
   const [suggestions, setSuggestions] = useState([]);
-
+  const [pageList, setPageList] = useState([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
-
+  const [selectedPage, setSelectedPage] = useState(0);
   const [data, setData] = useState([]); //커뮤니티 전체 데이터
+
   const payload = {latitude: 37.541, longitude: 126.986}; //사용자의 위치 받아온거 여기 들어가야 함.
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState('');
+  const [items, setItems] = useState([
+    {label: '최신순', value: '0'},
+    {label: '인기순', value: '1'},
+    {label: '거리순', value: '2'},
+  ]);
+  const handlePagePress = page => {
+    setSelectedPage(page);
+  };
 
   const isFocused = useIsFocused(); // isFoucesd Define
   useEffect(() => {
     const params = {
-      page: 3,
+      page: selectedPage,
+      sort: value,
     };
+
+    console.log('sortFilter in useEffect : ', value);
 
     axios
       .post(baseUrl + 'boards', payload, {params, ...config})
@@ -57,13 +68,14 @@ export default function CommuScreen() {
         response =>
           // POST 요청이 성공한 경우 실행되는 코드
           setData(response.data.result.contents),
+        //setPageList(response.data.result.contents),
         setIsRefreshing(false),
       )
       .catch(error => {
         // POST 요청이 실패한 경우 실행되는 코드
         console.error(error);
       });
-  }, [isFocused, isRefreshing]);
+  }, [isFocused, isRefreshing, selectedPage, value]);
 
   const handleSearchTextChange = text => {
     setSearchText(text);
@@ -105,7 +117,7 @@ export default function CommuScreen() {
   const [liked, setLiked] = useState();
   const handleLike = boardId => {
     const params = {
-      page: 0,
+      page: selectedPage,
     };
 
     setLiked(!liked);
@@ -140,18 +152,27 @@ export default function CommuScreen() {
 
         <Text>검색어 : {searchText}</Text>
 
-        <Button
-          title={'글쓰기'}
+        <TouchableOpacity
           onPress={() => {
             navigation.navigate('CommWrite');
           }}
-        />
+          style={styles.writeBtn}>
+          <Text style={{color: '#fff'}}>글쓰기</Text>
+        </TouchableOpacity>
 
-        <Button
-          title={'지도'}
-          onPress={() => {
-            navigation.navigate('CommuWriteMap');
+        <DropDownPicker
+          open={open}
+          value={value}
+          items={items}
+          setOpen={setOpen}
+          setValue={setValue}
+          setItems={setItems}
+          placeholder="카테고리"
+          listMode="MODAL"
+          modalProps={{
+            animationType: 'fade',
           }}
+          modalTitle="선택해주세요."
         />
 
         <ScrollView style={styles.scrollView}>
@@ -197,26 +218,29 @@ export default function CommuScreen() {
                       </TouchableOpacity>
                     ))}
                   </ScrollView>
-                  <Text style={styles.info1}>제목 : {item.title}</Text>
-
-                  <Text style={styles.info1}>좋아요 수 : {item.likeCount}</Text>
-                  <Text style={styles.info1}>
-                    댓글 수 : {item.commentCount}
-                  </Text>
-
-                  <View style={styles.heartIconBackground} key={item.boardId}>
-                    <TouchableOpacity onPress={() => handleLike(item.boardId)}>
-                      <Image
-                        style={styles.heartIcon}
-                        source={
-                          item.likeCheck
-                            ? require('../../../src/assets/like.png')
-                            : require('../../../src/assets/unlike.png')
-                        }
-                      />
-                    </TouchableOpacity>
+                  <View style={styles.flex}>
+                    <Text style={styles.info1}>{item.title}</Text>
+                    <View style={styles.heartIconBackground} key={item.boardId}>
+                      <TouchableOpacity
+                        onPress={() => handleLike(item.boardId)}>
+                        <Image
+                          style={styles.heartIcon}
+                          source={
+                            item.likeCheck
+                              ? require('../../../src/assets/like.png')
+                              : require('../../../src/assets/unlike.png')
+                          }
+                        />
+                      </TouchableOpacity>
+                    </View>
                   </View>
-                  <Text style={styles.info1}>작성일시 {item.boardTime}</Text>
+                  <Text style={styles.info3}>{item.likeCount}</Text>
+                  <View style={styles.flex1}>
+                    <Text style={styles.info4}>{item.boardTime}</Text>
+                    <Text style={styles.info5}>
+                      댓글 수 : {item.commentCount}
+                    </Text>
+                  </View>
                 </View>
               ))}
             </View>
@@ -260,31 +284,42 @@ export default function CommuScreen() {
                       </TouchableOpacity>
                     ))}
                   </ScrollView>
-                  <Text style={styles.info1}>제목 : {item.title}</Text>
-
-                  <Text style={styles.info1}>좋아요 수 : {item.likeCount}</Text>
-                  <Text style={styles.info1}>
-                    댓글 수 : {item.commentCount}
-                  </Text>
-
-                  <View style={styles.heartIconBackground} key={item.boardId}>
-                    <TouchableOpacity onPress={() => handleLike(item.boardId)}>
-                      <Image
-                        style={styles.heartIcon}
-                        source={
-                          item.likeCheck
-                            ? require('../../../src/assets/like.png')
-                            : require('../../../src/assets/unlike.png')
-                        }
-                      />
-                    </TouchableOpacity>
+                  {/*제목*/}
+                  <View style={styles.flex}>
+                    <Text style={styles.info1}>{item.title}</Text>
+                    <View style={styles.heartIconBackground} key={item.boardId}>
+                      <TouchableOpacity
+                        onPress={() => handleLike(item.boardId)}>
+                        <Image
+                          style={styles.heartIcon}
+                          source={
+                            item.likeCheck
+                              ? require('../../../src/assets/like.png')
+                              : require('../../../src/assets/unlike.png')
+                          }
+                        />
+                      </TouchableOpacity>
+                    </View>
                   </View>
-                  <Text style={styles.info1}>작성일시 {item.boardTime}</Text>
+                  <Text style={styles.info3}>{item.likeCount}</Text>
+                  <View style={styles.flex1}>
+                    <Text style={styles.info4}>{item.boardTime}</Text>
+                    <Text style={styles.info5}>
+                      댓글 수 : {item.commentCount}
+                    </Text>
+                  </View>
                 </View>
               ))}
             </View>
           </View>
         </ScrollView>
+        <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+          {Array.from({length: 10}, (_, index) => index + 1).map(page => (
+            <TouchableOpacity key={page} onPress={() => handlePagePress(page)}>
+              <Text style={{margin: 10}}>{page}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
       </SafeAreaView>
     </ScrollView>
   );
@@ -294,9 +329,51 @@ const styles = StyleSheet.create({
     width: 156,
     height: 156,
   },*/
+  writeBtn: {
+    backgroundColor: '#000',
+    height: 35,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  scrollView: {
+    width: '100%',
+  },
+  flex1: {
+    flexDirection: 'row',
+    flex: 1,
+    justifyContent: 'space-between',
+    marginTop: 5,
+    marginBottom: 5,
+  },
+  info4: {
+    marginLeft: 8,
+  },
+  info5: {
+    marginRight: 8,
+  },
+  info1: {
+    marginLeft: 8,
+  },
+  info3: {
+    marginLeft: 157,
+  },
+  heartIconBackground: {
+    marginRight: 5,
+  },
+  flex: {
+    flexDirection: 'row',
+    flex: 1,
+    justifyContent: 'space-between',
+    marginTop: 10,
+  },
+  info2: {marginLeft: 10},
   profileContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginTop: 5,
+    marginBottom: 5,
+    marginLeft: 5,
   },
   profileImg: {
     width: 30,
@@ -309,7 +386,7 @@ const styles = StyleSheet.create({
     borderRadius: 0,
   },
   pImg: {
-    width: 156,
+    width: 175,
     height: 156,
     backgroundColor: 'gray',
     borderRadius: 0,
@@ -319,26 +396,26 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   column1: {
-    marginLeft: 16,
+    //marginLeft: 10,
     marginTop: 29,
     marginBottom: 16,
     flexDirection: 'column',
     justifyContent: 'space-between',
-    backgroundColor: '#fff',
+    //backgroundColor: '#fff',
   },
   column2: {
-    marginRight: 16,
+    //marginRight: 10,
     marginTop: 29,
     marginBottom: 16,
     flexDirection: 'column',
     justifyContent: 'space-between',
-    backgroundColor: '#fff',
+    //backgroundColor: '#fff',
   },
   item: {
-    width: 156,
+    width: 175,
     flex: 0,
     marginBottom: 16,
-    borderRadius: 8,
+    borderRadius: 15,
     backgroundColor: '#fff',
     shadowColor: '#000',
     shadowOffset: {
@@ -350,9 +427,10 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   container: {
-    backgroundColor: '#FFEAD0',
-    paddingHorizontal: 30,
+    backgroundColor: '#fff',
+    paddingHorizontal: 20,
     flex: 1,
+    justifyContent: 'center',
   },
   headerText: {
     paddingTop: 50,
@@ -399,11 +477,6 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     // outline: none,
-  },
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    paddingHorizontal: 10,
   },
   input: {
     height: 40,
