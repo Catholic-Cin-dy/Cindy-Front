@@ -157,7 +157,7 @@ export default function CommuPostDetail({route}) {
       })
       .catch(error => console.error(error));
     // }, [isFocused]);
-  }, [isFocused, isRefreshing]);
+  }, [boardId, isFocused, isRefreshing, textWidth]);
 
   function handleLike() {
     setLiked(!liked);
@@ -663,6 +663,7 @@ const styles = {
     backgroundColor: 'gray',
     borderRadius: 8,
   },
+  /*
   content: {
     width: '100%',
     height: 250,
@@ -671,6 +672,7 @@ const styles = {
     flexDirection: 'row',
     backgroundColor: '#fff',
   },
+  */
   contentbox: {
     width: 156,
     flex: 0,
