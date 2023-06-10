@@ -53,14 +53,20 @@ export default function CommuScreen() {
     setSelectedPage(page);
   };
 
+  const handleDropdown = sort => {
+    setIsRefreshing(true);
+    setValue(sort);
+  };
+
   const isFocused = useIsFocused(); // isFoucesd Define
   useEffect(() => {
     const params = {
       page: selectedPage,
-      sort: value,
+      정렬: value,
     };
 
     console.log('sortFilter in useEffect : ', value);
+    console.log('parmas : ', params);
 
     axios
       .post(baseUrl + 'boards', payload, {params, ...config})
@@ -75,7 +81,9 @@ export default function CommuScreen() {
         // POST 요청이 실패한 경우 실행되는 코드
         console.error(error);
       });
-  }, [isFocused, isRefreshing, selectedPage, value]);
+
+    console.log('data in useEffect : ', data);
+  }, [isFocused, isRefreshing, selectedPage, value, data]);
 
   const handleSearchTextChange = text => {
     setSearchText(text);
@@ -165,14 +173,15 @@ export default function CommuScreen() {
           value={value}
           items={items}
           setOpen={setOpen}
-          setValue={setValue}
+          /*setValue={setValue}*/
+          setValue={handleDropdown}
           setItems={setItems}
-          placeholder="카테고리"
+          placeholder="정렬"
           listMode="MODAL"
           modalProps={{
             animationType: 'fade',
           }}
-          modalTitle="선택해주세요."
+          modalTitle="정렬 기준을 선택해주세요."
         />
 
         <ScrollView style={styles.scrollView}>
