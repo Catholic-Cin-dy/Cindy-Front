@@ -32,6 +32,7 @@ const config = {
   },
 };
 export default function CommuScreen() {
+  const [slicedData, setSlicedData] = useState([]);
   const [text, setText] = useState('');
 
   const [searchText, setSearchText] = useState('');
@@ -70,13 +71,13 @@ export default function CommuScreen() {
 
     axios
       .post(baseUrl + 'boards', payload, {params, ...config})
-      .then(
-        response =>
-          // POST 요청이 성공한 경우 실행되는 코드
-          setData(response.data.result.contents),
-        //setPageList(response.data.result.contents),
-        setIsRefreshing(false),
-      )
+      .then(response => {
+        // POST 요청이 성공한 경우 실행되는 코드
+        const responseData = response.data.result.contents; // 데이터 추출
+        setData(responseData);
+        console.log('변경이 완료');
+        setIsRefreshing(false);
+      })
       .catch(error => {
         // POST 요청이 실패한 경우 실행되는 코드
         console.error(error);
@@ -129,16 +130,22 @@ export default function CommuScreen() {
     };
 
     setLiked(!liked);
+    //liked에 좋아요 성공 , 좋아요 취소 성공이 저장됨
+    console.log('test', liked);
 
     axios
       .patch(baseUrl + 'boards/like/' + boardId, {}, config)
       .then(response => setLiked(response.data.result))
       .catch(error => console.error(error));
+    console.log('1번 테스트', liked);
+    //같은 값 반환
 
     axios
       .post(baseUrl + 'boards', payload, {params, ...config})
       .then(response => setData(response.data.result.contents))
       .catch(error => console.error(error));
+    console.log('2번 테스트', liked);
+    //같은 값 반환
   };
 
   return (
