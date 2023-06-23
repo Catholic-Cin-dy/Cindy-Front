@@ -1,5 +1,12 @@
 import React from 'react';
-import { View, StyleSheet, Text, Button, Image } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Text,
+  Button,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import 'react-native-gesture-handler';
@@ -7,6 +14,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import {useNavigation} from '@react-navigation/native';
 
 import SearchTag from '../screens/AutoComplete/SearchTag';
 import RecruitPage from './RecruitScreen/RecruitPage';
@@ -22,14 +30,23 @@ const bookmarkSelected = require('../assets/btab-bookmark-selected.png');
 const bookmarkUnSelected = require('../assets/btab-bookmark-unselected.png');
 const userSelected = require('../assets/btab-user-selected.png');
 const userUnSelected = require('../assets/btab-user-unselected.png');
+const communitySelected = require('../assets/communitySelected.png');
+const communityUnSelected = require('../assets/communityUnSelected.png');
 
 
 import Detail1 from "./MainDetail/Detail1";
 import Detail2 from "./MainDetail/Detail2";
 import LogoTitle from "./LogoTitle";
 import CommuScreen from "./Community/CommuScreen";
+import CommuPostDetail from "./Community/CommuPostDetail";
 import CommWrite from "./Community/CommWrite";
 import CommuWriteMap from "./Community/CommuWriteMap";
+import MyPage from "./MyPageScreen/MyPage";
+import SearchScreen from "./SearchScreen";
+import CommuWriteTag from './Community/CommuWriteTag';
+import MapScreen from '../trash/MapScreen';
+import WebViewScreen from "./RecruitScreen/WebViewScreen";
+
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -37,24 +54,25 @@ const MyPageStack = createStackNavigator();
 const HomeStack = createStackNavigator();
 const RecruitStack = createStackNavigator();
 const BookMarkStack = createStackNavigator();
-const MainStack =createStackNavigator();
+const MainStack = createStackNavigator();
+
 const HomeScreen = () => {
   return (
       <Stack.Navigator>
           <MainStack.Screen name="Main1" component={Main1} options={{ headerShown: false }}/>
           <MainStack.Screen name="Detail1" component={Detail1} />
           <MainStack.Screen name="Detail2" component={Detail2} />
+        <MainStack.Screen
+          name="ProductDetail"
+          component={ProductDetail}
+          options={{headerShown: false}}
+        />
+
       </Stack.Navigator>
   );
 };
-const SearchScreen = ({ navigation }) => {
-  return (
-    <View style={styles.container}>
-      <Text>This is SearchScreen.</Text>
-    </View>
-  );
-};
-const SearchResultScreen = ({ navigation }) => {
+
+const SearchResultScreen = ({navigation}) => {
   return (
     <View style={styles.container}>
       <Text>This is SearchResultScreen.</Text>
@@ -73,14 +91,6 @@ const TestReadScreen = ({ navigation }) => {
     <RecruitPage/>
   );
 };
-const MyPageScreen = ({ navigation }) => {
-  return (
-    <View style={styles.container}>
-      <Text>This is MyPageScreen.</Text>
-    </View>
-  );
-};
-
 
 const HomeStackScreen = () => {
   return (
@@ -92,12 +102,15 @@ const HomeStackScreen = () => {
   );
 };
 
-const BookMarkStackScreen = () => {
+const CommunityStackScreen = () => {
   return (
     <Stack.Navigator>
       <RecruitStack.Screen name="Community" component={CommuScreen} options={{ headerShown: false }}/>
+      <RecruitStack.Screen name = "CommuPostDetail" component = {CommuPostDetail} options = {{ headerShown : false }}/>
       <RecruitStack.Screen name="CommWrite" component={CommWrite} />
       <RecruitStack.Screen name="CommuWriteMap" component={CommuWriteMap} />
+      <RecruitStack.Screen name="CommuWriteTag" component={CommuWriteTag} />
+      <RecruitStack.Screen name="MapScreen" component={MapScreen} />
     </Stack.Navigator>
   );
 };
@@ -105,15 +118,17 @@ const BookMarkStackScreen = () => {
 const RecruitProductsStackScreen = () => {
   return (
     <Stack.Navigator>
-      <RecruitStack.Screen name="ProductRecruitAll" component={RecruitPage} options={{ headerShown: false }} />
+      <RecruitStack.Screen name="ProductRecruitAll" component = {RecruitPage} options={{ headerShown: false }} />
       <RecruitStack.Screen name = "ProductDetail" component = {ProductDetail} options={{ headerShown: false }} />
+      <RecruitStack.Screen name = "SearchScreen" component = {SearchScreen} options={{ headerShown: false }} />
+      <RecruitStack.Screen name = "WebViewScreen" component = {WebViewScreen} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 };
 const MyPageStackScreen = () => {
   return (
     <Stack.Navigator>
-      <MyPageStack.Screen name="MyPage" component={MyPageScreen} />
+      <MyPageStack.Screen name="MyPage" component = {MyPage} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 };
@@ -125,6 +140,7 @@ export default function MainPage() {
 };
 
 const MainTabScreen = () => {
+  const navigation = useNavigation();
   return (
     <Tab.Navigator
       initialRouteName="HomeStack"
@@ -134,6 +150,7 @@ const MainTabScreen = () => {
     >
       <Tab.Screen name="홈화면" component={HomeStackScreen}
                   options={{
+                    unmountOnBlur: true,
                     tabBarIcon: ({ focused, color, size }) => (
                       <Image
                         source={focused ? homeSelected : homeUnSelected} />
@@ -142,23 +159,30 @@ const MainTabScreen = () => {
       />
       <Tab.Screen name="상품 전체조회" component={RecruitProductsStackScreen}
                   options={{
-                    headerRight: props => <SearchBar {...props} />,
+                    unmountOnBlur: true,
+                    headerRight: () => (
+                      <TouchableOpacity onPress={() => navigation.navigate('SearchScreen')}>
+                        <SearchBar/>
+                      </TouchableOpacity>
+                    ),
                     tabBarIcon: ({ focused, color, size }) => (
                       <Image
                         source={focused ? recruitSelected : recruitUnSelected } />
                     ),
                   }}
       />
-      <Tab.Screen name="북마크" component={BookMarkStackScreen}
+      <Tab.Screen name="커뮤니티" component={CommunityStackScreen}
                   options={{
+                    unmountOnBlur: true,
                     tabBarIcon: ({ focused, color, size }) => (
                       <Image
-                        source={focused ? bookmarkSelected : bookmarkUnSelected} />
+                        source={focused ? communitySelected : communityUnSelected} />
                     ),
                   }}
       />
       <Tab.Screen name="내정보" component={MyPageStackScreen}
                   options={{
+                    unmountOnBlur: true,
                     tabBarIcon: ({ focused, color, size }) => (
                       <Image
                         source={focused ? userSelected : userUnSelected} />

@@ -1,4 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://schemas.android.com/apk/res/android ">
 
@@ -16,8 +17,8 @@
 
 
         <meta-data
-                android:name="com.kakao.sdk.AppKey"
-                android:value="	4b0303383dbb3db73c8e4a22fbbe1b65" />
+                android:name="com.google.android.geo.API_KEY"
+                android:value="4b0303383dbb3db73c8e4a22fbbe1b65" />
 
         <!-- <meta-data
         android:name="com.kakao.sdk.AppKey"
@@ -30,7 +31,7 @@
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
 
-                <!-- Redirect URI: "kakao{NATIVE_APP_KEY}://oauth“ -->
+                <!-- Redirect URI: "kakao4b0303383dbb3db73c8e4a22fbbe1b65://oauth“ -->
                 <data android:host="oauth"
                       android:scheme="kakao4b0303383dbb3db73c8e4a22fbbe1b65"/>
             </intent-filter>
