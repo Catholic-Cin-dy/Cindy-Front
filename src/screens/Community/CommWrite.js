@@ -11,12 +11,16 @@ import {
   Image,
   TouchableOpacity,
   FlatList,
+  Pressable,
+  Platform,
 } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
 import axios from 'axios';
 import Draggable from 'react-native-draggable';
 import {useNavigation} from '@react-navigation/native';
 import MapScreen from '../../trash/MapScreen';
+import UploadModeModal from './UploadModeModal';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 const baseUrl = 'https://www.awesominki.shop';
 const baseUrl2 = 'http://localhost:9000';
 
@@ -148,7 +152,8 @@ export default function CommWrite() {
         selectedImages.push(imageUrl);
       }
 
-      setImgurl(prevImages => [...prevImages, ...selectedImages]);
+      // setImgurl(prevImages => [...prevImages, ...selectedImages]);
+      setImgurl(selectedImages); // 선택된 이미지로 imgurl 상태 업데이트
       console.log('이것은', selectedImages);
       console.log('이것은222', imgurl);
     } catch (error) {
@@ -162,21 +167,15 @@ export default function CommWrite() {
     maxHeight: 300,
     includeBase64: Platform.OS === 'android',
   };
-  let imgUrlsource;
 
   const onPickImage = res => {
     if (res.didCancel || !res) {
       return;
     }
-    //console.log(res);
-    //console.log(res.uri);
+
     console.log(res.assets[0].uri);
-    //imgUrlsource = res.assets[0].uri;
+
     setImage(res.assets[0].uri);
-    // imgurl.type = 'image/jpeg';
-    // imgurl.name = 'image.jpg';
-    //submitBtn();
-    //submitBtn(); 비로 실행되게 만듦 이유 :imgUrlsource 변수에 값을 할당되기 전 먼저 함수 호출된다 해서 ㅅㅍ
     const imgUrlsource = {
       uri: res.assets[0].uri,
       type: res.assets[0].type,
@@ -216,7 +215,7 @@ export default function CommWrite() {
       content: content,
       latitude: 11.12,
       longitude: 23.45,
-      tags: hashTag,
+      tags: [],
       imgFiles: [],
       imgTagList: [
         {
@@ -237,8 +236,6 @@ export default function CommWrite() {
     };
 
     const formData = new FormData();
-    //const imgUrl = imgurl;
-    //console.log('i am', imgUrl);
 
     formData.append('title', postBoard.title.toString());
     formData.append('content', postBoard.content.toString());
@@ -250,41 +247,12 @@ export default function CommWrite() {
       JSON.stringify(postBoard.imgTagList).toString(),
     );
 
-    // const form = {
-    //   title: postBoard.title,
-    //   content: postBoard.content,
-    //   latitude: postBoard.latitude,
-    //   longitude: postBoard.longitude,
-    //   tags: postBoard.tags,
-    //   imgList: postBoard.imgList,
-    // };
-    //formData.append('postBoard', JSON.stringify(form));
     formData.append('imgFiles ', imgurl);
-    //console.log('postBoard 는 이거임', form);
-    console.log('imgUrl 은 이거임', imgurl);
-    //console.log(formData.imgList);
-
-    //console.log('formData:', formData);
+    console.log('imgUrl확인', imgurl);
     const formList = formData._parts;
-    //console.log(formList);
-    //요기
     const arrayValue = formData._parts;
     const objectValue = Object.fromEntries(arrayValue);
 
-    /*fetch(baseUrl + '/boards/new', payload, config)
-          .then(response => {
-            if (response.ok) {
-              console.log('Request successful');
-            } else {
-              console.log('Request failed');
-            }
-          })
-          .catch(error => console.error(error));*/
-
-    //const payload = {imgUrl: imgUrl, postBoard: JSON.stringify(objectValue)};
-    // console.log(payload.imgUrl);
-    // console.log(payload.postBoard);
-    // console.log(payload);
     console.log('formData마지막:', formData);
 
     axios
@@ -297,22 +265,17 @@ export default function CommWrite() {
       .then(response => {
         if (response) {
           console.log(response.data);
+          navigation.pop();
         }
       })
       .catch(error => {
         if (error.response) {
-          // The request was made and the server responded with a status code
-          // that falls out of the range of 2xx
           console.log('음 1' + error.response.data);
           console.log('음 2' + error.response.status);
           console.log('음 3' + error.response.headers);
         } else if (error.request) {
-          // The request was made but no response was received
-          // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-          // http.ClientRequest in node.js
           console.log('음 4' + error.request);
         } else {
-          // Something happened in setting up the request that triggered an Error
           console.log('Error', error.message);
         }
       });
@@ -325,20 +288,36 @@ export default function CommWrite() {
           <View style={styles.layout}>
             <Text style={styles.label}>사진 업로드</Text>
           </View>
-          <View style={{flexDirection: 'row', marginLeft: 10}}>
-            <TouchableOpacity onPress={openPicker}>
-              <Image source={require('../../assets/imgAdd.png')} />
-            </TouchableOpacity>
+          {/*<View style={{flexDirection: 'row', marginLeft: 10}}>*/}
+          {/*<TouchableOpacity onPress={onPickImage}>*/}
+          {/*  <Image source={require('../../assets/imgAdd.png')} />*/}
+          {/*</TouchableOpacity>*/}
 
-            {selectedImages.map((image, index) => (
-              <View key={index}>
-                <Image
-                  source={{uri: image.uri}}
-                  style={{width: 100, height: 100}}
-                />
-              </View>
-            ))}
-          </View>
+          {/*{selectedImages.map((image, index) => (*/}
+          {/*  <View key={index}>*/}
+          {/*    <Image*/}
+          {/*      source={{uri: image.uri}}*/}
+          {/*      style={{width: 100, height: 100}}*/}
+          {/*    />*/}
+          {/*  </View>*/}
+          {/*))}*/}
+          {img ? ( // 이미지가 있으면 라이브러리에서 받아온 이미지로 출력, 없으면 디폴트 이미지 출력!
+            <Pressable style={styles.image} onPress={() => modalOpen()}>
+              <Image source={{uri: img}} style={{width: 100, height: 100}} />
+            </Pressable>
+          ) : (
+            <Pressable style={styles.image} onPress={() => modalOpen()}>
+              <View style={styles.image} />
+            </Pressable>
+          )}
+          <UploadModeModal
+            visible={modalVisible}
+            onClose={() => setModalVisible(false)}
+            onLaunchCamera={onLaunchCamera}
+            onLaunchImageLibrary={ShowPicker}
+          />
+          {/*모달 띄우기*/}
+          {/*</View>*/}
         </View>
         <View style={styles.layout}>
           <Text style={styles.label}>나의 위치</Text>
@@ -362,8 +341,8 @@ export default function CommWrite() {
             keyExtractor={item => item}
           />
           <View style={{flexDirection: 'row'}}>
-          <Text style={styles.searchText1}>해시태그 : </Text>
-          <Text style={styles.searchText2}>{searchText}</Text>
+            <Text style={styles.searchText1}>해시태그 : </Text>
+            <Text style={styles.searchText2}>{searchText}</Text>
           </View>
         </View>
         <View style={styles.layout}>
@@ -398,6 +377,12 @@ export default function CommWrite() {
   );
 }
 const styles = StyleSheet.create({
+  image: {
+    marginLeft: 10,
+    width: 100,
+    height: 100,
+    backgroundColor: '#F4F4F4',
+  },
   layout: {
     height: 56,
     backgroundColor: 'white',
