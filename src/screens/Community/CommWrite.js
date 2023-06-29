@@ -347,12 +347,12 @@ export default function CommWrite() {
           <Image source={require('../../assets/location.png')} />
         </TouchableOpacity>
         <View style={styles.layout}>
-          <Text style={styles.label}>검색어 입력</Text>
+          <Text style={styles.label}>해시태그 입력</Text>
         </View>
         <View>
           <TextInput
             style={styles.input1}
-            placeholder="검색어를 입력하세요."
+            placeholder="해시태그를 입력하세요."
             onChangeText={handleSearchTextChange}
             value={searchText}
           />
@@ -361,8 +361,10 @@ export default function CommWrite() {
             renderItem={renderSuggestion}
             keyExtractor={item => item}
           />
-
-          <Text>검색어 : {searchText}</Text>
+          <View style={{flexDirection: 'row'}}>
+          <Text style={styles.searchText1}>해시태그 : </Text>
+          <Text style={styles.searchText2}>{searchText}</Text>
+          </View>
         </View>
         <View style={styles.layout}>
           <Text style={styles.label}>제목</Text>
@@ -408,6 +410,17 @@ const styles = StyleSheet.create({
     fontWeight: 'medium',
     fontSize: 18,
     color: '#000000',
+  },
+  searchText1: {
+    marginLeft: 15,
+    marginTop: 5,
+  },
+  searchText2: {
+    backgroundColor: '#FF1AA0',
+    color: '#fff',
+    paddingHorizontal: 15,
+    paddingVertical: 5,
+    borderRadius: 25,
   },
   input1: {
     width: '94%',
