@@ -67,8 +67,8 @@ export default function SearchScreen() {
       <TouchableOpacity onPress={() => handleSuggestionPress(item)}>
         <View style={styles.item}>
           <Image style={styles.pImg} source={{uri: item.imgUrl}} />
-          <Text>{item.brandName}</Text>
-          <Text>{item.productName}</Text>
+          <Text style={styles.info1}>{item.brandName}</Text>
+          <Text style={styles.info2}>{item.productName}</Text>
         </View>
       </TouchableOpacity>
     );
@@ -109,6 +109,26 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     width: '100%',
     height: '100%',
+  },
+  info1: {
+    color: 'black',
+    fontColor: 'black',
+    fontWeight: 'bold',
+    fontSize: 13,
+    marginLeft: 4,
+    marginRight: 4,
+    marginTop: 8,
+    flexShrink: 1,
+  },
+  info2: {
+    fontWeight: 'bold',
+    fontColor: 'gray',
+    fontSize: 12,
+    marginTop: 8,
+    marginBottom: 4,
+    marginLeft: 4,
+    marginRight: 4,
+    flexShrink: 1,
   },
   sText1: {
     fontSize: 20,
