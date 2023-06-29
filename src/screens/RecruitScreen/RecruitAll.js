@@ -39,6 +39,9 @@ const RecruitAll = props => {
   const [selectedPage, setSelectedPage] = useState(0);
   const [pageData, setPageData] = useState(null);
   const [totalPages, setTotalPages] = useState(0);
+
+  const [liked, setLiked] = useState();
+
   const handlePagePress = page => {
     setSelectedPage(page);
   };
@@ -76,7 +79,7 @@ const RecruitAll = props => {
       }
     };
     fetchPageList();
-  }, [selectedPage, tabIndex]);
+  }, [selectedPage, tabIndex, liked]);
 
   // 상품 항목 클릭 시 ProductDetail 화면으로 이동하는 함수
   const navigation = useNavigation();
@@ -86,7 +89,7 @@ const RecruitAll = props => {
     navigation.navigate('ProductDetail', {productId});
   };
 
-  const [liked, setLiked] = useState();
+
   const handleLike = productId => {
     const params = {
       page: selectedPage,
