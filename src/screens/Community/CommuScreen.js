@@ -150,7 +150,6 @@ export default function CommuScreen() {
   return (
     <ScrollView>
       <SafeAreaView style={styles.container}>
-
         <TouchableOpacity
           onPress={() => {
             navigation.navigate('CommWrite');
@@ -330,7 +329,7 @@ const styles = StyleSheet.create({
     height: 156,
   },*/
   writeBtnText: {
-    color: '#fff'
+    color: '#fff',
   },
   writeBtn: {
     backgroundColor: '#000',
