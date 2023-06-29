@@ -1,4 +1,10 @@
-import {StyleSheet, Text, View, Button, Alert} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Button,
+  Alert,
+} from 'react-native';
 import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
