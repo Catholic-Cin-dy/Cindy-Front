@@ -26,28 +26,27 @@ const headers = {
 };
 
 export default function CommWrite() {
-    const [data, setData] = useState([]);
-    const [title, setTitle] = useState('');
-    const [content, setContent] = useState('');
-    const [img, setImage] = useState('');
-    const [img2, setImage2] = useState('');
-    const [imgurl, setImgurl] = useState([]);
-    const [preview, setPreview] = useState('');
-    //스크롤 될 때마다 사진을 불러올 경우 현재의 갤러리를 어디까지 불러왔는지에 대한 저장 값
-    const [galleryCursor, setGalleryCursor] = useState(null);
-    const [galleryList, setGalleryList] = useState([]);
-    const [photos, setPhotos] = useState([]);
-    const [chosenPhoto, setChosenPhoto] = useState(null);
-    const [result, setResult] = useState([]);
-    const [selectedImages, setSelectedImages] = useState([]);
-    const navigation = useNavigation(); // useNavigation 훅 사용
+  const [data, setData] = useState([]);
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const [img, setImage] = useState('');
+  const [img2, setImage2] = useState('');
+  const [imgurl, setImgurl] = useState([]);
+  const [preview, setPreview] = useState('');
+  //스크롤 될 때마다 사진을 불러올 경우 현재의 갤러리를 어디까지 불러왔는지에 대한 저장 값
+  const [galleryCursor, setGalleryCursor] = useState(null);
+  const [galleryList, setGalleryList] = useState([]);
+  const [photos, setPhotos] = useState([]);
+  const [chosenPhoto, setChosenPhoto] = useState(null);
+  const [result, setResult] = useState([]);
+  const [selectedImages, setSelectedImages] = useState([]);
+  const navigation = useNavigation(); // useNavigation 훅 사용
 
-    const [suggestions, setSuggestions] = useState([]);
-    const [searchText, setSearchText] = useState('');
-    const hashTagRef = useRef(null);
-    const [hashTag, setHashTag] = useState([]);
-    const [tagName, setTagName] = useState('');
-
+  const [suggestions, setSuggestions] = useState([]);
+  const [searchText, setSearchText] = useState('');
+  const hashTagRef = useRef(null);
+  const [hashTag, setHashTag] = useState([]);
+  const [tagName, setTagName] = useState('');
 
   const handleSearchTextChange = text => {
     setSearchText(text);
@@ -96,186 +95,183 @@ export default function CommWrite() {
     );
   };
 
-    const onChangeTitle = inputText => {
-        setTitle(inputText);
-    };
+  const onChangeTitle = inputText => {
+    setTitle(inputText);
+  };
 
-    const onChangeContent = inputText => {
-        setContent(inputText);
-    };
+  const onChangeContent = inputText => {
+    setContent(inputText);
+  };
 
-    const goToMap = () => {
-        navigation.navigate(MapScreen);
-    };
+  const goToMap = () => {
+    navigation.navigate(MapScreen);
+  };
 
-    const handleDrag = (index, event, gestureState) => {
-        const {x, y} = gestureState;
-        setSelectedImages(prevImages => {
-            const updatedImages = [...prevImages];
-            updatedImages[index].x = x;
-            updatedImages[index].y = y;
-            return updatedImages;
+  const handleDrag = (index, event, gestureState) => {
+    const {x, y} = gestureState;
+    setSelectedImages(prevImages => {
+      const updatedImages = [...prevImages];
+      updatedImages[index].x = x;
+      updatedImages[index].y = y;
+      return updatedImages;
+    });
+  };
+
+  const handleTextChange = (index, text) => {
+    setSelectedImages(prevImages => {
+      const updatedImages = [...prevImages];
+      updatedImages[index].text = text;
+      return updatedImages;
+    });
+  };
+
+  const openPicker = async () => {
+    try {
+      const images = await ImagePicker.openPicker({
+        multiple: true,
+        compressImageQuality: 0.5,
+      });
+
+      for (const image of images) {
+        const croppedImage = await ImagePicker.openCropper({
+          mediaType: 'photo',
+          path: image.path,
+          width: 1000,
+          height: 1000,
         });
-    };
-
-    const handleTextChange = (index, text) => {
-        setSelectedImages(prevImages => {
-            const updatedImages = [...prevImages];
-            updatedImages[index].text = text;
-            return updatedImages;
-        });
-    };
-
-    const openPicker = async () => {
-        try {
-            const images = await ImagePicker.openPicker({
-                multiple: true,
-                compressImageQuality: 0.5,
-            });
-
-            for (const image of images) {
-                const croppedImage = await ImagePicker.openCropper({
-                    mediaType: 'photo',
-                    path: image.path,
-                    width: 1000,
-                    height: 1000,
-                });
-                const imageUrl = {
-                    uri: croppedImage.path,
-                    type: croppedImage.mime,
-                    name: croppedImage.path.split('/').pop(),
-                };
-
-                selectedImages.push(imageUrl);
-            }
-
-            setImgurl(prevImages => [...prevImages, ...selectedImages]);
-            console.log('이것은', selectedImages);
-            console.log('이것은222', imgurl);
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
-
-    const imagePickerOption = {
-        mediaType: 'photo',
-        maxWidth: 300,
-        maxHeight: 300,
-        includeBase64: Platform.OS === 'android',
-    };
-    let imgUrlsource;
-
-    const onPickImage = res => {
-        if (res.didCancel || !res) {
-            return;
-        }
-        //console.log(res);
-        //console.log(res.uri);
-        console.log(res.assets[0].uri);
-        //imgUrlsource = res.assets[0].uri;
-        setImage(res.assets[0].uri);
-        // imgurl.type = 'image/jpeg';
-        // imgurl.name = 'image.jpg';
-        //submitBtn();
-        //submitBtn(); 비로 실행되게 만듦 이유 :imgUrlsource 변수에 값을 할당되기 전 먼저 함수 호출된다 해서 ㅅㅍ
-        const imgUrlsource = {
-            uri: res.assets[0].uri,
-            type: res.assets[0].type,
-            name: res.assets[0].fileName,
-        };
-        console.log(imgUrlsource);
-        //const newImgList = imgUrlsource;
-        setImgurl(imgUrlsource);
-    };
-
-    // 카메라 촬영
-    const onLaunchCamera = () => {
-        launchCamera(imagePickerOption, onPickImage);
-    };
-
-    // 갤러리에서 사진 선택
-    const ShowPicker = () => {
-        launchImageLibrary(imagePickerOption, onPickImage);
-    };
-
-    // 안드로이드를 위한 모달 visible 상태값
-    const [modalVisible, setModalVisible] = useState(false);
-
-    // 선택 모달 오픈
-    const modalOpen = () => {
-        if (Platform.OS === 'android') {
-            // 안드로이드
-            setModalVisible(true); // visible = true
-        } else {
-            // iOS
-        }
-    };
-
-    const submitBtn = () => {
-        const postBoard = {
-            title: title,
-            content: content,
-            latitude: 11.12,
-            longitude: 23.45,
-            tags: hashTag,
-            imgFiles: [],
-            imgTagList: [
-                {
-                    imgTags: [
-                        {
-                            brandId: 1,
-                            x: 30,
-                            y: 67,
-                        },
-                        {
-                            brandId: 2,
-                            x: 251,
-                            y: 125,
-                        },
-                    ],
-                },
-            ],
+        const imageUrl = {
+          uri: croppedImage.path,
+          type: croppedImage.mime,
+          name: croppedImage.path.split('/').pop(),
         };
 
+        selectedImages.push(imageUrl);
+      }
 
+      setImgurl(prevImages => [...prevImages, ...selectedImages]);
+      console.log('이것은', selectedImages);
+      console.log('이것은222', imgurl);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-        const formData = new FormData();
-        //const imgUrl = imgurl;
-        //console.log('i am', imgUrl);
+  const imagePickerOption = {
+    mediaType: 'photo',
+    maxWidth: 300,
+    maxHeight: 300,
+    includeBase64: Platform.OS === 'android',
+  };
+  let imgUrlsource;
 
-        formData.append('title', postBoard.title.toString());
-        formData.append('content', postBoard.content.toString());
-        formData.append('latitude', postBoard.latitude.toString());
-        formData.append('longitude', postBoard.longitude.toString());
-        formData.append('tags', postBoard.tags.toString());
-        formData.append(
-          'imgTagList',
-          JSON.stringify(postBoard.imgTagList).toString(),
-        );
+  const onPickImage = res => {
+    if (res.didCancel || !res) {
+      return;
+    }
+    //console.log(res);
+    //console.log(res.uri);
+    console.log(res.assets[0].uri);
+    //imgUrlsource = res.assets[0].uri;
+    setImage(res.assets[0].uri);
+    // imgurl.type = 'image/jpeg';
+    // imgurl.name = 'image.jpg';
+    //submitBtn();
+    //submitBtn(); 비로 실행되게 만듦 이유 :imgUrlsource 변수에 값을 할당되기 전 먼저 함수 호출된다 해서 ㅅㅍ
+    const imgUrlsource = {
+      uri: res.assets[0].uri,
+      type: res.assets[0].type,
+      name: res.assets[0].fileName,
+    };
+    console.log(imgUrlsource);
+    //const newImgList = imgUrlsource;
+    setImgurl(imgUrlsource);
+  };
 
-        // const form = {
-        //   title: postBoard.title,
-        //   content: postBoard.content,
-        //   latitude: postBoard.latitude,
-        //   longitude: postBoard.longitude,
-        //   tags: postBoard.tags,
-        //   imgList: postBoard.imgList,
-        // };
-        //formData.append('postBoard', JSON.stringify(form));
-        formData.append('imgFiles ', imgurl);
-        //console.log('postBoard 는 이거임', form);
-        console.log('imgUrl 은 이거임', imgurl);
-        //console.log(formData.imgList);
+  // 카메라 촬영
+  const onLaunchCamera = () => {
+    launchCamera(imagePickerOption, onPickImage);
+  };
 
-        //console.log('formData:', formData);
-        const formList = formData._parts;
-        //console.log(formList);
-        //요기
-        const arrayValue = formData._parts;
-        const objectValue = Object.fromEntries(arrayValue);
+  // 갤러리에서 사진 선택
+  const ShowPicker = () => {
+    launchImageLibrary(imagePickerOption, onPickImage);
+  };
 
-        /*fetch(baseUrl + '/boards/new', payload, config)
+  // 안드로이드를 위한 모달 visible 상태값
+  const [modalVisible, setModalVisible] = useState(false);
+
+  // 선택 모달 오픈
+  const modalOpen = () => {
+    if (Platform.OS === 'android') {
+      // 안드로이드
+      setModalVisible(true); // visible = true
+    } else {
+      // iOS
+    }
+  };
+
+  const submitBtn = () => {
+    const postBoard = {
+      title: title,
+      content: content,
+      latitude: 11.12,
+      longitude: 23.45,
+      tags: hashTag,
+      imgFiles: [],
+      imgTagList: [
+        {
+          imgTags: [
+            {
+              brandId: 1,
+              x: 30,
+              y: 67,
+            },
+            {
+              brandId: 2,
+              x: 251,
+              y: 125,
+            },
+          ],
+        },
+      ],
+    };
+
+    const formData = new FormData();
+    //const imgUrl = imgurl;
+    //console.log('i am', imgUrl);
+
+    formData.append('title', postBoard.title.toString());
+    formData.append('content', postBoard.content.toString());
+    formData.append('latitude', postBoard.latitude.toString());
+    formData.append('longitude', postBoard.longitude.toString());
+    formData.append('tags', postBoard.tags.toString());
+    formData.append(
+      'imgTagList',
+      JSON.stringify(postBoard.imgTagList).toString(),
+    );
+
+    // const form = {
+    //   title: postBoard.title,
+    //   content: postBoard.content,
+    //   latitude: postBoard.latitude,
+    //   longitude: postBoard.longitude,
+    //   tags: postBoard.tags,
+    //   imgList: postBoard.imgList,
+    // };
+    //formData.append('postBoard', JSON.stringify(form));
+    formData.append('imgFiles ', imgurl);
+    //console.log('postBoard 는 이거임', form);
+    console.log('imgUrl 은 이거임', imgurl);
+    //console.log(formData.imgList);
+
+    //console.log('formData:', formData);
+    const formList = formData._parts;
+    //console.log(formList);
+    //요기
+    const arrayValue = formData._parts;
+    const objectValue = Object.fromEntries(arrayValue);
+
+    /*fetch(baseUrl + '/boards/new', payload, config)
           .then(response => {
             if (response.ok) {
               console.log('Request successful');
@@ -285,96 +281,168 @@ export default function CommWrite() {
           })
           .catch(error => console.error(error));*/
 
-        //const payload = {imgUrl: imgUrl, postBoard: JSON.stringify(objectValue)};
-        // console.log(payload.imgUrl);
-        // console.log(payload.postBoard);
-        // console.log(payload);
-        console.log('formData마지막:', formData);
+    //const payload = {imgUrl: imgUrl, postBoard: JSON.stringify(objectValue)};
+    // console.log(payload.imgUrl);
+    // console.log(payload.postBoard);
+    // console.log(payload);
+    console.log('formData마지막:', formData);
 
-        axios
-          .post(baseUrl + '/boards/write', formData, {
-              headers: {
-                  ...headers,
-                  'Content-Type': 'multipart/form-data',
-              },
-          })
-          .then(response => {
-              if (response) {
-                  console.log(response.data);
-              }
-          })
-          .catch(error => {
-              if (error.response) {
-                  // The request was made and the server responded with a status code
-                  // that falls out of the range of 2xx
-                  console.log('음 1' + error.response.data);
-                  console.log('음 2' + error.response.status);
-                  console.log('음 3' + error.response.headers);
-              } else if (error.request) {
-                  // The request was made but no response was received
-                  // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-                  // http.ClientRequest in node.js
-                  console.log('음 4' + error.request);
-              } else {
-                  // Something happened in setting up the request that triggered an Error
-                  console.log('Error', error.message);
-              }
-          });
-    };
+    axios
+      .post(baseUrl + '/boards/write', formData, {
+        headers: {
+          ...headers,
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      .then(response => {
+        if (response) {
+          console.log(response.data);
+        }
+      })
+      .catch(error => {
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          console.log('음 1' + error.response.data);
+          console.log('음 2' + error.response.status);
+          console.log('음 3' + error.response.headers);
+        } else if (error.request) {
+          // The request was made but no response was received
+          // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+          // http.ClientRequest in node.js
+          console.log('음 4' + error.request);
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.log('Error', error.message);
+        }
+      });
+  };
 
-    return (
-      <ScrollView>
-          <SafeAreaView style={styles.container}>
-              <View>
-                  <Button title="이미지 선택" onPress={openPicker} />
-                  <View style={{flexDirection: 'row'}}>
-                      {selectedImages.map((image, index) => (
-                        <View key={index}>
-                            <Image
-                              source={{uri: image.uri}}
-                              style={{width: 60, height: 80}}
-                            />
-                        </View>
-                      ))}
-                  </View>
+  return (
+    <ScrollView>
+      <SafeAreaView style={styles.whiteBG}>
+        <View>
+          <View style={styles.layout}>
+            <Text style={styles.label}>사진 업로드</Text>
+          </View>
+          <View style={{flexDirection: 'row', marginLeft: 10}}>
+            <TouchableOpacity onPress={openPicker}>
+              <Image source={require('../../assets/imgAdd.png')} />
+            </TouchableOpacity>
+
+            {selectedImages.map((image, index) => (
+              <View key={index}>
+                <Image
+                  source={{uri: image.uri}}
+                  style={{width: 100, height: 100}}
+                />
               </View>
-              <TouchableOpacity style={styles.touchable} onPress={goToMap}>
-                  <Text style={styles.label2}>위치 선택</Text>
-              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+        <View style={styles.layout}>
+          <Text style={styles.label}>나의 위치</Text>
+        </View>
+        <TouchableOpacity style={{marginLeft: 16}} onPress={goToMap}>
+          <Image source={require('../../assets/location.png')} />
+        </TouchableOpacity>
+        <View style={styles.layout}>
+          <Text style={styles.label}>검색어 입력</Text>
+        </View>
+        <View>
+          <TextInput
+            style={styles.input1}
+            placeholder="검색어를 입력하세요."
+            onChangeText={handleSearchTextChange}
+            value={searchText}
+          />
+          <FlatList
+            data={suggestions}
+            renderItem={renderSuggestion}
+            keyExtractor={item => item}
+          />
 
-              <TextInput
-                style={styles.input1}
-                placeholder="검색어를 입력하세요."
-                onChangeText={handleSearchTextChange}
-                value={searchText}
-              />
-              <FlatList
-                data={suggestions}
-                renderItem={renderSuggestion}
-                keyExtractor={item => item}
-              />
-
-              <Text>검색어 : {searchText}</Text>
-              <Text style={styles.label}>제목</Text>
-              <TextInput
-                style={styles.input}
-                onChangeText={onChangeTitle}
-                value={title}
-                placeholder="제목을 작성해주세요."
-              />
-              <Text style={styles.label}>글 작성</Text>
-              <TextInput
-                style={styles.input}
-                onChangeText={onChangeContent}
-                value={content}
-                placeholder="글을 작성해주세요."
-              />
-              <Button title="제출" style={styles.submitBtn} onPress={submitBtn} />
-          </SafeAreaView>
-      </ScrollView>
-    );
+          <Text>검색어 : {searchText}</Text>
+        </View>
+        <View style={styles.layout}>
+          <Text style={styles.label}>제목</Text>
+        </View>
+        <View style={styles.whiteBG}>
+          <TextInput
+            style={styles.input}
+            onChangeText={onChangeTitle}
+            value={title}
+            placeholder="제목을 작성해주세요."
+          />
+        </View>
+        <View style={styles.layout}>
+          <Text style={styles.label}>글 작성</Text>
+        </View>
+        <View style={styles.whiteBG}>
+          <TextInput
+            style={styles.input2}
+            onChangeText={onChangeContent}
+            value={content}
+            placeholder="글을 작성해주세요."
+          />
+        </View>
+        <View style={[styles.whiteBG, {marginTop: 20, marginBottom: 20}]}>
+          <TouchableOpacity style={styles.submitBtn} onPress={submitBtn}>
+            <Text style={{color: '#fff'}}>제출하기</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    </ScrollView>
+  );
 }
 const styles = StyleSheet.create({
+  layout: {
+    height: 56,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    paddingLeft: 16,
+  },
+  label: {
+    fontFamily: 'Pretendard',
+    fontStyle: 'normal',
+    fontWeight: 'medium',
+    fontSize: 18,
+    color: '#000000',
+  },
+  input1: {
+    width: '94%',
+    height: 48,
+    backgroundColor: '#F5F5F5',
+    borderRadius: 8,
+    alignSelf: 'center',
+  },
+  input2: {
+    width: '94%',
+    height: 148,
+    backgroundColor: '#F5F5F5',
+    borderRadius: 8,
+    alignSelf: 'center',
+    textAlignVertical: 'top',
+  },
+  submitBtn: {
+    width: '94%',
+    height: 36,
+    backgroundColor: '#6B7AFF',
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+  },
+  input: {
+    width: '94%',
+    height: 48,
+    backgroundColor: '#F5F5F5',
+    borderRadius: 8,
+    alignSelf: 'center',
+  },
+  whiteBG: {
+    backgroundColor: 'white',
+  },
   /*container: {
     flex: 1,
   },
