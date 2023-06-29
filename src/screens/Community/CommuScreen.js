@@ -151,21 +151,7 @@ export default function CommuScreen() {
   return (
     <ScrollView>
       <SafeAreaView style={styles.container}>
-        <Text>커뮤니티 입니다</Text>
-
-        <TextInput
-          style={styles.input}
-          placeholder="검색어를 입력하세요."
-          onChangeText={handleSearchTextChange}
-          value={searchText}
-        />
-        <FlatList
-          data={suggestions}
-          renderItem={renderSuggestion}
-          keyExtractor={item => item}
-        />
-
-        <Text>검색어 : {searchText}</Text>
+        <Text />
 
         <TouchableOpacity
           onPress={() => {
@@ -174,6 +160,8 @@ export default function CommuScreen() {
           style={styles.writeBtn}>
           <Text style={{color: '#fff'}}>글쓰기</Text>
         </TouchableOpacity>
+
+        <Text />
 
         <DropDownPicker
           open={open}
