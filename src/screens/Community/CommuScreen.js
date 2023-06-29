@@ -150,13 +150,7 @@ export default function CommuScreen() {
   return (
     <ScrollView>
       <SafeAreaView style={styles.container}>
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate('CommWrite');
-          }}
-          style={styles.writeBtn}>
-          <Text style={styles.writeBtnText}>글쓰기</Text>
-        </TouchableOpacity>
+
 
         <DropDownPicker
           open={open}
@@ -319,6 +313,13 @@ export default function CommuScreen() {
             </TouchableOpacity>
           ))}
         </View>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('CommWrite');
+          }}
+          style={styles.writeBtn}>
+          <Text style={styles.writeBtnText}>글쓰기</Text>
+        </TouchableOpacity>
       </SafeAreaView>
     </ScrollView>
   );
