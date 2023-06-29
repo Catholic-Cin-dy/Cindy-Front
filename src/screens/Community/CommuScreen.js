@@ -84,7 +84,8 @@ export default function CommuScreen() {
       });
 
     console.log('data in useEffect : ', data);
-  }, [isFocused, isRefreshing, selectedPage, value, data]);
+  }, [isFocused, isRefreshing, selectedPage]);
+  //}, [isFocused, isRefreshing, selectedPage, value, data]);
 
   const handleSearchTextChange = text => {
     setSearchText(text);
@@ -127,54 +128,28 @@ export default function CommuScreen() {
   const handleLike = boardId => {
     const params = {
       page: selectedPage,
+      정렬: value,
     };
 
     setLiked(!liked);
     //liked에 좋아요 성공 , 좋아요 취소 성공이 저장됨
-    console.log('test', liked);
 
     axios
       .patch(baseUrl + 'boards/like/' + boardId, {}, config)
       .then(response => setLiked(response.data.result))
       .catch(error => console.error(error));
-    console.log('1번 테스트', liked);
-    //같은 값 반환
+    console.log('handleLike 테스트 : ', liked);
 
     axios
       .post(baseUrl + 'boards', payload, {params, ...config})
       .then(response => setData(response.data.result.contents))
       .catch(error => console.error(error));
-    console.log('2번 테스트', liked);
-    //같은 값 반환
+    console.log('handleLike 이후 다시 post ');
   };
 
   return (
     <ScrollView>
       <SafeAreaView style={styles.container}>
-        <Text>커뮤니티 입니다</Text>
-
-        <TextInput
-          style={styles.input}
-          placeholder="검색어를 입력하세요."
-          onChangeText={handleSearchTextChange}
-          value={searchText}
-        />
-        <FlatList
-          data={suggestions}
-          renderItem={renderSuggestion}
-          keyExtractor={item => item}
-        />
-
-        <Text>검색어 : {searchText}</Text>
-
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate('CommWrite');
-          }}
-          style={styles.writeBtn}>
-          <Text style={{color: '#fff'}}>글쓰기</Text>
-        </TouchableOpacity>
-
         <DropDownPicker
           open={open}
           value={value}
@@ -189,6 +164,7 @@ export default function CommuScreen() {
             animationType: 'fade',
           }}
           modalTitle="정렬 기준을 선택해주세요."
+          style={{ marginTop: 25 }} // marginTop 설정
         />
 
         <ScrollView style={styles.scrollView}>
@@ -336,6 +312,13 @@ export default function CommuScreen() {
             </TouchableOpacity>
           ))}
         </View>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('CommWrite');
+          }}
+          style={styles.writeBtn}>
+          <Text style={styles.writeBtnText}>글쓰기</Text>
+        </TouchableOpacity>
       </SafeAreaView>
     </ScrollView>
   );
@@ -345,6 +328,9 @@ const styles = StyleSheet.create({
     width: 156,
     height: 156,
   },*/
+  writeBtnText: {
+    color: '#fff',
+  },
   writeBtn: {
     backgroundColor: '#000',
     height: 35,

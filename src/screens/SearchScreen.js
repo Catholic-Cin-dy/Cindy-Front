@@ -31,16 +31,12 @@ const config = {
 };
 
 export default function SearchScreen() {
-
   const [text, setText] = useState('');
 
   const [searchText, setSearchText] = useState('');
   const [suggestions, setSuggestions] = useState([]);
 
-  useEffect(() => {
-
-
-  },);
+  useEffect(() => {});
 
   const handleSearchTextChange = text => {
     setSearchText(text);
@@ -54,12 +50,9 @@ export default function SearchScreen() {
         .get(baseUrl + 'products/search', {params, ...config})
         .then(response => {
           setSuggestions(response.data.result.contents);
-          console.log("검색결과 : ", response.data.result.contents);
+          console.log('검색결과 : ', response.data.result.contents);
         })
         .catch(error => console.error(error));
-
-
-
     } else {
       //검색어 없으면 빈칸
       setSuggestions([]);
@@ -73,44 +66,101 @@ export default function SearchScreen() {
     return (
       <TouchableOpacity onPress={() => handleSuggestionPress(item)}>
         <View style={styles.item}>
-          <Image style={styles.pImg} source={{ uri: item.imgUrl }}/>
-          <Text>{item.brandName}</Text>
-          <Text>{item.productName}</Text>
+          <Image style={styles.pImg} source={{uri: item.imgUrl}} />
+          <Text style={styles.info1}>{item.brandName}</Text>
+          <Text style={styles.info2}>{item.productName}</Text>
         </View>
       </TouchableOpacity>
     );
   };
 
-
   return (
     <View style={styles.firstView}>
-      <Text>검색화면</Text>
+      <Text />
+      <Text />
+      <Text />
+      <View style={{ marginTop: 4 }, {flexDirection: "row"}}>
+        <Text style={styles.sText1}>"{searchText}"</Text>
+        <Text style={styles.sText2}>와 가장 연관성 높은 상품 </Text>
+      </View>
+      <FlatList
+        horizontal={true}
+        style={styles.flatListView}
+        data={suggestions}
+        renderItem={renderSuggestion}
+        showsHorizontalScrollIndicator={false}
+        keyExtractor={item => item.productId.toString()}
+      />
       <TextInput
         style={styles.input}
         placeholder="검색어를 입력하세요."
         onChangeText={handleSearchTextChange}
         value={searchText}
       />
-      <Text>검색어 : {searchText}</Text>
-      <Text/>
-      <FlatList
-        data = {suggestions}
-        renderItem = {renderSuggestion}
-        keyExtractor = {item => item.productId.toString()}/>
-
-
     </View>
   );
 }
 const styles = StyleSheet.create({
+  flatListView: {
+    marginLeft: 15,
+    marginBottom: 0,
+  },
   firstView: {
     backgroundColor: 'white',
+    width: '100%',
+    height: '100%',
+  },
+  info1: {
+    color: 'black',
+    fontColor: 'black',
+    fontWeight: 'bold',
+    fontSize: 13,
+    marginLeft: 4,
+    marginRight: 4,
+    marginTop: 8,
+    flexShrink: 1,
+  },
+  info2: {
+    fontWeight: 'bold',
+    fontColor: 'gray',
+    fontSize: 12,
+    marginTop: 8,
+    marginBottom: 4,
+    marginLeft: 4,
+    marginRight: 4,
+    flexShrink: 1,
+  },
+  sText1: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    fontColor: 'black',
+    marginLeft: 15,
+    marginTop: 10,
+    marginBottom: 3,
+  },
+  sText2: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    fontColor: 'black',
+    marginLeft: 5,
+    marginTop: 15,
+    marginBottom: 3,
+  },
+  searchText: {
+    fontWeight: 'bold',
   },
   input: {
+    position: 'absolute',
+    bottom: 5,
+    left: 10,
+    right: 10,
     height: 40,
     borderColor: 'gray',
-    borderWidth: 1,
+    borderWidth: 1.5,
     paddingHorizontal: 10,
+    marginLeft: 0,
+    marginRight: 0,
+    borderRadius: 8,
   },
   textInput: {
     marginTop: 20,
@@ -121,16 +171,17 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
     borderWidth: 1,
   },
-  pImg:{
+  pImg: {
     width: 156,
     height: 156,
-    backgroundColor:'gray',
+    backgroundColor: 'gray',
     borderRadius: 8,
   },
   item: {
     width: 156,
     flex: 0,
     marginBottom: 16,
+    marginRight: 10,
     borderRadius: 8,
     backgroundColor: '#fff',
     shadowColor: '#000',
@@ -142,5 +193,12 @@ const styles = StyleSheet.create({
     shadowRadius: 2.62,
     elevation: 4,
   },
-
+  horizontalLine1: {
+    width: 325,
+    height: 1.5,
+    backgroundColor: '#B3B3B3',
+    marginLeft: 15,
+    marginRight: 15,
+    marginTop: 5,
+  },
 });
