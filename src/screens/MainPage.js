@@ -197,7 +197,9 @@ const MyPageStackScreen = () => {
 };
 
 export default function MainPage() {
-  return <MainTabScreen />;
+  return (
+    <MainTabScreen />
+  );
 }
 
 const MainTabScreen = () => {
@@ -220,7 +222,7 @@ const MainTabScreen = () => {
         }}
       />
       <Tab.Screen
-        name="상품 전체조회"
+        name=" "
         component={RecruitProductsStackScreen}
         options={{
           unmountOnBlur: true,
@@ -230,9 +232,13 @@ const MainTabScreen = () => {
               <SearchBar />
             </TouchableOpacity>
           ),
+          headerShown: true,
+          headerTransparent: true,
+
           tabBarIcon: ({focused, color, size}) => (
             <Image source={focused ? recruitSelected : recruitUnSelected} />
           ),
+          tabBarLabel: '상품 전체조회',
         }}
       />
       <Tab.Screen
@@ -261,6 +267,4 @@ const MainTabScreen = () => {
   );
 };
 
-
 const styles = StyleSheet.create({});
-
