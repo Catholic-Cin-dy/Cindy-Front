@@ -150,8 +150,6 @@ export default function CommuScreen() {
   return (
     <ScrollView>
       <SafeAreaView style={styles.container}>
-
-
         <DropDownPicker
           open={open}
           value={value}
@@ -166,6 +164,7 @@ export default function CommuScreen() {
             animationType: 'fade',
           }}
           modalTitle="정렬 기준을 선택해주세요."
+          style={{ marginTop: 25 }} // marginTop 설정
         />
 
         <ScrollView style={styles.scrollView}>
