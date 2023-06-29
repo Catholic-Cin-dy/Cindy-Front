@@ -283,8 +283,7 @@ export default function CommuPostDetail({route}) {
     <View>
       <ScrollView>
         {/* <Text><CommuDelModiModal/></Text> */}
-        <View style={styles.item} key={data.boardId}>
-          <Text>boardId : {data.boardId}</Text>
+        <View style={styles.whiteBG} key={data.boardId}>
           <View style={styles.profileContainer}>
             {data.profileImgUrl ? (
               <Image
@@ -297,7 +296,7 @@ export default function CommuPostDetail({route}) {
                 source={require('../../assets/user.png')}
               />
             )}
-            <Text style={styles.info2}>{data.writer}</Text>
+            <Text style={styles.infoHeader}>{data.writer}</Text>
 
             {/*<Text>
               <TouchableOpacity style={styles.deleteBtn} onPress={() => navigation.pop()}>
@@ -335,72 +334,58 @@ export default function CommuPostDetail({route}) {
           </View>
 
           <View style={styles.container}>
-            <View style={styles.slideImageView}>
-              <Swiper containerStyle={{width: 360, height: 400}}>
-                {data &&
-                  data.imgList &&
-                  data.imgList.map((img, index) => (
-                    <TouchableOpacity
-                      onPress={showCoordinate}
-                      style={styles.postImgWhole}
-                      key={index} // 올바른 위치로 key 속성을 추가합니다.
-                    >
-                      <ImageBackground
-                        source={{uri: img.imgUrl}}
-                        style={styles.pImg}
-                        key={index} // 올바른 위치로 key 속성을 추가합니다.
-                      >
-                        {img.imgTags &&
-                          img.imgTags.map((tag, tagIndex) => (
+            <Swiper containerStyle={{width: '100%', height: 400}}>
+              {data &&
+                data.imgList &&
+                data.imgList.map((img, index) => (
+                  <TouchableOpacity
+                    onPress={showCoordinate}
+                    style={styles.postImgWhole}
+                    key={index} // 올바른 위치로 key 속성을 추가합니다.
+                  >
+                    <ImageBackground
+                      source={{uri: img.imgUrl}}
+                      style={[styles.pImg, {resizeMode: 'cover'}]}
+                      key={index}>
+                      {img.imgTags &&
+                        img.imgTags.map((tag, tagIndex) => (
+                          <View key={tagIndex} style={styles.imgtagContainer}>
                             <View
-                              key={tagIndex}
                               style={[
-                                styles.imgtagContainer,
-                                {width: 360, height: 400, position: 'relative'},
-                              ]}>
-                              <View
-                                style={[
-                                  styles.imgTagBox,
-                                  {
-                                    position: 'absolute',
-                                    left: tag.x,
-                                    top: tag.y - tagIndex * 400,
-                                  },
-                                ]}
-                                {...panResponder.panHandlers}>
-                                <TouchableOpacity
-                                  // onPress={() => handleTagClick(tag.x, tag.y)}
-                                  onLongPress={() => handleTagDragStart(tag)} // 드래그 앤 드롭 시작
-                                  onPressOut={() => handleTagDrop(tag.x, tag.y)} // 태그 드롭 시 좌표 업데이트
-                                >
-                                  <Text
-                                    style={[
-                                      styles.imgTagText,
-                                      {flexWrap: 'wrap'},
-                                    ]}>
-                                    {`${tag.brandName}`}
-                                  </Text>
-                                </TouchableOpacity>
-                              </View>
+                                styles.imgTagBox,
+                                {
+                                  position: 'absolute',
+                                  left: tag.x,
+                                  top: tag.y - tagIndex * 400,
+                                },
+                              ]}
+                              {...panResponder.panHandlers}>
+                              <TouchableOpacity
+                                // onPress={() => handleTagClick(tag.x, tag.y)}
+                                onLongPress={() => handleTagDragStart(tag)} // 드래그 앤 드롭 시작
+                                onPressOut={() => handleTagDrop(tag.x, tag.y)} // 태그 드롭 시 좌표 업데이트
+                              >
+                                <Text
+                                  style={[
+                                    styles.imgTagText,
+                                    {flexWrap: 'wrap'},
+                                  ]}>
+                                  {`${tag.brandName}`}
+                                </Text>
+                              </TouchableOpacity>
                             </View>
-                          ))}
-                      </ImageBackground>
-                    </TouchableOpacity>
-                  ))}
-              </Swiper>
-            </View>
+                          </View>
+                        ))}
+                    </ImageBackground>
+                  </TouchableOpacity>
+                ))}
+            </Swiper>
           </View>
 
           <View style={styles.content} key={data.boardId}>
             <View style={styles.contentContainer}>
-              <Text style={styles.info1}>{data.title}</Text>
-              <View style={styles.heartIconBackground} key={data.boardId}>
+              <View key={data.boardId}>
                 {/*<Text>{data.likeCheck ? data.likeCheck.toString() : "유효값x pid: " + data.boardId}</Text>*/}
-
-                <Text>
-                  {data.my ? data.my.toString() : 'false' + data.boardId}
-                </Text>
-
                 <TouchableOpacity onPress={handleLike}>
                   <Image
                     style={styles.heartIcon}
@@ -412,36 +397,36 @@ export default function CommuPostDetail({route}) {
                   />
                 </TouchableOpacity>
               </View>
+              <Text style={styles.info2}>{data.content}</Text>
             </View>
-            <Text />
-            <Text style={styles.info2}>{data.content}</Text>
           </View>
         </View>
 
-        <View style={styles.column1}>
+        <View style={styles.whiteBG}>
           {cdata.map(item => (
             <View style={styles.item} key={item.commentId}>
-              <View style={styles.profileContainer}>
-                {item.profileImgUrl ? (
-                  <Image
-                    style={styles.profileImg}
-                    source={{uri: item.profileImgUrl}}
-                  />
-                ) : (
-                  <Image
-                    style={styles.defaultImg}
-                    source={require('../../assets/user.png')}
-                  />
-                )}
-                <Text style={styles.info2}>{item.nickName}</Text>
-                <TouchableOpacity
-                  style={styles.cdeleteBtn}
-                  onPress={() => {
-                    deleteComment(item);
-                  }}>
-                  <Text>댓글 삭제</Text>
-                </TouchableOpacity>
-                <View>
+              <View style={{flexDirection: 'row'}}>
+                <View style={styles.commentContainer}>
+                  {item.profileImgUrl ? (
+                    <Image
+                      style={styles.profileImg}
+                      source={{uri: item.profileImgUrl}}
+                    />
+                  ) : (
+                    <Image
+                      style={styles.defaultImg}
+                      source={require('../../assets/user.png')}
+                    />
+                  )}
+                  <Text style={styles.infoCommentHeader}>{item.nickName}</Text>
+                  <Text style={styles.infoCommentDate}>{item.commentTime}</Text>
+                  <TouchableOpacity
+                    style={styles.cdeleteBtn}
+                    onPress={() => {
+                      deleteComment(item);
+                    }}>
+                    <Text>댓글 삭제</Text>
+                  </TouchableOpacity>
                   {isEditing ? (
                     // <View>
                     //   <TextInput
@@ -475,21 +460,17 @@ export default function CommuPostDetail({route}) {
                     placeholder="댓글을 입력해주세요."
                   />
                   <TouchableOpacity style={styles.fixBtn} onPress={fixComment}>
-                    <Text style={styles.fixBtnText}>전송</Text>
+                    <Text style={styles.fixBtnText}>수정</Text>
                   </TouchableOpacity>
                 </View>
               ) : (
-                <Text style={styles.info2}>{item.comment}</Text>
+                <Text style={styles.commentContent}>{item.comment}</Text>
               )}
-              <Text style={styles.info1}>작성일시 {item.commentTime}</Text>
-              <Text style={styles.info2}>{item.my}</Text>
+
+              <Text style={styles.commentContent}>{item.my}</Text>
             </View>
           ))}
         </View>
-
-        <Text />
-        <Text />
-        <Text />
 
         <KeyboardAvoidingView
           style={{flex: 1}}
@@ -548,6 +529,10 @@ const styles = {
     backgroundColor: 'transparent',
     flex: 1,
   },
+  pImg: {
+    width: '100%',
+    height: 400,
+  },
   EditorContainer: {
     padding: 5,
     minHeight: 65,
@@ -594,12 +579,20 @@ const styles = {
     fontSize: 15,
   },
   fixBtn: {
-    backgroundColor: 'blue',
+    backgroundColor: 'white',
     padding: 10,
     borderRadius: 5,
     marginHorizontal: 5,
-    height: 50,
-    marginTop: 40,
+    height: 48,
+    marginVertical: 8,
+    alignItems: 'center',
+  },
+  fixinput1: {
+    marginVertical: 8,
+    marginLeft: 16,
+    marginRight: 30,
+    width: '75%',
+    height: 48,
   },
   container1: {
     width: '100%',
@@ -608,47 +601,51 @@ const styles = {
   slide: {
     flex: 1,
   },
-  cdeleteBtn: {
-    marginLeft: 180,
-  },
+  cdeleteBtn: {},
   cdeleteBtn1: {
     marginLeft: 5,
   },
   deleteBtn: {
-    marginLeft: 190,
+    marginVertical: 8,
+    flex: 2,
   },
   modifyBtn: {
-    marginLeft: 5,
+    marginVertical: 8,
+    flex: 2,
   },
   moveBtn: {
     marginLeft: 190,
   },
   profileContainer: {
-    marginLeft: 15,
-    marginTop: 10,
-    marginBottom: 5,
+    marginHorizontal: 16,
+    marginVertical: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  commentContainer: {
+    marginHorizontal: 16,
+    marginVertical: 8,
     flexDirection: 'row',
     alignItems: 'center',
   },
   contentContainer: {
     flexDirection: 'row',
+    borderWidth: 1, // Border width
+    borderColor: '#D9D9D9', // Border color
+    paddingVertical: 12,
+    alignItems: 'center',
   },
   profileImg: {
     width: 30,
     height: 30,
-    borderRadius: 0,
+    borderRadius: 15,
   },
   defaultImg: {
     width: 30,
     height: 30,
     borderRadius: 0,
   },
-  pImg: {
-    width: 360,
-    height: 400,
-    backgroundColor: 'white',
-    borderRadius: 0,
-  },
+
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -683,6 +680,8 @@ const styles = {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#D9D9D9',
   },
   heartIconBackground: {
     flex: 1,
@@ -697,9 +696,8 @@ const styles = {
     backgroundColor: 'red',
   },
   heartIcon: {
-    marginRight: 15,
-    marginBottom: 5,
-    marginTop: 5,
+    marginLeft: 16,
+    marginRight: 16,
   },
   heartIcon2: {
     marginTop: -20,
@@ -729,18 +727,37 @@ const styles = {
   },
 
   info1: {
-    color: 'black',
-    fontColor: 'black',
-    fontWeight: 'bold',
-    fontSize: 15,
-    marginLeft: 20,
-    marginTop: 8,
+    fontColor: 'gray',
+    fontSize: 14,
+    marginLeft: 4,
   },
   info2: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    fontColor: 'gray',
+    fontSize: 16,
     marginLeft: 12,
+    flex: 10,
+  },
+  commentContent: {
+    fontSize: 16,
+    marginLeft: 16,
+    color: 'black',
+  },
+  infoCommentHeader: {
+    fontSize: 16,
+    color: 'black',
+    marginLeft: 6,
+    fontWeight: 'bold',
+  },
+  infoCommentDate: {
+    fontSize: 14,
+    fontColor: 'black',
+    marginLeft: 6,
+    marginRight: 140,
+  },
+  infoHeader: {
+    fontSize: 16,
+    fontColor: 'black',
+    marginLeft: 12,
+    flex: 10,
   },
   info1_s: {
     color: 'gray',
@@ -780,13 +797,9 @@ const styles = {
     height: 50,
     backgroundColor: 'gray',
   },
-  fixinput1: {
-    marginTop: 40,
-    marginLeft: 5,
-    marginRight: 30,
-    marginBottom: 30,
-    width: '75%',
-    height: 50,
-    backgroundColor: 'gray',
+
+  whiteBG: {
+    backgroundColor: 'white',
+    weight: '100%',
   },
 };
