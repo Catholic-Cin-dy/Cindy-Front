@@ -197,9 +197,7 @@ const MyPageStackScreen = () => {
 };
 
 export default function MainPage() {
-  return (
-    <MainTabScreen />
-  );
+  return <MainTabScreen />;
 }
 
 const MainTabScreen = () => {
