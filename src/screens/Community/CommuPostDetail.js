@@ -425,7 +425,7 @@ export default function CommuPostDetail({route}) {
                     onPress={() => {
                       deleteComment(item);
                     }}>
-                    <Text>댓글 삭제</Text>
+                    <Text>삭제</Text>
                   </TouchableOpacity>
                   {isEditing ? (
                     // <View>
@@ -446,7 +446,7 @@ export default function CommuPostDetail({route}) {
                         // 댓글 수정 버튼을 눌렀을 때 TextInput으로 포커스 이동하도록 추가합니다.
                         setCommentEdit(item.comment);
                       }}>
-                      <Text>댓글 수정</Text>
+                      <Text>수정</Text>
                     </TouchableOpacity>
                   )}
                 </View>
@@ -601,7 +601,9 @@ const styles = {
   slide: {
     flex: 1,
   },
-  cdeleteBtn: {},
+  cdeleteBtn: {
+    marginRight: 6,
+  },
   cdeleteBtn1: {
     marginLeft: 5,
   },
@@ -751,7 +753,8 @@ const styles = {
     fontSize: 14,
     fontColor: 'black',
     marginLeft: 6,
-    marginRight: 140,
+    marginRight: 36,
+    width: 192,
   },
   infoHeader: {
     fontSize: 16,
