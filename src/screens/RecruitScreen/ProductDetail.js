@@ -57,7 +57,7 @@ export default function ProductDetail({ route }) {
 
 
 
-  }, [isFocused, isRefreshing]);
+  }, [isFocused, isRefreshing, liked]);
 
   //useState(false)로 하든 useState(data.bookmark)로 하든 api 연결은 문제 없음. 현재 상태 못받아오는게 문젠듯
   //const [liked, setLiked] = useState(false);

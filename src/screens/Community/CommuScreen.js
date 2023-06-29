@@ -41,6 +41,7 @@ export default function CommuScreen() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [selectedPage, setSelectedPage] = useState(0);
   const [data, setData] = useState([]); //커뮤니티 전체 데이터
+  const [liked, setLiked] = useState();
 
   const payload = {latitude: 37.541, longitude: 126.986}; //사용자의 위치 받아온거 여기 들어가야 함.
   const [open, setOpen] = useState(false);
@@ -84,7 +85,7 @@ export default function CommuScreen() {
       });
 
     console.log('data in useEffect : ', data);
-  }, [isFocused, isRefreshing, selectedPage]);
+  }, [isFocused, isRefreshing, selectedPage, liked]);
   //}, [isFocused, isRefreshing, selectedPage, value, data]);
 
   const handleSearchTextChange = text => {
@@ -124,15 +125,14 @@ export default function CommuScreen() {
     navigation.navigate('CommuPostDetail', {boardId});
   };
 
-  const [liked, setLiked] = useState();
+
   const handleLike = boardId => {
     const params = {
       page: selectedPage,
       정렬: value,
     };
 
-    setLiked(!liked);
-    //liked에 좋아요 성공 , 좋아요 취소 성공이 저장됨
+    setLiked(!liked); //liked에 좋아요 성공 , 좋아요 취소 성공이 저장됨
 
     axios
       .patch(baseUrl + 'boards/like/' + boardId, {}, config)
