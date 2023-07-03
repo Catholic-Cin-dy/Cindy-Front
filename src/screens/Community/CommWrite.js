@@ -215,7 +215,7 @@ export default function CommWrite() {
       content: content,
       latitude: 11.12,
       longitude: 23.45,
-      tags: [],
+      tags: hashTag,
       imgFiles: [],
       imgTagList: [
         {

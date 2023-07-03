@@ -13,6 +13,14 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SignInName from './SignInName';
 export default function Main({navigation}) {
+  const clearAsyncStorage = async () => {
+    try {
+      await AsyncStorage.clear();
+      console.log('AsyncStorage cleared successfully.');
+    } catch (error) {
+      console.log('Failed to clear AsyncStorage:', error);
+    }
+  };
   //이부분 수정이 필요함
   //작동 검증 필요
   const signInWithKakao = async (): Promise<void> => {
